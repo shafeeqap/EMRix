@@ -1,13 +1,13 @@
 import express from "express";
-import { protect } from "../middleware/authMiddleware";
-import { authorize } from "../middleware/roleMiddleware";
+import { protect } from "../middleware/authMiddleware.js";
+import { authorize } from "../middleware/roleMiddleware.js";
 import {
   createUser,
   deleteUser,
   getUserById,
   getUsers,
   updateUserById,
-} from "../controllers/userController";
+} from "../controllers/userController.js";
 
 const router = express.Router();
 

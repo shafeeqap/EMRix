@@ -2,8 +2,11 @@ import { User } from "../models/User.js";
 
 // Create a new user
 export const createUser = async (req, res) => {
-  try {
-    const { name, email, password, role } = req.body;
+    try {
+        const { name, email, password, role } = req.body;
+        console.log(req.body, 'create user body');
+
+    
 
     // validate input
     if (!name || !email || !password || !role) {
