@@ -1,0 +1,31 @@
+import Appointment from "../models/Appointment.js";
+
+// Create a new appointment
+export const createAppointment = async (req, res) => {
+  try {
+    const appointment = await Appointment.create(req.body);
+
+    res
+      .status(201)
+      .json({ message: "Appointment created successfully", appointment });
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(409).json({ message: "Time slot already booked" });
+    }
+
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// Get all appointments
+export const getAppointments = async (req, res) => {
+  try {
+    const appointments = await Appointment.find()
+      .populate("doctorId", "name")
+      .populate("partientId", "name");
+
+    res.status(200).json({ appointments });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
