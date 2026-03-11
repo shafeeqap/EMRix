@@ -1,12 +1,11 @@
 import { User } from "../models/User.js";
+import bcrypt from "bcryptjs";
 
 // Create a new user
 export const createUser = async (req, res) => {
-    try {
-        const { name, email, password, role } = req.body;
-        console.log(req.body, 'create user body');
-
-    
+  try {
+    const { name, email, password, role } = req.body;
+    console.log(req.body, "create user body");
 
     // validate input
     if (!name || !email || !password || !role) {
@@ -19,7 +18,14 @@ export const createUser = async (req, res) => {
       return res.status(409).json({ message: "Email already in use" });
     }
 
-    const newUser = await User.create({ name, email, password, role });
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      role,
+    });
 
     res
       .status(201)
