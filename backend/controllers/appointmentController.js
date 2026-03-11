@@ -1,4 +1,5 @@
 import Appointment from "../models/Appointment.js";
+import { Doctor } from "../models/Doctor.js";
 
 // Create a new appointment
 export const createAppointment = async (req, res) => {
@@ -26,6 +27,21 @@ export const getAppointments = async (req, res) => {
 
     res.status(200).json({ appointments });
   } catch (error) {
-    res.status(500).json({ message: "Server Error" });
+    return res.status(500).json({ message: "Server Error" });
   }
 };
+
+// Get available time slots for a doctor
+export const getAvailableSlots = async(req, res) =>{
+  try {
+
+    const { doctorId, date } = req.query;
+    // console.log(doctorId, date);
+    
+    const slots = await generateAvailableSlots(doctorId, date);
+    
+    
+  } catch (error) {
+    return res.status(500).json({ message: "Server Error" });
+  }
+}
