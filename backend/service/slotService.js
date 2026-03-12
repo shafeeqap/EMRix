@@ -22,8 +22,8 @@ export const generateAvailableSlots = async (doctorId, date) => {
 
     const slots = generateSlots(start, end, slotDuration);
     // console.log(slots, "generated slots");
-    const removeBrkTimeSlots = removeBreakTimeSlots(slots, breakTimes);
-    // console.log(removeBrkTimeSlots, "available slots after removing break times");
+    const availableSlots = removeBreakTimeSlots(slots, breakTimes);
+    // console.log(availableSlots, "available slots after removing break times");
 
     const bookedSlots = appointment.map((a) => a.slotTime);
     const removeBkdSlots = removeBookedSlots(availableSlots, bookedSlots);

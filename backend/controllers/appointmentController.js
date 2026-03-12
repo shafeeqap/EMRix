@@ -24,7 +24,7 @@ export const getAppointments = async (req, res) => {
   try {
     const appointments = await Appointment.find()
       .populate("doctorId", "name")
-      .populate("partientId", "name");
+      .populate("patientId", "name");
 
     res.status(200).json({ appointments });
   } catch (error) {
