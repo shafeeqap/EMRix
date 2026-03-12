@@ -7,7 +7,7 @@ const appointmentSchema = new mongoose.Schema(
       ref: "Docter",
       required: true,
     },
-    partientId: {
+    patientId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Patient",
       required: true,
