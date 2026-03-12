@@ -4,8 +4,10 @@ import { Doctor } from "../models/Doctor.js";
 export const createDoctor = async (req, res) => {
   try {
     console.log(req.body, "create doctor body");
+    console.log(req.user.id);
+    
 
-    const doctor = await Doctor.create(req.body);
+    const doctor = await Doctor.create({ ...req.body, createdBy: req.user.id });
 
     res.status(201).json({ message: "Doctor created successfully", doctor });
   } catch (error) {

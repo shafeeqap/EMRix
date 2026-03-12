@@ -75,13 +75,29 @@ export const updatePatient = async (req, res) => {
       { new: true }
     );
 
-    res
-      .status(200)
-      .json({
-        message: "Patient updated successfully",
-        patient: updatedPatient,
-      });
+    res.status(200).json({
+      message: "Patient updated successfully",
+      patient: updatedPatient,
+    });
   } catch (error) {
     return res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// Delete patient
+export const deletePatient = async (req, res) => {
+  try {
+    const patientId = req.params.id;
+
+    const patient = await Patient.findById(patientId);
+    if (!patient) {
+      return res.status(404).json({ message: "Patient not found" });
+    }
+
+    await Patient.findByIdAndDelete(patientId);
+
+    res.status(200).json({ message: "Patient deleted successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: "server Error" });
   }
 };
