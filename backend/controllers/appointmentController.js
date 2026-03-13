@@ -62,3 +62,33 @@ export const getAvailableSlots = async (req, res) => {
       .json({ message: "server Error", error: error.message });
   }
 };
+
+// Update appointment status
+export const updateStatus = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { status } = req.body;
+    console.log(status, 'Status...');
+    
+
+    const appointment = await Appointment.findById(id);
+    console.log(appointment, "Appointment...");
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    appointment.status = status;
+    await appointment.save();
+    // const updatedStatus = await Appointment.findByIdAndUpdate({ status });
+    // console.log(updatedStatus, "Status...");
+
+    res.status(200).json({
+      message: "Status updated successfully",
+      appointment,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "server Error", error: error.message });
+  }
+};

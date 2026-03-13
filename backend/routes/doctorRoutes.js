@@ -14,7 +14,7 @@ const router = express.Router();
 router.post("/", protect, authorize("super_admin"), createDoctor);
 router.get("/", protect, getDoctors);
 router.get("/:id", protect, getDoctorById);
-router.put("/", protect, authorize("super_admin"), updateDoctor);
-router.delete("/", protect, authorize("super_admin"), deleteDoctor);
+router.put("/:id", protect, authorize("super_admin"), updateDoctor);
+router.delete("/:id", protect, authorize("super_admin"), deleteDoctor);
 
 export const doctorRoutes = router;
