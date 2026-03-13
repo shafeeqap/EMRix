@@ -3,9 +3,8 @@ import { Doctor } from "../models/Doctor.js";
 // Create a new doctor
 export const createDoctor = async (req, res) => {
   try {
-    console.log(req.body, "create doctor body");
-    console.log(req.user.id);
-    
+    // console.log(req.body, "create doctor body");
+    // console.log(req.user.id);
 
     const doctor = await Doctor.create({ ...req.body, createdBy: req.user.id });
 

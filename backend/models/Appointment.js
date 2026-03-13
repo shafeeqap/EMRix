@@ -4,7 +4,7 @@ const appointmentSchema = new mongoose.Schema(
   {
     doctorId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Docter",
+      ref: "Doctor",
       required: true,
     },
     patientId: {
@@ -23,7 +23,7 @@ const appointmentSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["booked", "arrived", "cancelled"],
-      defauld: "booked",
+      default: "booked",
     },
     notes: {
       type: String,

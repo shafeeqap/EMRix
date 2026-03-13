@@ -1,5 +1,12 @@
 import mongoose from "mongoose";
 
+/*
+LOGIN
+CREATE_APPOINTMENT
+UPDATE_APPOINTMENT
+DELETE_APPOINTMENT
+*/
+
 const auditLogSchema = new mongoose.Schema(
   {
     userId: {
