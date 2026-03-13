@@ -1,17 +1,16 @@
 import Appointment from "../models/Appointment.js";
-import { Doctor } from "../models/Doctor.js";
 import { generateAvailableSlots } from "../service/slotService.js";
 
 // Create a new appointment
 export const createAppointment = async (req, res) => {
   const date = req.body.date;
 
-  const currentDate = new Date();
+  const selectedDate = new Date(date);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-  const today = currentDate.toISOString().split("T")[0];
-
-  if (date < today) {
-    return res.status(405).json({ message: "Past slot not allowed" });
+  if (selectedDate < today) {
+    return res.status(400).json({ message: "Past slot not allowed" });
   }
 
   try {
@@ -28,7 +27,7 @@ export const createAppointment = async (req, res) => {
       return res.status(409).json({ message: "Time slot already booked" });
     }
 
-    res.status(500).json({ message: "Server Error", error });
+    res.status(500).json({ message: "Server Error", error: error.message });
   }
 };
 
@@ -39,11 +38,13 @@ export const getAppointments = async (req, res) => {
       .populate("doctorId", "name")
       .populate("patientId", "name");
 
-      console.log(appointments, 'Appointment...');
-      
+    // console.log(appointments, 'Appointment...');
+
     res.status(200).json({ appointments });
   } catch (error) {
-    return res.status(500).json({ message: "Server Error" });
+    return res
+      .status(500)
+      .json({ message: "Server Error", error: error.message });
   }
 };
 
@@ -56,6 +57,8 @@ export const getAvailableSlots = async (req, res) => {
 
     res.status(200).json({ slots });
   } catch (error) {
-    return res.status(500).json({ message: "Server Error" });
+    return res
+      .status(500)
+      .json({ message: "server Error", error: error.message });
   }
 };

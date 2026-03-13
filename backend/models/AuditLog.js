@@ -15,19 +15,19 @@ const auditLogSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      // required: true
+      required: true
     },
     action: {
       type: String,
-      // required: true
+      required: true
     },
     entity: {
       type: String,
-      // required: true
+      required: true
     },
     entityId: {
       type: mongoose.Schema.Types.ObjectId,
-      // required: true
+      required: true
     },
     metadata: {
       type: Object,

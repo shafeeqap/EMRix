@@ -36,7 +36,7 @@ export const login = async (req, res) => {
       message: "Login successful",
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -58,7 +58,7 @@ export const refreshToken = async (req, res) => {
 
     res.json({ accessToken: newAccessToken });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -75,6 +75,6 @@ export const logout = async (req, res) => {
 
     res.json({ message: "Logout successful" });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };

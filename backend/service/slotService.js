@@ -12,13 +12,21 @@ export const generateAvailableSlots = async (doctorId, date) => {
     const doctor = await Doctor.findOne({ _id: doctorId });
 
     if (!doctor) {
-      return res.status(404).json({ message: "Doctor not found" });
+      throw new Error("Doctor not found");
     }
 
-    const appointment = await Appointment.find({
-      doctorId,
-      date: { $gte: startTime, $lt: endTime },
-    });
+    const appointment = await Appointment.find(
+      {
+        doctorId,
+        date: { $gte: startTime, $lt: endTime },
+      },
+      { slotTime: 1, _id: 0 }
+    ).lean();
+
+    console.log(appointment, "appointment...");
+    const bookedSlots = new Set(appointment.map((a) => a.slotTime));
+    console.log(bookedSlots, 'Booked Slot...');
+    
 
     const allSlots = generateSlots(
       doctor.workingHours.start,
@@ -26,11 +34,11 @@ export const generateAvailableSlots = async (doctorId, date) => {
       doctor.slotDuration
     );
 
-    const removeBrkTime = removeBreakTimeSlots(allSlots, doctor.breakTimes);
+    const slotsWithoutBreaks  = removeBreakTimeSlots(allSlots, doctor.breakTimes);
 
-    const bookedSlots = appointment.map((a) => a.slotTime);
+    // const bookedSlots = appointment.map((a) => a.slotTime);
 
-    const availableSlots = removeBookedSlots(removeBrkTime, bookedSlots);
+    const availableSlots = slotsWithoutBreaks.filter((slot) => !bookedSlots.has(slot))
 
     return availableSlots;
   } catch (error) {
@@ -73,9 +81,4 @@ function removeBreakTimeSlots(slots, breakTimes) {
 
     return true; // keep this slot if it does not fall within any break time
   });
-}
-
-// Remove booked slots from the available slots
-function removeBookedSlots(availableSlots, bookedSlots) {
-  return availableSlots.filter((slot) => !bookedSlots.includes(slot));
 }

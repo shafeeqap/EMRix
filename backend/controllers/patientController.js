@@ -10,13 +10,20 @@ export const createPatient = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
+    const existPatient = await Patient.findOne({ mobile });
+    // console.log(existPatient, 'Exist patient...');
+
+    if (existPatient) {
+      return res.status(409).json({ message: "Patient already exists" });
+    }
+
     const patient = await Patient.create({ name, mobile, patientId });
 
     return res
       .status(201)
       .json({ message: "Patien created successfully", patient });
   } catch (error) {
-    return res.status(500).json({ message: "Server Error" });
+    return res.status(500).json({ message: "Server Error", error: error.message });
   }
 };
 
@@ -43,10 +50,8 @@ export const searchPatient = async (req, res) => {
 export const getPatientById = async (req, res) => {
   try {
     const patientId = req.params.id;
-    // console.log(patientId, "patient id");
 
     const patient = await Patient.findById(patientId);
-    // console.log(patient, "Patient");
 
     if (!patient) {
       return res.status(404).json({ message: "Patien not found" });
@@ -54,7 +59,7 @@ export const getPatientById = async (req, res) => {
 
     res.status(200).json({ patient });
   } catch (error) {
-    return res.status(500).json({ message: "Server Error" });
+    return res.status(500).json({ message: "Server Error", error: error.message });
   }
 };
 
@@ -80,7 +85,7 @@ export const updatePatient = async (req, res) => {
       patient: updatedPatient,
     });
   } catch (error) {
-    return res.status(500).json({ message: "Server Error" });
+    return res.status(500).json({ message: "Server Error", error: error.message });
   }
 };
 
@@ -98,6 +103,8 @@ export const deletePatient = async (req, res) => {
 
     res.status(200).json({ message: "Patient deleted successfully" });
   } catch (error) {
-    return res.status(500).json({ message: "server Error" });
+    return res
+      .status(500)
+      .json({ message: "server Error", error: error.message });
   }
 };
