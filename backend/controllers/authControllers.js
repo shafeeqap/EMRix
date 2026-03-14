@@ -6,6 +6,15 @@ import {
   generateRefreshToken,
 } from "../utils/generateTokens.js";
 import Session from "../models/Session.js";
+import { authenticateUser } from "../service/authService.js";
+import {
+  createSession,
+  deleteSession,
+  enforceSessionLimit,
+  findValidationSession,
+  rotateRefreshToken,
+} from "../service/sessionService.js";
+import { cookieOptions } from "../utils/cookieOptions.js";
 
 // Login user and generate tokens
 export const login = async (req, res) => {
@@ -15,50 +24,17 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const user = await User.findOne({ email }).select("+password");
-    if (!user) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
+    const user = await authenticateUser(email, password);
 
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
-    const hashedToken = await bcrypt.hash(refreshToken, 10);
-
     // ===========> limiting sessions <===========
-    const MAX_SESSIONS = 5;
+    await enforceSessionLimit(user._id);
 
-    const sessions = await Session.find({ userId: user._id }).sort({
-      createdAt: 1,
-    });
-    if (sessions.length >= MAX_SESSIONS) {
-        const sessionsToDelete = sessions.slice(0, sessions.length - MAX_SESSIONS + 1
-      );
+    await createSession(user._id, refreshToken, req.headers["user-agent"]);
 
-      for (const session of sessionsToDelete) {
-        await Session.deleteOne({ _id: session._id });
-      }
-    }
-
-    await Session.create({
-      userId: user._id,
-      refreshToken: hashedToken,
-      device: req.headers["user-agent"],
-    });
-    // user.refreshToken = hashedToken;
-    // await user.save();
-
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie("refreshToken", refreshToken, cookieOptions);
 
     res.json({
       accessToken,
@@ -82,32 +58,24 @@ export const refreshAccessToken = async (req, res) => {
     try {
       const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
 
-      const sessions = await Session.find({ userId: decoded.id });
-
-      let validSession = null;
-
-      for (const session of sessions) {
-        const isValid = await bcrypt.compare(
-          refreshToken,
-          session.refreshToken
-        );
-
-        if (isValid) {
-          validSession = session;
-          break;
-        }
-      }
+      let validSession = await findValidationSession(decoded.id, refreshToken);
 
       if (!validSession) {
         return res.status(401).json({ message: "Invalid refresh token" });
       }
-      
+
       const user = await User.findById(decoded.id).select("+refreshToken");
       if (!user) {
         return res.status(401).json({ message: "Invalid refresh token" });
       }
 
+      // ===========> refresh token rotation <===========
       const newAccessToken = generateAccessToken(user);
+      const newRefreshToken = generateRefreshToken(user);
+
+      await rotateRefreshToken(validSession, newRefreshToken);
+
+      res.cookie("refreshToken", newRefreshToken, cookieOptions);
 
       res.json({ accessToken: newAccessToken });
     } catch (error) {
@@ -136,12 +104,12 @@ export const logout = async (req, res) => {
       const isValid = await bcrypt.compare(token, session.refreshToken);
 
       if (isValid) {
-        await Session.deleteOne({ _id: session._id });
+        await deleteSession(session._id);
         break;
       }
     }
 
-    res.clearCookie("refreshToken");
+    res.clearCookie("refreshToken", cookieOptions);
 
     res.json({ message: "Logout successful" });
   } catch (error) {
