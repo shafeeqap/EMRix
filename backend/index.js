@@ -7,6 +7,7 @@ import { userRoutes } from "./routes/userRoutes.js";
 import { doctorRoutes } from "./routes/doctorRoutes.js";
 import { appointmentRoutes } from "./routes/appointmentRoutes.js";
 import { patientRoutes } from "./routes/patientRoutes.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 connectDB();
@@ -14,8 +15,10 @@ connectDB();
 const PORT = process.env.PORT || 5000;
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 app.get("/", (req, res) => {
   res.send("Hello World");

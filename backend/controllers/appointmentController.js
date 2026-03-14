@@ -38,8 +38,6 @@ export const getAppointments = async (req, res) => {
       .populate("doctorId", "name")
       .populate("patientId", "name");
 
-    // console.log(appointments, 'Appointment...');
-
     res.status(200).json({ appointments });
   } catch (error) {
     return res
@@ -68,19 +66,15 @@ export const updateStatus = async (req, res) => {
   try {
     const id = req.params.id;
     const { status } = req.body;
-    console.log(status, 'Status...');
-    
+    // console.log(status, "Status...");
 
     const appointment = await Appointment.findById(id);
-    console.log(appointment, "Appointment...");
     if (!appointment) {
       return res.status(404).json({ message: "Appointment not found" });
     }
 
     appointment.status = status;
     await appointment.save();
-    // const updatedStatus = await Appointment.findByIdAndUpdate({ status });
-    // console.log(updatedStatus, "Status...");
 
     res.status(200).json({
       message: "Status updated successfully",

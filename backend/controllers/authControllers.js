@@ -2,7 +2,7 @@ import { User } from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import {
-  generateAccesstoken,
+  generateAccessToken,
   generateRefreshToken,
 } from "../utils/generateTokens.js";
 
@@ -11,27 +11,36 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      return res.status(400).json({ message: "All field are required" });
+      return res.status(400).json({ message: "All fields are required" });
     }
 
-    const user = await User.findOne({ email }).select("+password");
+    const user = await User.findOne({ email }).select(
+      "+password +refreshToken"
+    );
     if (!user) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const accessToken = generateAccesstoken(user);
+    const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
-    user.refreshToken = refreshToken;
+    const hashedToken = await bcrypt.hash(refreshToken, 10);
+    user.refreshToken = hashedToken;
+    await user.save();
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
 
     res.json({
       accessToken,
-      refreshToken,
       user: { id: user._id, role: user.role, name: user.name },
       message: "Login successful",
     });
@@ -41,22 +50,35 @@ export const login = async (req, res) => {
 };
 
 // Refresh access token using refresh token
-export const refreshToken = async (req, res) => {
+export const refreshAccessToken = async (req, res) => {
   try {
-    const { refreshToken } = req.body;
+    const refreshToken = req.cookies.refreshToken;
+
     if (!refreshToken) {
       return res.status(401).json({ message: "Refresh token required" });
     }
 
-    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    try {
+      const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
 
-    const user = await User.findById(decoded.id).select("+refreshToken");
-    if (!user || user.refreshToken !== refreshToken) {
-      return res.status(401).json({ message: "Invalid refresh token" });
+      const user = await User.findById(decoded.id).select("+refreshToken");
+      if (!user) {
+        return res.status(401).json({ message: "Invalid refresh token" });
+      }
+
+      const isValid = await bcrypt.compare(refreshToken, user.refreshToken);
+      if (!isValid) {
+        return res.status(401).json({ message: "Invalid refresh token" });
+      }
+
+      const newAccessToken = generateAccessToken(user);
+
+      res.json({ accessToken: newAccessToken });
+    } catch (error) {
+      return res
+        .status(401)
+        .json({ message: "Invalid or expired refresh token" });
     }
-    const newAccessToken = generateAccesstoken(user);
-
-    res.json({ accessToken: newAccessToken });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -65,13 +87,17 @@ export const refreshToken = async (req, res) => {
 // Logout user by invalidating refresh token
 export const logout = async (req, res) => {
   try {
-    const { refreshToken } = req.body;
+    if (!req.user) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
 
-    const user = await User.findOne({ refreshToken }).select("+refreshToken");
+    const user = await User.findById(req.user.id);
     if (user) {
       user.refreshToken = null;
       await user.save();
     }
+
+    res.clearCookie("refreshToken");
 
     res.json({ message: "Logout successful" });
   } catch (error) {
