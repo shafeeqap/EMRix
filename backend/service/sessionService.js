@@ -11,7 +11,7 @@ export const enforceSessionLimit = async (userId) => {
     createdAt: 1,
   });
 
-//   console.log(sessions, "Sessions...");
+//   console.log(sessions.length, "Sessions...");
 
   if (sessions.length >= MAX_SESSIONS) {
     const sessionsToDelete = sessions.slice(
