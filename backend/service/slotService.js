@@ -1,6 +1,7 @@
 import Appointment from "../models/Appointment.js";
 import { Doctor } from "../models/Doctor.js";
 
+// =============> generate available slots <=============
 export const generateAvailableSlots = async (doctorId, date) => {
   try {
     const startTime = new Date(date);
@@ -15,7 +16,7 @@ export const generateAvailableSlots = async (doctorId, date) => {
       throw new Error("Doctor not found");
     }
 
-    const appointment = await Appointment.find(
+    const appointments = await Appointment.find(
       {
         doctorId,
         date: { $gte: startTime, $lt: endTime },
@@ -23,10 +24,7 @@ export const generateAvailableSlots = async (doctorId, date) => {
       { slotTime: 1, _id: 0 }
     ).lean();
 
-    console.log(appointment, "appointment...");
-    const bookedSlots = new Set(appointment.map((a) => a.slotTime));
-    console.log(bookedSlots, 'Booked Slot...');
-    
+    const bookedSlots = new Set(appointments.map((a) => a.slotTime));
 
     const allSlots = generateSlots(
       doctor.workingHours.start,
@@ -34,11 +32,14 @@ export const generateAvailableSlots = async (doctorId, date) => {
       doctor.slotDuration
     );
 
-    const slotsWithoutBreaks  = removeBreakTimeSlots(allSlots, doctor.breakTimes);
+    const slotsWithoutBreaks = removeBreakTimeSlots(
+      allSlots,
+      doctor.breakTimes
+    );
 
-    // const bookedSlots = appointment.map((a) => a.slotTime);
-
-    const availableSlots = slotsWithoutBreaks.filter((slot) => !bookedSlots.has(slot))
+    const availableSlots = slotsWithoutBreaks.filter(
+      (slot) => !bookedSlots.has(slot)
+    );
 
     return availableSlots;
   } catch (error) {
@@ -46,7 +47,7 @@ export const generateAvailableSlots = async (doctorId, date) => {
   }
 };
 
-// Generate time slots
+// =============> Generate time slots <=============
 function generateSlots(start, end, slotDuration) {
   const slots = [];
 
@@ -70,7 +71,7 @@ function generateSlots(start, end, slotDuration) {
   return slots;
 }
 
-// Remove break time slots from the available slots
+// =============> Remove break time slots from the available slots <=============
 function removeBreakTimeSlots(slots, breakTimes) {
   return slots.filter((slot) => {
     for (const breakTime of breakTimes) {

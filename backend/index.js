@@ -8,6 +8,8 @@ import { doctorRoutes } from "./routes/doctorRoutes.js";
 import { appointmentRoutes } from "./routes/appointmentRoutes.js";
 import { patientRoutes } from "./routes/patientRoutes.js";
 import cookieParser from "cookie-parser";
+import { notFond } from "./middleware/notFoundMiddleware.js";
+import { errorHandler } from "./middleware/errorMiddleware.js";
 
 dotenv.config();
 connectDB();
@@ -30,6 +32,9 @@ app.use("/api/users", userRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/appointment", appointmentRoutes);
 app.use("/api/patient", patientRoutes);
+
+app.use(notFond);
+app.use(errorHandler);
 
 app.listen(PORT, () => [
   console.log(`Server is running on port http://localhost:${PORT}`),
