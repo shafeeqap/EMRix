@@ -1,8 +1,10 @@
 import Appointment from "../models/Appointment.js";
+import { logAction } from "../service/auditService.js";
 import { generateAvailableSlots } from "../service/slotService.js";
+import { fomatedDate } from "../utils/formatedDated.js";
 
-// Create a new appointment
-export const createAppointment = async (req, res) => {
+// =============> Create a new appointment <=============
+export const createAppointment = async (req, res, next) => {
   const date = req.body.date;
 
   const selectedDate = new Date(date);
@@ -10,7 +12,8 @@ export const createAppointment = async (req, res) => {
   today.setHours(0, 0, 0, 0);
 
   if (selectedDate < today) {
-    return res.status(400).json({ message: "Past slot not allowed" });
+    res.status(400);
+    throw new Error("Past slot not allowed");
   }
 
   try {
@@ -19,35 +22,55 @@ export const createAppointment = async (req, res) => {
       createdBy: req.user.id,
     });
 
+    await logAction({
+      userId: req.user.id,
+      role: req.user.role,
+      action: "CREATE_APPOINTMENT",
+      entity: "Appointment",
+      entityId: appointment._id,
+      metadata: {
+        patientId: appointment.patientId,
+        doctorId: appointment.doctorId,
+        slot: appointment.slotTime,
+        date: appointment.date,
+      },
+    });
+
     res
       .status(201)
       .json({ message: "Appointment created successfully", appointment });
   } catch (error) {
     if (error.code === 11000) {
-      return res.status(409).json({ message: "Time slot already booked" });
+      res.status(409);
+      throw new Error("Time slot already booked");
     }
 
-    res.status(500).json({ message: "Server Error", error: error.message });
+    next(error);
   }
 };
 
-// Get all appointments
-export const getAppointments = async (req, res) => {
+// =============> Get all appointments <=============
+export const getAppointments = async (req, res, next) => {
   try {
-    const appointments = await Appointment.find()
+    const { doctorId, date } = req.query;
+
+    const {startTime, endTime} = fomatedDate(date)
+
+    const appointments = await Appointment.find({
+      doctorId,
+      date: { $gte: startTime, $lt: endTime },
+    })
       .populate("doctorId", "name")
       .populate("patientId", "name");
 
     res.status(200).json({ appointments });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Server Error", error: error.message });
+    next(error);
   }
 };
 
-// Get available time slots for a doctor
-export const getAvailableSlots = async (req, res) => {
+// =============> Get available time slots for a doctor <=============
+export const getAvailableSlots = async (req, res, next) => {
   try {
     const { doctorId, date } = req.query;
 
@@ -55,34 +78,42 @@ export const getAvailableSlots = async (req, res) => {
 
     res.status(200).json({ slots });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "server Error", error: error.message });
+    next(error);
   }
 };
 
-// Update appointment status
-export const updateStatus = async (req, res) => {
+// =============> Update appointment status <=============
+export const updateStatus = async (req, res, next) => {
   try {
     const id = req.params.id;
     const { status } = req.body;
-    // console.log(status, "Status...");
 
     const appointment = await Appointment.findById(id);
     if (!appointment) {
-      return res.status(404).json({ message: "Appointment not found" });
+      res.status(404);
+      throw new Error("Appointment not found");
     }
 
     appointment.status = status;
     await appointment.save();
+
+    await logAction({
+      userId: req.user.id,
+      role: req.user.role,
+      action: "UPDATE_APPOINTMENT_STATUS",
+      entity: "Appointment",
+      entityId: appointment._id,
+      metadata: {
+        oldStatus: "booked",
+        newStatus: status,
+      },
+    });
 
     res.status(200).json({
       message: "Status updated successfully",
       appointment,
     });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "server Error", error: error.message });
+    next(error);
   }
 };

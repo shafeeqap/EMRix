@@ -15,22 +15,23 @@ const auditLogSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      required: true
+      enum: ["super_admin", "doctor", "receptionist"],
     },
     action: {
       type: String,
-      required: true
+      required: true,
     },
     entity: {
       type: String,
-      required: true
+      required: true,
     },
     entityId: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true
+      required: true,
     },
     metadata: {
-      type: Object,
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
     },
   },
   { timestamps: true }

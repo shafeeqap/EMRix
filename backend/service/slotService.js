@@ -1,14 +1,11 @@
 import Appointment from "../models/Appointment.js";
 import { Doctor } from "../models/Doctor.js";
+import { fomatedDate } from "../utils/formatedDated.js";
 
 // =============> generate available slots <=============
-export const generateAvailableSlots = async (doctorId, date) => {
+export const generateAvailableSlots = async (doctorId, date, next) => {
   try {
-    const startTime = new Date(date);
-    startTime.setUTCHours(0, 0, 0, 0);
-
-    const endTime = new Date(date);
-    endTime.setUTCHours(23, 59, 59, 999);
+    const { startTime, endTime } = fomatedDate(date);
 
     const doctor = await Doctor.findOne({ _id: doctorId });
 
@@ -43,7 +40,7 @@ export const generateAvailableSlots = async (doctorId, date) => {
 
     return availableSlots;
   } catch (error) {
-    console.error("Error generating available slots:", error);
+    next(error);
   }
 };
 

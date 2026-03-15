@@ -5,13 +5,10 @@ dotenv.config();
 
 export const enforceSessionLimit = async (userId) => {
   const MAX_SESSIONS = Number(process.env.MAX_SESSIONS) || 5;
-//   console.log(userId, "User id");
 
   const sessions = await Session.find({ userId }).sort({
     createdAt: 1,
   });
-
-//   console.log(sessions.length, "Sessions...");
 
   if (sessions.length >= MAX_SESSIONS) {
     const sessionsToDelete = sessions.slice(
@@ -26,11 +23,10 @@ export const enforceSessionLimit = async (userId) => {
 };
 
 export const createSession = async (userId, refreshToken, device) => {
-    // console.log(userId, 'User id in create session');
-    // console.log(refreshToken, 'refreshTokin in crate session');
-    // console.log(device);
-    
-    
+  // console.log(userId, 'User id in create session');
+  // console.log(refreshToken, 'refreshTokin in crate session');
+  // console.log(device);
+
   const hashedToken = await bcrypt.hash(refreshToken, 10);
 
   return await Session.create({

@@ -12,6 +12,7 @@ const router = express.Router();
 router.get("/slots", protect, getAvailableSlots);
 router.post("/", protect, createAppointment);
 router.get("/", protect, getAppointments);
+// router.put("/:id", protect, updateAppointments);
 router.patch("/:id", protect, updateStatus);
 
 export const appointmentRoutes = router;
