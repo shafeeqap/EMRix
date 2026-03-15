@@ -4,7 +4,8 @@ import {
   createAppointment,
   getAppointments,
   getAvailableSlots,
-  updateStatus,
+  updateAppointments,
+  updateAppointmentStatus,
 } from "../controllers/appointmentController.js";
 
 const router = express.Router();
@@ -12,7 +13,8 @@ const router = express.Router();
 router.get("/slots", protect, getAvailableSlots);
 router.post("/", protect, createAppointment);
 router.get("/", protect, getAppointments);
-// router.put("/:id", protect, updateAppointments);
-router.patch("/:id", protect, updateStatus);
+router.put("/:id/reschedule", protect, updateAppointments);
+router.patch("/:id/status", protect, updateAppointmentStatus);
+// router.delete("/:id", protect, deleteAppointment)
 
 export const appointmentRoutes = router;

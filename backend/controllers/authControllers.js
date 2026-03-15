@@ -6,14 +6,14 @@ import {
   generateRefreshToken,
 } from "../utils/generateTokens.js";
 import Session from "../models/Session.js";
-import { authenticateUser } from "../service/authService.js";
+import { authenticateUser } from "../services/authService.js";
 import {
   createSession,
   deleteSession,
   enforceSessionLimit,
   findValidationSession,
   rotateRefreshToken,
-} from "../service/sessionService.js";
+} from "../services/sessionService.js";
 import { cookieOptions } from "../utils/cookieOptions.js";
 
 // Login user and generate tokens

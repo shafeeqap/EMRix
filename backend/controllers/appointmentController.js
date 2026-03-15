@@ -1,41 +1,13 @@
 import Appointment from "../models/Appointment.js";
-import { logAction } from "../service/auditService.js";
-import { generateAvailableSlots } from "../service/slotService.js";
+import { logAction } from "../utils/auditLogger.js";
+import { generateAvailableSlots } from "../services/slotService.js";
 import { fomatedDate } from "../utils/formatedDated.js";
+import { createAppointmentService } from "../services/appointmentService.js";
 
 // =============> Create a new appointment <=============
 export const createAppointment = async (req, res, next) => {
-  const date = req.body.date;
-
-  const selectedDate = new Date(date);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  if (selectedDate < today) {
-    res.status(400);
-    throw new Error("Past slot not allowed");
-  }
-
   try {
-    const appointment = await Appointment.create({
-      ...req.body,
-      createdBy: req.user.id,
-    });
-
-    await logAction({
-      userId: req.user.id,
-      role: req.user.role,
-      action: "CREATE_APPOINTMENT",
-      entity: "Appointment",
-      entityId: appointment._id,
-      metadata: {
-        patientId: appointment.patientId,
-        doctorId: appointment.doctorId,
-        slot: appointment.slotTime,
-        date: appointment.date,
-      },
-    });
-
+    const appointment = await createAppointmentService(req.body, req.user);
     res
       .status(201)
       .json({ message: "Appointment created successfully", appointment });
@@ -54,7 +26,7 @@ export const getAppointments = async (req, res, next) => {
   try {
     const { doctorId, date } = req.query;
 
-    const {startTime, endTime} = fomatedDate(date)
+    const { startTime, endTime } = fomatedDate(date);
 
     const appointments = await Appointment.find({
       doctorId,
@@ -83,7 +55,7 @@ export const getAvailableSlots = async (req, res, next) => {
 };
 
 // =============> Update appointment status <=============
-export const updateStatus = async (req, res, next) => {
+export const updateAppointmentStatus = async (req, res, next) => {
   try {
     const id = req.params.id;
     const { status } = req.body;
@@ -112,6 +84,46 @@ export const updateStatus = async (req, res, next) => {
     res.status(200).json({
       message: "Status updated successfully",
       appointment,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateAppointments = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const { doctorId, patientId, date, slotTime, notes } = req.body;
+    // console.log(req.body, "Request body...");
+    // console.log(slotTime, "new Slot time");
+    // console.log(date, "New date");
+
+    const appointment = await Appointment.findById(id);
+    // console.log(appointment, "Appointment...");
+
+    const slots = await generateAvailableSlots(doctorId, date);
+    // console.log(slots, "Available slot...");
+
+    const availableSlot = slots.map((slot) => {
+      return slot.filter((s) => s === slotTime);
+    });
+
+    if (!availableSlot) {
+      res.status(404);
+      throw new Error("Slot not available");
+    }
+
+    const updatedAppointment = await Appointment.findByIdAndUpdate(id, {
+      doctorId,
+      patientId,
+      date,
+      slotTime,
+      notes,
+    });
+
+    res.status(200).json({
+      message: "Appointment updated successfully",
+      appointment: updatedAppointment,
     });
   } catch (error) {
     next(error);
