@@ -25,6 +25,11 @@ export const createAppointment = async (req, res, next) => {
 export const getAppointments = async (req, res, next) => {
   try {
     const { doctorId, date } = req.query;
+    // console.log(doctorId);
+
+    if (!doctorId || !date) {
+      throw new Error("Doctor ID and date are required");
+    }
 
     const { startTime, endTime } = fomatedDate(date);
 
@@ -94,32 +99,40 @@ export const updateAppointments = async (req, res, next) => {
   try {
     const id = req.params.id;
     const { doctorId, patientId, date, slotTime, notes } = req.body;
-    // console.log(req.body, "Request body...");
-    // console.log(slotTime, "new Slot time");
-    // console.log(date, "New date");
 
     const appointment = await Appointment.findById(id);
-    // console.log(appointment, "Appointment...");
-
-    const slots = await generateAvailableSlots(doctorId, date);
-    // console.log(slots, "Available slot...");
-
-    const availableSlot = slots.map((slot) => {
-      return slot.filter((s) => s === slotTime);
-    });
-
-    if (!availableSlot) {
+    if (!appointment) {
       res.status(404);
-      throw new Error("Slot not available");
+      throw new Error("Appointment not found");
     }
 
-    const updatedAppointment = await Appointment.findByIdAndUpdate(id, {
-      doctorId,
-      patientId,
-      date,
-      slotTime,
-      notes,
-    });
+    const isDateChanged =
+      new Date(date).getTime() !== new Date(appointment.date).getTime();
+
+    const isSlotChanged = slotTime !== appointment.slotTime;
+
+    if (isDateChanged || isSlotChanged) {
+      const slots = await generateAvailableSlots(doctorId, date);
+
+      const availableSlot = slots.includes(slotTime);
+
+      if (!availableSlot) {
+        res.status(404);
+        throw new Error("Slot not available");
+      }
+    }
+
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
+      id,
+      {
+        doctorId,
+        patientId,
+        date,
+        slotTime,
+        notes,
+      },
+      { new: true, runValidators: true }
+    );
 
     res.status(200).json({
       message: "Appointment updated successfully",
