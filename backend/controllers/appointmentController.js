@@ -99,12 +99,16 @@ export const updateAppointments = async (req, res, next) => {
   try {
     const id = req.params.id;
     const { doctorId, patientId, date, slotTime, notes } = req.body;
+    console.log(req.body);
+    
 
     const appointment = await Appointment.findById(id);
     if (!appointment) {
       res.status(404);
       throw new Error("Appointment not found");
     }
+    console.log(appointment, 'Appointment...');
+    
 
     const isDateChanged =
       new Date(date).getTime() !== new Date(appointment.date).getTime();
@@ -113,6 +117,8 @@ export const updateAppointments = async (req, res, next) => {
 
     if (isDateChanged || isSlotChanged) {
       const slots = await generateAvailableSlots(doctorId, date);
+      console.log(slots);
+      
 
       const availableSlot = slots.includes(slotTime);
 

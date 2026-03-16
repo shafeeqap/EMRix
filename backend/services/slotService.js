@@ -8,6 +8,8 @@ export const generateAvailableSlots = async (doctorId, date, next) => {
     const { startTime, endTime } = fomatedDate(date);
 
     const doctor = await Doctor.findOne({ _id: doctorId });
+    console.log(doctor, 'Docter in serviceslot...');
+    
 
     if (!doctor) {
       throw new Error("Doctor not found");
