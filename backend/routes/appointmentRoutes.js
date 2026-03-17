@@ -2,6 +2,7 @@ import express from "express";
 import { protect } from "../middleware/authMiddleware.js";
 import {
   createAppointment,
+  deleteAppointment,
   getAppointments,
   getAvailableSlots,
   updateAppointments,
@@ -15,6 +16,6 @@ router.post("/", protect, createAppointment);
 router.get("/", protect, getAppointments);
 router.put("/:id/reschedule", protect, updateAppointments);
 router.patch("/:id/status", protect, updateAppointmentStatus);
-// router.delete("/:id", protect, deleteAppointment)
+router.delete("/:id", protect, deleteAppointment)
 
 export const appointmentRoutes = router;

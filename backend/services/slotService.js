@@ -3,47 +3,42 @@ import { Doctor } from "../models/Doctor.js";
 import { fomatedDate } from "../utils/formatedDated.js";
 
 // =============> generate available slots <=============
-export const generateAvailableSlots = async (doctorId, date, next) => {
-  try {
-    const { startTime, endTime } = fomatedDate(date);
+export const generateAvailableSlots = async (data) => {
+  const { doctorId, date } = data;
+  console.log(doctorId, date);
 
-    const doctor = await Doctor.findOne({ _id: doctorId });
-    console.log(doctor, 'Docter in serviceslot...');
-    
+  const { startTime, endTime } = fomatedDate(date);
 
-    if (!doctor) {
-      throw new Error("Doctor not found");
-    }
+  const doctor = await Doctor.findOne({ _id: doctorId });
+  console.log(doctor, "Docter in serviceslot...");
 
-    const appointments = await Appointment.find(
-      {
-        doctorId,
-        date: { $gte: startTime, $lt: endTime },
-      },
-      { slotTime: 1, _id: 0 }
-    ).lean();
-
-    const bookedSlots = new Set(appointments.map((a) => a.slotTime));
-
-    const allSlots = generateSlots(
-      doctor.workingHours.start,
-      doctor.workingHours.end,
-      doctor.slotDuration
-    );
-
-    const slotsWithoutBreaks = removeBreakTimeSlots(
-      allSlots,
-      doctor.breakTimes
-    );
-
-    const availableSlots = slotsWithoutBreaks.filter(
-      (slot) => !bookedSlots.has(slot)
-    );
-
-    return availableSlots;
-  } catch (error) {
-    next(error);
+  if (!doctor) {
+    throw new Error("Doctor not found");
   }
+
+  const appointments = await Appointment.find(
+    {
+      doctorId,
+      date: { $gte: startTime, $lt: endTime },
+    },
+    { slotTime: 1, _id: 0 }
+  ).lean();
+
+  const bookedSlots = new Set(appointments.map((a) => a.slotTime));
+
+  const allSlots = generateSlots(
+    doctor.workingHours.start,
+    doctor.workingHours.end,
+    doctor.slotDuration
+  );
+
+  const slotsWithoutBreaks = removeBreakTimeSlots(allSlots, doctor.breakTimes);
+
+  const availableSlots = slotsWithoutBreaks.filter(
+    (slot) => !bookedSlots.has(slot)
+  );
+
+  return availableSlots;
 };
 
 // =============> Generate time slots <=============

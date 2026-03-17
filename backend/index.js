@@ -8,7 +8,7 @@ import { doctorRoutes } from "./routes/doctorRoutes.js";
 import { appointmentRoutes } from "./routes/appointmentRoutes.js";
 import { patientRoutes } from "./routes/patientRoutes.js";
 import cookieParser from "cookie-parser";
-import { notFond } from "./middleware/notFoundMiddleware.js";
+import { notFound } from "./middleware/notFoundMiddleware.js";
 import { errorHandler } from "./middleware/errorMiddleware.js";
 
 dotenv.config();
@@ -33,7 +33,10 @@ app.use("/api/doctors", doctorRoutes);
 app.use("/api/appointment", appointmentRoutes);
 app.use("/api/patient", patientRoutes);
 
-app.use(notFond);
+// 404 handler
+app.use(notFound);
+
+// global error handler
 app.use(errorHandler);
 
 app.listen(PORT, () => [
