@@ -30,16 +30,16 @@ export const createAppointmentService = async (data, user) => {
     throw new Error("Invalid slot format");
   }
 
-  const today = new Date();
+  const now = new Date();
 
-  if (appointmentDateTime < today) {
+  if (appointmentDateTime < now) {
     throw new Error("Past slot not allowed");
   }
 
   const BUFFER_MINUTES = 15;
 
   if (user.role !== "admin") {
-    const bufferTime = new Date(today.getTime() + BUFFER_MINUTES * 60000);
+    const bufferTime = new Date(now.getTime() + BUFFER_MINUTES * 60000);
 
     if (appointmentDateTime < bufferTime) {
       throw new Error("Slot too close (within buffer time)");
