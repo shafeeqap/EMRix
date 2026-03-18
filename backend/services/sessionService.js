@@ -1,12 +1,17 @@
-import Session from "../models/Session.js";
-import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
+import { compareHash, hashValue } from "../utils/hashUtils.js";
+import {
+  createSessionRepo,
+  deleteSessionRepo,
+  findSession,
+} from "../repositories/sesseionRepository.js";
 dotenv.config();
 
+// =============> Enforce Session Limit <=============
 export const enforceSessionLimit = async (userId) => {
   const MAX_SESSIONS = Number(process.env.MAX_SESSIONS) || 5;
 
-  const sessions = await Session.find({ userId }).sort({
+  const sessions = await findSession({ userId }).sort({
     createdAt: 1,
   });
 
@@ -17,30 +22,28 @@ export const enforceSessionLimit = async (userId) => {
     );
 
     for (const session of sessionsToDelete) {
-      await Session.deleteOne({ _id: session._id });
+      await deleteSessionRepo({ _id: session._id });
     }
   }
 };
 
+// =============> Create Session <=============
 export const createSession = async (userId, refreshToken, device) => {
-  // console.log(userId, 'User id in create session');
-  // console.log(refreshToken, 'refreshTokin in crate session');
-  // console.log(device);
+  const hashedToken = await hashValue(refreshToken);
 
-  const hashedToken = await bcrypt.hash(refreshToken, 10);
-
-  return await Session.create({
+  return await createSessionRepo({
     userId,
     refreshToken: hashedToken,
     device,
   });
 };
 
+// =============> Find Validate Session <=============
 export const findValidationSession = async (userId, refreshToken) => {
-  const sessions = await Session.find({ userId });
+  const sessions = await findSession({ userId });
 
   for (const session of sessions) {
-    const isValid = await bcrypt.compare(refreshToken, session.refreshToken);
+    const isValid = await compareHash(refreshToken, session.refreshToken);
 
     if (isValid) {
       return session;
@@ -50,13 +53,15 @@ export const findValidationSession = async (userId, refreshToken) => {
   return null;
 };
 
+// =============> Rotate Refresh Token <=============
 export const rotateRefreshToken = async (session, newToken) => {
-  const hashedToken = await bcrypt.hash(newToken, 10);
+  const hashedToken = await hashValue(newToken);
 
   session.refreshToken = hashedToken;
   await session.save();
 };
 
+// =============> Delete Session <=============
 export const deleteSession = async (sessionId) => {
-  await Session.deleteOne({ _id: sessionId });
+  await deleteSessionRepo({ _id: sessionId });
 };

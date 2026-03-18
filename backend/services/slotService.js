@@ -1,22 +1,23 @@
-import Appointment from "../models/Appointment.js";
-import { Doctor } from "../models/Doctor.js";
-import { fomatedDate } from "../utils/formatedDated.js";
+import { findAppointment } from "../repositories/appointmentRepository.js";
+import { findDoctorOne } from "../repositories/doctorRepository.js";
+import { fomattedDate } from "../utils/formatedDated.js";
+
 
 // =============> generate available slots <=============
 export const generateAvailableSlots = async (data) => {
   const { doctorId, date } = data;
   console.log(doctorId, date);
 
-  const { startTime, endTime } = fomatedDate(date);
+  const { startTime, endTime } = fomattedDate(date);
 
-  const doctor = await Doctor.findOne({ _id: doctorId });
+  const doctor = await findDoctorOne({ _id: doctorId });
   console.log(doctor, "Docter in serviceslot...");
 
   if (!doctor) {
     throw new Error("Doctor not found");
   }
 
-  const appointments = await Appointment.find(
+  const appointments = await findAppointment(
     {
       doctorId,
       date: { $gte: startTime, $lt: endTime },

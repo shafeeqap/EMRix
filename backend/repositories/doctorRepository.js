@@ -7,3 +7,7 @@ export const findDoctorById = async (id) => {
 export const createDoctorRepo = async (data) => {
   return Doctor.create(data);
 };
+
+export const findDoctorOne = async (id) => {
+  return Doctor.findOne(id);
+};

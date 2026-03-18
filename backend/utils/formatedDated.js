@@ -1,4 +1,10 @@
-export const fomatedDate = (date) => {
+export const fomattedDate = (dateInput) => {
+  const date = new Date(dateInput);
+
+  if (isNaN(date)) {
+    throw new Error("Invalid date");
+  }
+
   const startTime = new Date(date);
   startTime.setUTCHours(0, 0, 0, 0);
 

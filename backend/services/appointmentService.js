@@ -5,37 +5,69 @@ import {
   findAppointmentById,
   findAppointmentByIdAndDelete,
   findAppointmentByIdAndUpdate,
+  findAppointmentOne,
 } from "../repositories/appointmentRepository.js";
 import { findDoctorById } from "../repositories/doctorRepository.js";
 import { logAction } from "../utils/auditLogger.js";
-import { fomatedDate } from "../utils/formatedDated.js";
+import { fomattedDate } from "../utils/formatedDated.js";
 import { generateAvailableSlots } from "./slotService.js";
 
 // =============> create appointments service <=============
 export const createAppointmentService = async (data, user) => {
   const { doctorId, patientId, date, slotTime, notes } = data;
 
+  const appointmentDateTime = new Date(date);
+  const [hours, minutes] = slotTime.split(":");
+
+  appointmentDateTime.setHours(hours, minutes, 0, 0);
+
   if (!doctorId || !patientId || !date || !slotTime || !notes) {
     throw new Error("Missing required fields");
   }
 
-  const selectedDate = new Date(date);
-
-  if (isNaN(selectedDate)) {
-    throw new Error("Invalid date format");
+  // Validate slot format (HH:mm)
+  if (!/^\d{2}:\d{2}$/.test(slotTime)) {
+    throw new Error("Invalid slot format");
   }
 
   const today = new Date();
-  today.setHours(0, 0, 0, 0);
 
-  if (selectedDate < today) {
-    res.status(400);
+  if (appointmentDateTime < today) {
     throw new Error("Past slot not allowed");
+  }
+
+  const BUFFER_MINUTES = 15;
+
+  if (user.role !== "admin") {
+    const bufferTime = new Date(today.getTime() + BUFFER_MINUTES * 60000);
+
+    if (appointmentDateTime < bufferTime) {
+      throw new Error("Slot too close (within buffer time)");
+    }
   }
 
   const doctor = await findDoctorById(doctorId);
   if (!doctor) {
     throw new Error("Doctor not found");
+  }
+
+  // Example: doctor working hours
+  // const slotHour = parseInt(hours);
+
+  // if (slotHour < doctor.startHour || slotHour >= doctor.endHour) {
+  //   throw new Error("Doctor not available at this time");
+  // }
+
+  const existingAppointment = await findAppointmentOne({
+    doctorId,
+    date,
+    slotTime,
+    status: "booked",
+  });
+  console.log(existingAppointment, "Existing appointment");
+
+  if (existingAppointment) {
+    throw new Error("Slot already booked");
   }
 
   const appointment = await createAppointmentRepo({
@@ -72,7 +104,7 @@ export const getAppointmentService = async (query) => {
     throw new Error("Doctor ID and date are required");
   }
 
-  const { startTime, endTime } = fomatedDate(date);
+  const { startTime, endTime } = fomattedDate(date);
 
   const appointments = await findAppointment({
     doctorId,
@@ -153,8 +185,6 @@ export const updateAppointmentService = async (params, data, user) => {
     { new: true, runValidators: true }
   );
 
-  console.log(updatedAppointment, "updatedAppointment service...");
-
   await logAction({
     userId: user.id,
     role: user.role,
@@ -195,7 +225,7 @@ export const deleteAppointmentService = async (params, user) => {
       patientId: appointment.patientId,
       doctorId: appointment.doctorId,
       lastStatus: appointment.status,
-      notes: appointment.notes
+      notes: appointment.notes,
     },
   });
 };
