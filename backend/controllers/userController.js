@@ -4,10 +4,10 @@ import bcrypt from "bcryptjs";
 // =============> Create a new user <=============
 export const createUser = async (req, res, next) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { firstName, lastName, email, password, role } = req.body;
 
     // validate input
-    if (!name || !email || !password || !role) {
+    if (!firstName || lastName || !email || !password || !role) {
       res.status(400);
       throw new Error("All fields are required");
     }
@@ -22,7 +22,8 @@ export const createUser = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await User.create({
-      name,
+      firstName,
+      lastName,
       email,
       password: hashedPassword,
       role,
@@ -68,7 +69,7 @@ export const getUserById = async (req, res, next) => {
 export const updateUserById = async (req, res, next) => {
   try {
     const userId = req.params.id;
-    const { name, email, password, role } = req.body;
+    const { firstName, lastName, email, password, role } = req.body;
 
     const user = await User.findById(userId);
     if (!user) {
@@ -78,7 +79,7 @@ export const updateUserById = async (req, res, next) => {
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { name, email, password, role },
+      { firstName, lastName, email, password, role },
       { new: true }
     );
 

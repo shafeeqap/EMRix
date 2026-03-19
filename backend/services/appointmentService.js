@@ -1,4 +1,3 @@
-import Appointment from "../models/Appointment.js";
 import {
   createAppointmentRepo,
   findAppointment,
@@ -51,20 +50,12 @@ export const createAppointmentService = async (data, user) => {
     throw new Error("Doctor not found");
   }
 
-  // Example: doctor working hours
-  // const slotHour = parseInt(hours);
-
-  // if (slotHour < doctor.startHour || slotHour >= doctor.endHour) {
-  //   throw new Error("Doctor not available at this time");
-  // }
-
   const existingAppointment = await findAppointmentOne({
     doctorId,
     date,
     slotTime,
     status: "booked",
   });
-  console.log(existingAppointment, "Existing appointment");
 
   if (existingAppointment) {
     throw new Error("Slot already booked");
@@ -188,7 +179,7 @@ export const updateAppointmentService = async (params, data, user) => {
   await logAction({
     userId: user.id,
     role: user.role,
-    action: "UPDAGE_APPOINTMENT",
+    action: "UPDATE_APPOINTMENT",
     entity: "Appointment",
     entityId: appointment._id,
     metadata: {

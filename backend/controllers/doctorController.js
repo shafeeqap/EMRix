@@ -1,83 +1,69 @@
-import { Doctor } from "../models/Doctor.js";
+import {
+  createDoctorService,
+  deleteDoctorService,
+  getDoctorByIdServices,
+  getDoctorsServices,
+  updateDoctorService,
+} from "../services/doctorService.js";
 
-// Create a new doctor
-export const createDoctor = async (req, res) => {
+// =============> Create a new doctor <=============
+export const createDoctor = async (req, res, next) => {
   try {
-    // console.log(req.body, "create doctor body");
-    // console.log(req.user.id);
-
-    const doctor = await Doctor.create({ ...req.body, createdBy: req.user.id });
+    const doctor = await createDoctorService(req.body, req.user);
 
     res.status(201).json({ message: "Doctor created successfully", doctor });
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error: error.message });
+    next(error);
   }
 };
 
-// Get all doctors
-export const getDoctors = async (req, res) => {
+// =============> Get all doctors <=============
+export const getDoctors = async (req, res, next) => {
   try {
-    const doctors = await Doctor.find().populate("userId", "name");
+    const doctors = await getDoctorsServices();
     res.status(200).json({ doctors });
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error: error.message });
+    next(error);
   }
 };
 
-// Get doctor by ID
-export const getDoctorById = async (req, res) => {
+// =============> Get doctor by ID <=============
+export const getDoctorById = async (req, res, next) => {
   try {
     const doctorId = req.params.id;
-    const doctor = await Doctor.findById(doctorId).populate("userId", "name");
-    if (!doctor) {
-      return res.status(404).json({ message: "Doctor not found" });
-    }
+
+    const doctor = await getDoctorByIdServices(doctorId);
 
     res.status(200).json({ doctor });
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error: error.message });
+    next(error);
   }
 };
 
-// Update doctor details
-export const updateDoctor = async (req, res) => {
+// =============> Update doctor details <=============
+export const updateDoctor = async (req, res, next) => {
   try {
-    const doctorId = req.params.id;
-    const { name, department, workingHours, slotDuration, breakTime } =
-      req.body;
-
-    const doctor = await Doctor.findById(doctorId);
-    if (!doctor) {
-      return res.status(404).json({ message: "Doctor not found" });
-    }
-
-    const updatedData = await Doctor.findByIdAndUpdate(
-      doctorId,
-      { name, department, workingHours, slotDuration, breakTime },
-      { new: true }
+    const updatedData = await updateDoctorService(
+      req.params,
+      req.body,
+      req.user
     );
 
     res
       .status(200)
       .json({ message: "Doctor updated successfully", doctor: updatedData });
   } catch (error) {
-    return res.status(500).json({ message: "Server Error", error: error.message });
+    next(error);
   }
 };
 
-// Delete doctor
-export const deleteDoctor = async (req, res) => {
+// =============> Delete doctor <=============
+export const deleteDoctor = async (req, res, next) => {
   try {
-    const doctorId = req.params.id;
-    const doctor = await Doctor.findById(doctorId);
-    if (!doctor) {
-      return res.status(404).json({ message: "Doctor not found" });
-    }
-
-    await Doctor.findByIdAndDelete(doctorId);
+    await deleteDoctorService(req.params);
 
     res.status(200).json({ message: "Doctor deleted successfully" });
   } catch (error) {
-    return res.status(500).json({ message: "Server Error", error: error.message });
+    next(error);
   }
 };

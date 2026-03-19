@@ -75,8 +75,6 @@ export const updateAppointments = async (req, res, next) => {
       req.user
     );
 
-    console.log(updatedAppointment, 'updated appointment...');
-    
     res.status(200).json({
       message: "Appointment updated successfully",
       appointment: updatedAppointment,
