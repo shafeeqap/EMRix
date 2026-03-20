@@ -1,83 +1,54 @@
 import { Patient } from "../models/Patient.js";
+import {
+  createPatientService,
+  deletePatientService,
+  getPatientByIdService,
+  searchPatientService,
+  updatePatientService,
+} from "../services/patientService.js";
 
-// Create patient
-export const createPatient = async (req, res) => {
+// ===========> Create patient <===========
+export const createPatient = async (req, res, next) => {
   try {
-    const { name, mobile, patientId } = req.body;
-    console.log(req.body, "req body");
-
-    if (!name || !mobile) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-
-    const existPatient = await Patient.findOne({ mobile });
-    // console.log(existPatient, 'Exist patient...');
-
-    if (existPatient) {
-      return res.status(409).json({ message: "Patient already exists" });
-    }
-
-    const patient = await Patient.create({ name, mobile, patientId });
+    const patient = await createPatientService(req.body, req.user);
 
     return res
       .status(201)
       .json({ message: "Patien created successfully", patient });
   } catch (error) {
-    return res.status(500).json({ message: "Server Error", error: error.message });
+    next(error);
   }
 };
 
-// Search Patinet information by mobile
-export const searchPatient = async (req, res) => {
+// ===========> Search Patinet information by mobile <===========
+export const searchPatient = async (req, res, next) => {
   try {
-    const { mobile } = req.query;
-    if (!mobile) {
-      return res.status(400).json({ message: "Mobile number is required" });
-    }
-
-    const patient = await Patient.findOne({ mobile });
-    if (!patient) {
-      return res.status(404).json({ message: "Patien not found" });
-    }
+    const patient = await searchPatientService(req.query);
 
     res.status(200).json({ patient });
   } catch (error) {
-    return res.status(500).json({ message: "Server Error" });
+    next(error);
   }
 };
 
-// Get patient by ID
-export const getPatientById = async (req, res) => {
+// ===========> Get patient by ID <===========
+export const getPatientById = async (req, res, next) => {
   try {
-    const patientId = req.params.id;
-
-    const patient = await Patient.findById(patientId);
-
-    if (!patient) {
-      return res.status(404).json({ message: "Patien not found" });
-    }
+    const patient = await getPatientByIdService(req.params);
 
     res.status(200).json({ patient });
   } catch (error) {
-    return res.status(500).json({ message: "Server Error", error: error.message });
+    next(error);
   }
 };
 
-// Update patient
+// ===========> Update patient <===========
 export const updatePatient = async (req, res) => {
   try {
-    const id = req.params.id;
-    const { name, mobile, patientId } = req.body;
-
-    const patient = await Patient.findById(id);
-    if (!patient) {
-      return res.status(404).json({ message: "Patient not found" });
-    }
-
-    const updatedPatient = await Patient.findByIdAndUpdate(
-      id,
-      { name, mobile, patientId },
-      { new: true }
+    const updatedPatient = await updatePatientService(
+      req.params,
+      req.body,
+      req.user
     );
 
     res.status(200).json({
@@ -85,26 +56,19 @@ export const updatePatient = async (req, res) => {
       patient: updatedPatient,
     });
   } catch (error) {
-    return res.status(500).json({ message: "Server Error", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Server Error", error: error.message });
   }
 };
 
-// Delete patient
-export const deletePatient = async (req, res) => {
+// ===========> Delete patient <===========
+export const deletePatient = async (req, res, next) => {
   try {
-    const patientId = req.params.id;
-
-    const patient = await Patient.findById(patientId);
-    if (!patient) {
-      return res.status(404).json({ message: "Patient not found" });
-    }
-
-    await Patient.findByIdAndDelete(patientId);
+    await deletePatientService(req.params, req.user);
 
     res.status(200).json({ message: "Patient deleted successfully" });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "server Error", error: error.message });
+    next(error);
   }
 };

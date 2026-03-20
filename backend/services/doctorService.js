@@ -1,6 +1,6 @@
-import { User } from "../models/User.js";
 import {
   createDoctorRepo,
+  findDoctorByEmail,
   findDoctorById,
   findDoctorByIdAndDelete,
   findDoctorByIdAndUpdate,
@@ -21,7 +21,7 @@ export const createDoctorService = async (data, user) => {
     slotDuration,
     breakTimes,
   } = data;
-  //   console.log(data, "Doctor data");
+  console.log(data, "Doctor data");
 
   if (
     !userId ||
@@ -42,8 +42,8 @@ export const createDoctorService = async (data, user) => {
     throw new Error("User not found");
   }
 
-  const existingDoctor = findDoctorById(email);
-  console.log(existingDoctor, "Existing doctor...");
+  const existingDoctor = await findDoctorByEmail(email);
+
   if (existingDoctor) {
     throw new Error("Doctor already exists");
   }
@@ -52,10 +52,11 @@ export const createDoctorService = async (data, user) => {
     userId,
     firstName,
     lastName,
+    email,
     department,
     workingHours,
     slotDuration,
-    slotDuration,
+    breakTimes,
     createdBy: user.id,
   });
 
@@ -67,6 +68,8 @@ export const createDoctorService = async (data, user) => {
     entityId: doctor._id,
     metadata: {
       doctorId: doctor._id,
+      firstName,
+      lastName,
     },
   });
 
@@ -75,11 +78,7 @@ export const createDoctorService = async (data, user) => {
 
 // =============> get all doctors service <=============
 export const getDoctorsServices = async () => {
-  const doctors = await findDoctors().populate(
-    "userId",
-    "firstName",
-    "lastName"
-  );
+  const doctors = await findDoctors().populate("userId", "firstName lastName");
 
   return doctors;
 };
@@ -92,8 +91,7 @@ export const getDoctorByIdServices = async (doctorId) => {
 
   const doctor = await findDoctorById(doctorId).populate(
     "userId",
-    "firstName",
-    "lastName"
+    "firstName lastName"
   );
   if (!doctor) {
     throw new Error("Doctor not found");
@@ -166,6 +164,7 @@ export const updateDoctorService = async (params, data, user) => {
   return updatedData;
 };
 
+// =============> Delete doctor service <=============
 export const deleteDoctorService = async (params, user) => {
   const doctorId = params.id;
 

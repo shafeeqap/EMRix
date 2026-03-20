@@ -6,8 +6,10 @@ export const createUser = async (req, res, next) => {
   try {
     const { firstName, lastName, email, password, role } = req.body;
 
+    console.log(req.body);
+    
     // validate input
-    if (!firstName || lastName || !email || !password || !role) {
+    if (!firstName || !lastName || !email || !password || !role) {
       res.status(400);
       throw new Error("All fields are required");
     }

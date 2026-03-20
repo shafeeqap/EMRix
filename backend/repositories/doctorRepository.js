@@ -20,6 +20,10 @@ export const findDoctorByIdAndUpdate = async (id, update, options) => {
   return Doctor.findByIdAndUpdate(id, update, options);
 };
 
+export const findDoctorByEmail = async (email) => {
+  return Doctor.findOne({ email });
+};
+
 export const findDoctorByIdAndDelete = async (id) => {
   return Doctor.findByIdAndDelete(id);
 };

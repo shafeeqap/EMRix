@@ -60,7 +60,7 @@ export const updateDoctor = async (req, res, next) => {
 // =============> Delete doctor <=============
 export const deleteDoctor = async (req, res, next) => {
   try {
-    await deleteDoctorService(req.params);
+    await deleteDoctorService(req.params, req.user);
 
     res.status(200).json({ message: "Doctor deleted successfully" });
   } catch (error) {
