@@ -10,14 +10,8 @@ import { logAction } from "../utils/auditLogger.js";
 // ===========> Create Patient Service <===========
 export const createPatientService = async (data, user) => {
   const { name, mobile, patientId } = data;
-  //   console.log(req.body, "req body");
-
-  if (!name || !mobile) {
-    throw new Error("All fields are required");
-  }
 
   const existPatient = await findPatient({ mobile });
-  // console.log(existPatient, 'Exist patient...');
 
   if (existPatient) {
     throw new Error("Patient already exists");
@@ -76,9 +70,9 @@ export const updatePatientService = async (params, data, user) => {
   const id = params.id;
   const { name, mobile } = data;
 
-  if (!name || !mobile) {
-    throw new Error("Missing required fields");
-  }
+  // if (!name || !mobile) {
+  //   throw new Error("Missing required fields");
+  // }
 
   const patient = await findPatientById(id);
   if (!patient) {

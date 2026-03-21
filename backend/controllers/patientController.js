@@ -10,7 +10,7 @@ import {
 // ===========> Create patient <===========
 export const createPatient = async (req, res, next) => {
   try {
-    const patient = await createPatientService(req.body, req.user);
+    const patient = await createPatientService(req.validatedData, req.user);
 
     return res
       .status(201)
@@ -47,7 +47,7 @@ export const updatePatient = async (req, res) => {
   try {
     const updatedPatient = await updatePatientService(
       req.params,
-      req.body,
+      req.validateData,
       req.user
     );
 

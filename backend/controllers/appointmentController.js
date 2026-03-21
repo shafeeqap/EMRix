@@ -29,7 +29,7 @@ export const createAppointment = async (req, res, next) => {
 // =============> Get all appointments <=============
 export const getAppointments = async (req, res, next) => {
   try {
-    const appointments = await getAppointmentService(req.query);
+    const appointments = await getAppointmentService(req.validatedData);
 
     res.status(200).json({ appointments });
   } catch (error) {

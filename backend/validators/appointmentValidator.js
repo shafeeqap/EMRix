@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const appointmentSchema = z.object({
+export const createAppointmentSchema = z.object({
   doctorId: z.string(),
   patientId: z.string(),
   date: z.string(),
@@ -24,4 +24,9 @@ export const updateAppointmentSchema = z.object({
       return hours >= 0 && hours < 24 && minutes >= 0 && minutes < 60;
     }, "Invalid time value"),
   notes: z.string(),
+});
+
+export const getAppontmentSchema = z.object({
+  doctorId: z.string("Doctor ID is required"),
+  date: z.string("Date is required"),
 });

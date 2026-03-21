@@ -23,19 +23,6 @@ export const createDoctorService = async (data, user) => {
   } = data;
   console.log(data, "Doctor data");
 
-  if (
-    !userId ||
-    !firstName ||
-    !lastName ||
-    !email ||
-    !department ||
-    !workingHours ||
-    !slotDuration ||
-    !breakTimes
-  ) {
-    throw new Error("Missing required fields");
-  }
-
   const userData = await findUserById(userId);
 
   if (!userData) {
@@ -106,22 +93,12 @@ export const updateDoctorService = async (params, data, user) => {
   const {
     firstName,
     lastName,
+    email,
     department,
     workingHours,
     slotDuration,
     breakTimes,
   } = data;
-
-  if (
-    !firstName ||
-    !lastName ||
-    !department ||
-    !workingHours ||
-    !slotDuration ||
-    !breakTimes
-  ) {
-    throw new Error("Missing required fields");
-  }
 
   const doctor = await findDoctorById(doctorId);
   if (!doctor) {
@@ -130,7 +107,15 @@ export const updateDoctorService = async (params, data, user) => {
 
   const updatedData = await findDoctorByIdAndUpdate(
     doctorId,
-    { firstName, lastName, department, workingHours, slotDuration, breakTimes },
+    {
+      firstName,
+      lastName,
+      email,
+      department,
+      workingHours,
+      slotDuration,
+      breakTimes,
+    },
     { new: true }
   );
 
@@ -145,6 +130,7 @@ export const updateDoctorService = async (params, data, user) => {
       previousData: {
         firstName: doctor.firstName,
         lastName: doctor.lastName,
+        email: doctor.email,
         department: doctor.department,
         workingHours: doctor.workingHours,
         slotDuration: doctor.slotDuration,
@@ -153,6 +139,7 @@ export const updateDoctorService = async (params, data, user) => {
       updatedData: {
         firstName,
         lastName,
+        email,
         department,
         workingHours,
         slotDuration,

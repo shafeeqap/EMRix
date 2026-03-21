@@ -9,7 +9,7 @@ import {
 // =============> Create a new doctor <=============
 export const createDoctor = async (req, res, next) => {
   try {
-    const doctor = await createDoctorService(req.body, req.user);
+    const doctor = await createDoctorService(req.validatedData, req.user);
 
     res.status(201).json({ message: "Doctor created successfully", doctor });
   } catch (error) {

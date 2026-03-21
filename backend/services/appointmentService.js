@@ -82,10 +82,6 @@ export const createAppointmentService = async (data, user) => {
 export const getAppointmentService = async (query) => {
   const { doctorId, date } = query;
 
-  if (!doctorId || !date) {
-    throw new Error("Doctor ID and date are required");
-  }
-
   const { startTime, endTime } = fomattedDate(date);
 
   const appointments = await findAppointment({

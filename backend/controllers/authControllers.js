@@ -16,7 +16,11 @@ import { handleRefreshTokenService } from "../services/handleRefreshTokenService
 // =============> Login user and generate tokens <=============
 export const login = async (req, res, next) => {
   try {
-    const user = await authenticateUserService(req.validatedData, req.user, req.ip);
+    const user = await authenticateUserService(
+      req.validatedData,
+      req.user,
+      req.ip
+    );
 
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
@@ -30,7 +34,12 @@ export const login = async (req, res, next) => {
 
     res.json({
       accessToken,
-      user: { id: user._id, role: user.role, name: user.name },
+      user: {
+        id: user._id,
+        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      },
       message: "Login successful",
     });
   } catch (error) {
