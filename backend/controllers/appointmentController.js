@@ -10,7 +10,7 @@ import {
 // =============> Create a new appointment <=============
 export const createAppointment = async (req, res, next) => {
   try {
-    const appointment = await createAppointmentService(req.body, req.user);
+    const appointment = await createAppointmentService(req.validatedData, req.user);
     res
       .status(201)
       .json({ message: "Appointment created successfully", appointment });
@@ -71,7 +71,7 @@ export const updateAppointments = async (req, res, next) => {
   try {
     const updatedAppointment = await updateAppointmentService(
       req.params,
-      req.body,
+      req.validatedData,
       req.user
     );
 

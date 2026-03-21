@@ -20,15 +20,6 @@ export const createAppointmentService = async (data, user) => {
 
   appointmentDateTime.setHours(hours, minutes, 0, 0);
 
-  if (!doctorId || !patientId || !date || !slotTime || !notes) {
-    throw new Error("Missing required fields");
-  }
-
-  // Validate slot format (HH:mm)
-  if (!/^\d{2}:\d{2}$/.test(slotTime)) {
-    throw new Error("Invalid slot format");
-  }
-
   const now = new Date();
 
   if (appointmentDateTime < now) {

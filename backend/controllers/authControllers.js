@@ -16,7 +16,7 @@ import { handleRefreshTokenService } from "../services/handleRefreshTokenService
 // =============> Login user and generate tokens <=============
 export const login = async (req, res, next) => {
   try {
-    const user = await authenticateUserService(req.body);
+    const user = await authenticateUserService(req.validatedData, req.user, req.ip);
 
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
