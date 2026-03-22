@@ -160,7 +160,7 @@ export const updateAppointmentService = async (params, data, user) => {
   const updatedAppointment = await findAppointmentByIdAndUpdate(
     id,
     updateData,
-    { new: true, runValidators: true }
+    { returnDocument: 'after', runValidators: true }
   );
 
   await logAction({

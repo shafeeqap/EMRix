@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+// create appointment validation
 export const createAppointmentSchema = z.object({
   doctorId: z.string(),
   patientId: z.string(),
@@ -14,6 +15,7 @@ export const createAppointmentSchema = z.object({
   notes: z.string(),
 });
 
+// update appointment validation
 export const updateAppointmentSchema = z.object({
   date: z.string(),
   slotTime: z
@@ -26,6 +28,7 @@ export const updateAppointmentSchema = z.object({
   notes: z.string(),
 });
 
+// get appointment validation
 export const getAppontmentSchema = z.object({
   doctorId: z.string("Doctor ID is required"),
   date: z.string("Date is required"),

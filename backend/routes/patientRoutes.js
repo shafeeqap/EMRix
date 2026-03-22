@@ -11,6 +11,7 @@ import { validate } from "../middleware/validationMiddleware.js";
 import {
   createPatientSchema,
   searchPatientSchema,
+  updatePatientSchema,
 } from "../validators/patientValidator.js";
 
 const router = express.Router();
@@ -23,7 +24,7 @@ router.get(
   searchPatient
 );
 router.get("/:id", protect, getPatientById);
-router.put("/:id", protect,validate(searchPatientSchema), updatePatient);
+router.put("/:id", protect, validate(updatePatientSchema), updatePatient);
 router.delete("/:id", protect, deletePatient);
 
 export const patientRoutes = router;

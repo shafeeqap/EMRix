@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+// create patient validation
 export const createPatientSchema = z.object({
   name: z
     .string()
@@ -15,13 +16,15 @@ export const createPatientSchema = z.object({
     .regex(/^[A-Z0-9_-]+$/, "Invalid Patient ID format"),
 });
 
+// search patient validation
 export const searchPatientSchema = z.object({
   mobile: z
-    .string()
+    .string("Mobile number is required")
     .regex(/^[0-9]{10}$/, "Mobile number must be exactly 10 digits"),
 });
 
-export const updatePatientSchima = z.object({
+// update patient validation
+export const updatePatientSchema = z.object({
   name: z
     .string()
     .min(2, "Name must be at least 2 characters")

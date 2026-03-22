@@ -116,7 +116,7 @@ export const updateDoctorService = async (params, data, user) => {
       slotDuration,
       breakTimes,
     },
-    { new: true }
+    { returnDocument: 'after' }
   );
 
   await logAction({

@@ -88,7 +88,7 @@ export const updateUserService = async (params, data, user) => {
   const updatedUser = await findUserByIdAndUpdate(
     userId,
     { firstName, lastName, email, password, role },
-    { new: true }
+    { returnDocument: 'after' }
   );
 
   await logAction({

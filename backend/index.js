@@ -30,8 +30,8 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/doctors", doctorRoutes);
-app.use("/api/appointment", appointmentRoutes);
-app.use("/api/patient", patientRoutes);
+app.use("/api/appointments", appointmentRoutes);
+app.use("/api/patients", patientRoutes);
 
 // 404 handler
 app.use(notFound);

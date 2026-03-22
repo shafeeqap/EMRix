@@ -40,9 +40,6 @@ export const createPatientService = async (data, user) => {
 // ===========> Search Patient Service <===========
 export const searchPatientService = async (query) => {
   const { mobile } = query;
-  if (!mobile) {
-    throw new Error("Mobile number is required");
-  }
 
   const patient = await findPatient({ mobile });
   if (!patient) {
@@ -70,10 +67,6 @@ export const updatePatientService = async (params, data, user) => {
   const id = params.id;
   const { name, mobile } = data;
 
-  // if (!name || !mobile) {
-  //   throw new Error("Missing required fields");
-  // }
-
   const patient = await findPatientById(id);
   if (!patient) {
     throw new Error("Patient not found");
@@ -82,7 +75,7 @@ export const updatePatientService = async (params, data, user) => {
   const updatedPatient = await findPatientByIdAndUpdate(
     id,
     { name, mobile },
-    { new: true }
+    { returnDocument: 'after' }
   );
 
   await logAction({

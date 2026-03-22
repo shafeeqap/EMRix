@@ -23,7 +23,7 @@ export const createPatient = async (req, res, next) => {
 // ===========> Search Patinet information by mobile <===========
 export const searchPatient = async (req, res, next) => {
   try {
-    const patient = await searchPatientService(req.query);
+    const patient = await searchPatientService(req.validatedData);
 
     res.status(200).json({ patient });
   } catch (error) {
@@ -47,7 +47,7 @@ export const updatePatient = async (req, res) => {
   try {
     const updatedPatient = await updatePatientService(
       req.params,
-      req.validateData,
+      req.validatedData,
       req.user
     );
 

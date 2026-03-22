@@ -8,6 +8,7 @@ const timeSchema = z
     return h >= 0 && h < 24 && m >= 0 && m < 60;
   }, "Invalid time value");
 
+// create doctor validation
 export const createDoctorSchema = z.object({
   userId: z.string(),
   firstName: z
@@ -40,6 +41,7 @@ export const createDoctorSchema = z.object({
     .optional(),
 });
 
+// update doctor validation
 export const updateDoctorSchema = z.object({
   firstName: z.string().min(2, "First name too short"),
   lastName: z.string().min(1, "Last name required"),
