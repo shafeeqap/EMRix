@@ -4,3 +4,10 @@ export const cookieOptions = {
   sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };
+
+export const resetCookieOptions = {
+  httpOnly: true,
+  secure: true,
+  sameSite: "strict",
+  maxAge: 10 * 60 * 1000, // 10 min
+};

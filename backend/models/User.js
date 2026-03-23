@@ -14,29 +14,51 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: true,
+      // required: true,
       unique: true,
+      sparse: true,
       lowercase: true,
       trim: true,
+    },
+    mobile: {
+      type: String,
+      unique: true,
+      sparse: true,
     },
     password: {
       type: String,
       required: true,
-      select: false, // Don't return password by default
+      select: false,
     },
     role: {
       type: String,
       enum: ["super_admin", "doctor", "receptionist"],
       required: true,
     },
+
+    // OTP fields
+    resetOtp: {
+      type: String,
+    },
+    resetOtpExpire: {
+      type: Date,
+    },
+    resetOtpAttempts: {
+      type: Number,
+      default: 0,
+    },
+
+    lastLoginIP: {
+      type: String,
+    },
+    lastDevice: {
+      type: String,
+    },
+
     isActive: {
       type: Boolean,
       default: true,
     },
-    // refreshToken: {
-    //   type: String,
-    //   select: false, // Don't return refresh token by default
-    // },
   },
   { timestamps: true }
 );
