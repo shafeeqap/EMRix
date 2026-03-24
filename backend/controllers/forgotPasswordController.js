@@ -4,6 +4,8 @@ export const forgotPassword = async (req, res, next) => {
   try {
     const { mobile } = req.validatedData;
 
+    console.log(mobile, 'Mobile number');
+    
     await forgotPasswordService(mobile);
 
     res.json({

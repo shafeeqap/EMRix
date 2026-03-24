@@ -12,20 +12,26 @@ import {
 } from "../services/sessionService.js";
 import { cookieOptions } from "../utils/cookieOptions.js";
 import { handleRefreshTokenService } from "../services/handleRefreshTokenService.js";
+import { getClientIP } from "../utils/getClientIP.js";
+import { getDeviceInfo } from "../utils/getDeviceInfo.js";
 
 // =============> Login user and generate tokens <=============
 export const login = async (req, res, next) => {
   try {
+    const ip = getClientIP(req);
+    const deviceInfo = getDeviceInfo(req);
+
     const user = await authenticateUserService(
       req.validatedData,
       req.user,
-      req.ip
+      ip,
+      deviceInfo
     );
 
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
-    // limiting sessions
+    // ===== limiting sessions =====
     await enforceSessionLimit(user._id);
 
     await createSession(user._id, refreshToken, req.headers["user-agent"]);

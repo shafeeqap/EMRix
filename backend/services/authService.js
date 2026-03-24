@@ -6,8 +6,9 @@ import jwt from "jsonwebtoken";
 import { logAction } from "../utils/auditLogger.js";
 
 // =============> Authenticate User Service <=============
-export const authenticateUserService = async (data, ip) => {
+export const authenticateUserService = async (data, ip, deviceInfo) => {
   const { email, password } = data;
+  console.log(deviceInfo, "Device info in the auth service...");
 
   const user = await findAuthOne({ email }).select("+password");
 
@@ -15,7 +16,6 @@ export const authenticateUserService = async (data, ip) => {
     await logAction({
       action: "LOGIN_FAILED",
       entity: "User",
-      entityId: user._id,
       metadata: {
         email,
         ip,
@@ -50,10 +50,12 @@ export const authenticateUserService = async (data, ip) => {
     action: "LOGIN_SUCCESS",
     entity: "User",
     entityId: user._id,
-    metadata: {
-      ip,
-    },
+    metadata: { ip },
   });
+
+  user.lastLoginIP = ip;
+  user.lastDevice = deviceInfo?.browser?.name || "Unknown Device";
+  await user.save();
 
   return user;
 };

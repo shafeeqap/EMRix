@@ -1,4 +1,4 @@
-import { verifyOtpService } from "../services/OTPService/verifyOtpService.js";
+import { verifyOtpService } from "../services/smsService/verifyOtpService.js";
 import { resetCookieOptions } from "../utils/cookieOptions.js";
 import jwt from "jsonwebtoken";
 

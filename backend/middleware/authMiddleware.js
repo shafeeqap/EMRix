@@ -6,7 +6,7 @@ export const protect = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Unauthorized" });
+    throw new Error("Unauthorized");
   }
 
   try {
@@ -18,6 +18,6 @@ export const protect = async (req, res, next) => {
 
     next();
   } catch (error) {
-    res.status(401).json({ message: "Unauthorized" });
+    next(error);
   }
 };
