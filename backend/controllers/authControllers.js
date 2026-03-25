@@ -1,79 +1,86 @@
-import { User } from "../models/User.js";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import {
-  generateAccesstoken,
+  generateAccessToken,
   generateRefreshToken,
 } from "../utils/generateTokens.js";
+import {
+  authenticateUserService,
+  logoutUserService,
+} from "../services/authService.js";
+import {
+  createSession,
+  enforceSessionLimit,
+} from "../services/sessionService.js";
+import { cookieOptions } from "../utils/cookieOptions.js";
+import { handleRefreshTokenService } from "../services/handleRefreshTokenService.js";
+import { getClientIP } from "../utils/getClientIP.js";
+import { getDeviceInfo } from "../utils/getDeviceInfo.js";
 
-// Login user and generate tokens
-export const login = async (req, res) => {
+// =============> Login user and generate tokens <=============
+export const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const ip = getClientIP(req);
+    const deviceInfo = getDeviceInfo(req);
 
-    // console.log(req.body);
-    
-    const user = await User.findOne({ email }).select("+password");
-    if (!user) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
+    const user = await authenticateUserService(
+      req.validatedData,
+      req.user,
+      ip,
+      deviceInfo
+    );
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
-
-    const accessToken = generateAccesstoken(user);
+    const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
-    user.refreshToken = refreshToken;
+    // ===== limiting sessions =====
+    await enforceSessionLimit(user._id);
+
+    await createSession(user._id, refreshToken, req.headers["user-agent"]);
+
+    res.cookie("refreshToken", refreshToken, cookieOptions);
 
     res.json({
       accessToken,
-      refreshToken,
-      user: { id: user._id, role: user.role, name: user.name },
+      user: {
+        id: user._id,
+        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      },
       message: "Login successful",
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    next(error);
   }
 };
 
-// Refresh access token using refresh token
-export const refreshToken = async (req, res) => {
+// =============> Refresh access token using refresh token <=============
+export const refreshAccessToken = async (req, res, next) => {
   try {
-    const { refreshToken } = req.body;
-    if (!refreshToken) {
-      return res.status(401).json({ message: "Refresh token required" });
-    }
+    const refreshToken = req.cookies.refreshToken;
 
-    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    const { newAccessToken, newRefreshToken } = await handleRefreshTokenService(
+      refreshToken
+    );
 
-    const user = await User.findById(decoded.id).select("+refreshToken");
-    if (!user || user.refreshToken !== refreshToken) {
-      return res.status(401).json({ message: "Invalid refresh token" });
-    }
-    const newAccessToken = generateAccesstoken(user);
+    res.cookie("refreshToken", newRefreshToken, cookieOptions);
 
     res.json({ accessToken: newAccessToken });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    next(error);
   }
 };
 
-// Logout user by invalidating refresh token
-export const logout = async (req, res) => {
+// =============> Logout user by invalidating refresh token <=============
+export const logout = async (req, res, next) => {
   try {
-    const { refreshToken } = req.body;
+    const token = req.cookies.refreshToken;
 
-    const user = await User.findOne({ refreshToken }).select("+refreshToken");
-    if (user) {
-      user.refreshToken = null;
-      await user.save();
-    }
+    await logoutUserService(token);
+
+    res.clearCookie("refreshToken", cookieOptions);
 
     res.json({ message: "Logout successful" });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    next(error);
   }
 };

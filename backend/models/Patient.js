@@ -12,9 +12,8 @@ const patientSchema = new mongoose.Schema({
   },
   patientId: {
     type: String,
-    required: true,
     unique: true,
   },
 },{ timestamps: true });
 
-export default Patient = mongoose.model("Patient", patientSchema);
+export const Patient = mongoose.model("Patient", patientSchema);

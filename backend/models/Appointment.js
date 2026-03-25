@@ -4,10 +4,10 @@ const appointmentSchema = new mongoose.Schema(
   {
     doctorId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Docter",
+      ref: "Doctor",
       required: true,
     },
-    partientId: {
+    patientId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Patient",
       required: true,
@@ -23,7 +23,7 @@ const appointmentSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["booked", "arrived", "cancelled"],
-      defauld: "booked",
+      default: "booked",
     },
     notes: {
       type: String,
@@ -36,10 +36,10 @@ const appointmentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Appointment = mongoose.model("Appointment", appointmentSchema);
 appointmentSchema.index(
   { doctorId: 1, date: 1, slotTime: 1 },
   { unique: true }
 );
+const Appointment = mongoose.model("Appointment", appointmentSchema);
 
 export default Appointment;

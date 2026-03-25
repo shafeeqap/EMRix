@@ -12,7 +12,8 @@ await mongoose.connect(process.env.MONGO_URI);
 const hashed = await bcrypt.hash("admin123", 10);
 
 await User.create({
-  name: "Super Admin",
+  firstName: "Super",
+  lastName: "Admin",
   email: "admin@clinic.com",
   password: hashed,
   role: "super_admin",
