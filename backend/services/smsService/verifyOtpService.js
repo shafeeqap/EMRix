@@ -14,7 +14,7 @@ export const verifyOtpService = async (mobile, otp) => {
     throw new Error("OTP expired");
   }
 
-  // max attempts check
+  // max attempts check (per user protection)
   if (user.resetOtpAttempts >= 5) {
     user.resetOtp = undefined;
     user.resetOtpExpire = undefined;
@@ -34,6 +34,8 @@ export const verifyOtpService = async (mobile, otp) => {
     await logAction({
       userId: user?._id,
       action: "OTP_VERIFICATION_FAILED",
+      entity: "User",
+      entityId: user?._id,
       metadata: { mobile },
     });
 
