@@ -6,6 +6,6 @@ export const sendSMS = async (mobile, message) => {
   await client.messages.create({
     body: message,
     from: process.env.TWILIO_PHONE,
-    to: mobile,
+    to: `+91${mobile}`,
   });
 };

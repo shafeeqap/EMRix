@@ -1,4 +1,5 @@
 import { User } from "../../models/User.js";
+import { logAction } from "../../utils/auditLogger.js";
 import { hashOTP } from "../../utils/otp.js";
 
 export const verifyOtpService = async (mobile, otp) => {
@@ -8,12 +9,20 @@ export const verifyOtpService = async (mobile, otp) => {
     throw new Error("Invalid request");
   }
 
-  if (user.resetOtpExpire < Date.now()) {
+  // expiry check
+  if (!user.resetOtpExpire || user.resetOtpExpire < Date.now()) {
     throw new Error("OTP expired");
   }
 
+  // max attempts check
   if (user.resetOtpAttempts >= 5) {
-    throw new Error("Too many attempts");
+    user.resetOtp = undefined;
+    user.resetOtpExpire = undefined;
+    user.resetOtpAttempts = 0;
+
+    await user.save();
+
+    throw new Error("Too many attempts. Request new OTP");
   }
 
   const hashedOtp = hashOTP(otp);
@@ -21,6 +30,13 @@ export const verifyOtpService = async (mobile, otp) => {
   if (hashedOtp !== user.resetOtp) {
     user.resetOtpAttempts += 1;
     await user.save();
+
+    await logAction({
+      userId: user?._id,
+      action: "OTP_VERIFICATION_FAILED",
+      metadata: { mobile },
+    });
+
     throw new Error("Invalid OTP");
   }
 

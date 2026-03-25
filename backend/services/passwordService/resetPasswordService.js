@@ -6,8 +6,6 @@ export const resetPasswordService = async (
   ip,
   deviceInfo
 ) => {
-  // const user = await verifyOTP(mobile, otp);
-
   const hashedPassword = await hashValue(newPassword);
 
   user.password = hashedPassword;
