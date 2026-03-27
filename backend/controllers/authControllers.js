@@ -23,7 +23,6 @@ export const login = async (req, res, next) => {
 
     const user = await authenticateUserService(
       req.validatedData,
-      req.user,
       ip,
       deviceInfo
     );

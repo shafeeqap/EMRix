@@ -40,6 +40,8 @@ export const createPatientService = async (data, user) => {
 // ===========> Search Patient Service <===========
 export const searchPatientService = async (query) => {
   const { mobile } = query;
+  console.log(mobile);
+  
 
   const patient = await findPatient({ mobile });
   if (!patient) {

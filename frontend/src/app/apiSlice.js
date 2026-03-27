@@ -1,6 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
-console.log(import.meta.env.VITE_API_URL, 'vite api url');
+import { logout, setCredentials } from "../features/auth/authSlice";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
@@ -16,8 +15,32 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
+const baseQueryWithReauth = async (args, api, extraOptions) => {
+  let result = await baseQuery(args, api, extraOptions);
+
+  if (result?.error?.status === 401) {
+    const refreshResult = await baseQuery(
+      {
+        url: "/auth/refresh-token",
+        method: "POST",
+      },
+      api,
+      extraOptions
+    );
+
+    if (refreshResult.data) {
+      api.dispatch(setCredentials(refreshResult.data));
+      result = await baseQuery(args, api, extraOptions);
+    } else {
+      api.dispatch(logout());
+    }
+  }
+
+  return result;
+};
+
 export const apiSlice = createApi({
-  baseQuery,
+  baseQuery: baseQueryWithReauth,
   tagTypes: ["User", "Appointment", "Doctor", "Patient"],
   endpoints: (builder) => ({}),
 });
