@@ -9,8 +9,6 @@ import { logAction } from "../utils/auditLogger.js";
 export const authenticateUserService = async (data, ip, deviceInfo) => {
   const { email, password } = data;
   console.log(email, password);
-  
-  console.log(deviceInfo, "Device info in the auth service...");
 
   const user = await findAuthOne({ email }).select("+password");
 
@@ -55,8 +53,12 @@ export const authenticateUserService = async (data, ip, deviceInfo) => {
     metadata: { ip },
   });
 
+  const browser = deviceInfo?.browser?.name || "Unknown Browser";
+  const os = deviceInfo?.os?.name || "Unknown OS";
+  const deviceType = deviceInfo?.device?.type || "desktop";
+
   user.lastLoginIP = ip;
-  user.lastDevice = deviceInfo?.browser?.name || "Unknown Device";
+  user.lastDevice = `${browser} on ${os} (${deviceType})`;
   await user.save();
 
   return user;

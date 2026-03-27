@@ -6,7 +6,8 @@ export const protect = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    throw new Error("Unauthorized");
+    res.status(401);
+    return next(new Error("Unauthorized"));
   }
 
   try {
@@ -18,6 +19,7 @@ export const protect = async (req, res, next) => {
 
     next();
   } catch (error) {
-    next(error);
+    res.status(401);
+    return next(new Error("Invalid or expired token"));
   }
 };

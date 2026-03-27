@@ -11,8 +11,10 @@ const Login = () => {
     password: "",
   });
   const [login, { isLoading }] = useLoginMutation();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,14 +23,26 @@ const Login = () => {
     try {
       const res = await login(formData).unwrap();
       console.log(res, "res...");
-      dispatch(setCredentials({
-        user: res.user,
-        accessToken: res.accessToken
-      }));
+      dispatch(
+        setCredentials({
+          user: res.user,
+          accessToken: res.accessToken,
+        })
+      );
 
-      // navigate("/");
+      navigate("/dashboard");
     } catch (error) {
-      console.error(error);
+      if (error?.status === 400 && error?.data?.errors) {
+        const fieldErrors = {};
+
+        error.data.errors.forEach((err) => {
+          fieldErrors[err.field] = err.message;
+        });
+
+        setErrors(fieldErrors);
+      } else {
+        console.error(error);
+      }
     }
   };
 
@@ -46,12 +60,16 @@ const Login = () => {
               type="email"
               value={formData.email}
               name="email"
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
+              onChange={(e) => {
+                setFormData({ ...formData, email: e.target.value });
+                setErrors((prev) => ({ ...prev, email: null }));
+              }}
               placeholder="Enter your email"
               className="w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:outline-none"
             />
+            {errors.email && (
+              <p className="text-red-500 text-sm">{errors.email}</p>
+            )}
           </div>
 
           <div>
@@ -60,12 +78,17 @@ const Login = () => {
               type="password"
               value={formData.password}
               name="password"
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
+              onChange={(e) => {
+                setFormData({ ...formData, password: e.target.value });
+
+                setErrors((prev) => ({ ...prev, password: null }));
+              }}
               placeholder="Enter your password"
               className="w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:outline-none"
             />
+            {errors.password && (
+              <p className="text-red-500 text-sm">{errors.password}</p>
+            )}
             <div className="text-end mt-1">
               <p className="text-sm text-gray-500 cursor-pointer hover:text-gray-400">
                 forgot password?

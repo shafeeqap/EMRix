@@ -15,8 +15,11 @@ export const resetPasswordService = async (
   user.resetOtpExpire = undefined;
   user.resetOtpAttempts = 0;
 
-  user.lastLoginIP = ip;
-  user.lastDevice = deviceInfo.browser.name;
+  const browser = deviceInfo?.browser?.name || "Unknown Browser";
+  const os = deviceInfo?.os?.name || "Unknown OS";
+  const deviceType = deviceInfo?.device?.type || "desktop";
 
+  user.lastLoginIP = ip;
+  user.lastDevice = `${browser} on ${os} (${deviceType})`;
   await user.save();
 };
