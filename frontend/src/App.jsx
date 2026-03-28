@@ -3,6 +3,7 @@ import Login from "./features/auth/Login";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./routes/protectedRoute";
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             }
           />
         </Routes>
+        <ToastContainer />
       </BrowserRouter>
     </>
   );

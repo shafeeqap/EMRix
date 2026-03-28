@@ -26,7 +26,7 @@ console.log(user);
       },
     });
 
-    throw new AppError("Invalid credentials", 401);
+    throw new AppError("Invalid email", 401);
   }
 
   const isMatch = await compareHash(password, user.password);
@@ -44,7 +44,7 @@ console.log(user);
       },
     });
 
-    throw new AppError("Invalid credentials", 401);
+    throw new AppError("Invalid password", 401);
   }
 
   await logAction({
