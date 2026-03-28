@@ -7,6 +7,7 @@ import {
   findDoctors,
 } from "../repositories/doctorRepository.js";
 import { findUserById } from "../repositories/userRepository.js";
+import { AppError } from "../utils/AppError.js";
 import { logAction } from "../utils/auditLogger.js";
 
 // =============> create doctor service <=============
@@ -26,13 +27,13 @@ export const createDoctorService = async (data, user) => {
   const userData = await findUserById(userId);
 
   if (!userData) {
-    throw new Error("User not found");
+    throw new AppError("User not found", 404);
   }
 
   const existingDoctor = await findDoctorByEmail(email);
 
   if (existingDoctor) {
-    throw new Error("Doctor already exists");
+    throw new AppError("Doctor already exists", 409);
   }
 
   const doctor = await createDoctorRepo({
@@ -73,7 +74,7 @@ export const getDoctorsServices = async () => {
 // =============> get doctor by id service <=============
 export const getDoctorByIdServices = async (doctorId) => {
   if (!doctorId) {
-    throw new Error("Doctor id is required");
+    throw new AppError("Doctor id is required", 400);
   }
 
   const doctor = await findDoctorById(doctorId).populate(
@@ -81,7 +82,7 @@ export const getDoctorByIdServices = async (doctorId) => {
     "firstName lastName"
   );
   if (!doctor) {
-    throw new Error("Doctor not found");
+    throw new AppError("Doctor not found", 404);
   }
 
   return doctor;
@@ -102,7 +103,7 @@ export const updateDoctorService = async (params, data, user) => {
 
   const doctor = await findDoctorById(doctorId);
   if (!doctor) {
-    throw new Error("Doctor not found");
+    throw new AppError("Doctor not found", 404);
   }
 
   const updatedData = await findDoctorByIdAndUpdate(
@@ -157,7 +158,7 @@ export const deleteDoctorService = async (params, user) => {
 
   const doctor = await findDoctorById(doctorId);
   if (!doctor) {
-    throw new Error("Doctor not found");
+    throw new AppError("Doctor not found", 404);
   }
 
   await findDoctorByIdAndDelete(doctorId);

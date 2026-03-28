@@ -7,6 +7,7 @@ import {
   findAppointmentOne,
 } from "../repositories/appointmentRepository.js";
 import { findDoctorById } from "../repositories/doctorRepository.js";
+import { AppError } from "../utils/AppError.js";
 import { logAction } from "../utils/auditLogger.js";
 import { fomattedDate } from "../utils/formatedDated.js";
 import { generateAvailableSlots } from "./slotService.js";
@@ -23,7 +24,7 @@ export const createAppointmentService = async (data, user) => {
   const now = new Date();
 
   if (appointmentDateTime < now) {
-    throw new Error("Past slot not allowed");
+    throw new AppError("Past slot not allowed", 405);
   }
 
   const BUFFER_MINUTES = 15;
@@ -32,13 +33,13 @@ export const createAppointmentService = async (data, user) => {
     const bufferTime = new Date(now.getTime() + BUFFER_MINUTES * 60000);
 
     if (appointmentDateTime < bufferTime) {
-      throw new Error("Slot too close (within buffer time)");
+      throw new AppError("Slot too close (within buffer time)", 405);
     }
   }
 
   const doctor = await findDoctorById(doctorId);
   if (!doctor) {
-    throw new Error("Doctor not found");
+    throw new AppError("Doctor not found", 404);
   }
 
   const existingAppointment = await findAppointmentOne({
@@ -49,7 +50,7 @@ export const createAppointmentService = async (data, user) => {
   });
 
   if (existingAppointment) {
-    throw new Error("Slot already booked");
+    throw new AppError("Slot already booked", 409);
   }
 
   const appointment = await createAppointmentRepo({
@@ -102,7 +103,7 @@ export const updateAppointmentStatusService = async (params, data, user) => {
   const appointment = await findAppointmentById(id);
 
   if (!appointment) {
-    throw new Error("Appointment not found");
+    throw new AppError("Appointment not found", 404);
   }
 
   appointment.status = status;
@@ -130,7 +131,7 @@ export const updateAppointmentService = async (params, data, user) => {
 
   const appointment = await findAppointmentById(id);
   if (!appointment) {
-    throw new Error("Appointment not found");
+    throw new AppError("Appointment not found", 404);
   }
 
   const isDateChanged =
@@ -147,7 +148,7 @@ export const updateAppointmentService = async (params, data, user) => {
     const availableSlot = slots.includes(slotTime);
 
     if (!availableSlot) {
-      throw new Error("Slot not available");
+      throw new AppError("Slot not available", 404);
     }
   }
 
@@ -188,7 +189,7 @@ export const deleteAppointmentService = async (params, user) => {
 
   const appointment = await findAppointmentById(id);
   if (!appointment) {
-    throw new Error("Appointment not found");
+    throw new AppError("Appointment not found", 404);
   }
 
   await findAppointmentByIdAndDelete(id);
