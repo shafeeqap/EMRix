@@ -1,5 +1,6 @@
 import React from "react";
 import clsx from "clsx";
+import Loader from "./Loader";
 
 const Button = ({
   children,
@@ -40,7 +41,7 @@ const Button = ({
         onClick={onClick}
         {...props}
       >
-        {isLoading ? "Loading..." : children}
+        {isLoading ? <Loader size="small" /> : children}
       </button>
     </div>
   );
