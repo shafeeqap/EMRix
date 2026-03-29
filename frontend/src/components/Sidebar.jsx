@@ -19,7 +19,7 @@ const Sidebar = () => {
   return (
     <>
       <nav
-        className={`bg-[#1F4E79] h-screen shadow-md p-2 flex flex-col duration-500 text-white ${
+        className={`bg-[#3B7A99] h-screen shadow-md p-2 flex flex-col duration-500 text-white ${
           sidebarOpen ? "w-60" : "w-16"
         }`}
       >
@@ -49,7 +49,7 @@ const Sidebar = () => {
                   to={item.path}
                   className={({ isActive }) =>
                     ` px-2 py-2 my-2 flex gap-2 items-center rounded-md duration-300 relative group ${
-                      isActive ? "bg-[#1A3B5D]" : "hover:bg-[#1A3B5D]"
+                      isActive ? "bg-[#2D5C74]" : "hover:bg-[#2D5C74]"
                     }`
                   }
                 >
