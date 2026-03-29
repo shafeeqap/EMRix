@@ -9,10 +9,10 @@ import { AppError } from "../utils/AppError.js";
 // =============> Authenticate User Service <=============
 export const authenticateUserService = async (data, ip, deviceInfo) => {
   const { email, password } = data;
-  console.log(email, password);
+  // console.log(email, password);
 
   const user = await findAuthOne({ email }).select("+password");
-console.log(user);
+  // console.log(user);
 
   if (!user) {
     await logAction({
