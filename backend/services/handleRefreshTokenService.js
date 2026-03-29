@@ -8,6 +8,8 @@ import { findAuthById } from "../repositories/authRepository.js";
 
 // =============> Handle refresh token service <=============
 export const handleRefreshTokenService = async (refreshToken) => {
+  console.log(refreshToken, 'Refresh token in the handleRefrshTokenService...');
+  
   if (!refreshToken) {
     throw new Error("Refresh token required");
   }

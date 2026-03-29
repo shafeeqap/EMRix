@@ -20,7 +20,7 @@ const auditLogSchema = new mongoose.Schema(
     },
     entityId: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
+      // required: true,
     },
     metadata: {
       type: mongoose.Schema.Types.Mixed,
