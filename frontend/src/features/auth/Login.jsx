@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../../validator/authValidator";
 import { handleApiError } from "../../utils/handleApiError";
 import InputField from "../../components/InputField";
-import { VscEye, VscEyeClosed } from "react-icons/vsc";
+import { Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
   const [login, { isLoading }] = useLoginMutation();
@@ -32,6 +32,8 @@ const Login = () => {
   const onSubmit = async (data) => {
     try {
       const res = await login(data).unwrap();
+      console.log(res, "res");
+
       dispatch(
         setCredentials({
           user: res.user,
@@ -81,7 +83,7 @@ const Login = () => {
               onClick={handleShowPassword}
               className="absolute top-10 right-2 cursor-pointer"
             >
-              {showPassword ? <VscEye size={20} /> : <VscEyeClosed size={20} />}
+              {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
             </div>
             <div className="text-end mt-1">
               <p className="text-sm text-[#3B7A99] cursor-pointer hover:text-[#6FA3D8]">
@@ -103,8 +105,8 @@ const Login = () => {
         <p className="text-sm text-center mt-4 text-gray-500">
           Don't have an account?{" "}
           <Link to="#" className="link link-primary">
-          <span className="text-[#3B7A99]">Sign up</span>
-        </Link>
+            <span className="text-[#3B7A99]">Sign up</span>
+          </Link>
         </p>
       </div>
     </div>
