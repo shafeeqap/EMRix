@@ -1,4 +1,5 @@
 import React from "react";
+import clsx from "clsx";
 
 const Loader = ({ size = "medium" }) => {
   const sizeClasses = {
@@ -13,7 +14,10 @@ const Loader = ({ size = "medium" }) => {
       }`}
     >
       <div
-        className={`${sizeClasses[size]} border-4 border-blue-500 border-t-transparent rounded-full animate-spin`}
+        className={clsx(
+          sizeClasses[size],
+          "border-4 border-[#3B7A99] border-t-transparent rounded-full animate-spin"
+        )}
       ></div>
     </div>
   );

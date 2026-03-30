@@ -27,11 +27,25 @@ function App() {
 
           {/* Protected routes */}
           <Route element={<ProtectedRoute />}>
-            <Route path="/dashboard" element={<Dashboard />} />
             <Route element={<DashboardLayout />}>
-              <Route path="/doctors" element={<Doctors />} />
-              <Route path="/appointments" element={<Booking />} />
-              <Route path="/patient" element={<Patients />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+
+              <Route
+                element={<ProtectedRoute allowedRoles={["super_admin"]} />}
+              >
+                <Route path="/doctors" element={<Doctors />} />
+              </Route>
+
+              <Route
+                element={
+                  <ProtectedRoute
+                    allowedRoles={["super_admin", "doctor", "receptionist"]}
+                  />
+                }
+              >
+                <Route path="/patient" element={<Patients />} />
+                <Route path="/appointments" element={<Booking />} />
+              </Route>
             </Route>
           </Route>
         </Routes>
