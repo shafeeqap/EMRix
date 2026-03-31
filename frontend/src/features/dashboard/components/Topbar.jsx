@@ -25,7 +25,7 @@ const Topbar = () => {
 
         <div className="hidden sm:block">
           <p className="font-semibold">{fullName}</p>
-          <p className="text-gray-600">
+          <p className="text-textPrimary">
             <small>{roleLabel}</small>
           </p>
         </div>

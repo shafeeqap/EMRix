@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@recharts/devtools": "^0.0.11",
     "@reduxjs/toolkit": "^2.11.2",
     "clsx": "^2.1.1",
     "lucide-react": "^1.7.0",
@@ -20,6 +21,7 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.13.2",
     "react-toastify": "^11.0.5",
+    "recharts": "^3.8.1",
     "zod": "^4.3.6"
   },
   "devDependencies": {
