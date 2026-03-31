@@ -36,7 +36,7 @@ const useAuthRestore = () => {
     };
 
     refreshUser();
-  }, [dispatch, refreshToken]);
+  }, [dispatch, refreshToken, user]);
 
   return isLoading;
 };

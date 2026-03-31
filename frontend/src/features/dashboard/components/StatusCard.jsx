@@ -18,7 +18,7 @@ const StatusCard = () => {
           >
             {/* Icon */}
             <Icon size={30} className="text-icon" />
-            <p className="text-gray-600">{item.title}</p>
+            <p className="text-textPrimary">{item.title}</p>
             <h2 className="text-lg font-bold">{item.total}</h2>
           </div>
         );
