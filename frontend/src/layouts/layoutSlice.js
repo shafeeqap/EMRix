@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  sidebarOpen: JSON.parse(localStorage.getItem("sidebarOpen")) || true,
+  sidebarOpen: JSON.parse(localStorage.getItem("sidebarOpen")) || false,
 };
 
 const layoutSlice = createSlice({

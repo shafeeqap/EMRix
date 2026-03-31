@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../../components/Button";
 import { useLoginMutation } from "./authApiSlice";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "./authSlice";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
@@ -17,6 +17,14 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
+
+  const { user } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
 
   const {
     register,
@@ -49,8 +57,8 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center px-10">
-      <div className="bg-white w-full sm:w-[70%] md:w-80 px-5 py-10">
+    <div className="min-h-screen flex justify-center items-center px-10 bg-[#e5e7eb]">
+      <div className="bg-white w-full sm:w-[70%] md:w-80 px-5 py-10 border shadow">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-center">Login</h1>
           <p className="text-sm">
