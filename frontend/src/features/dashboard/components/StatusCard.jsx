@@ -12,12 +12,12 @@ const StatusCard = () => {
           <div
             key={item.id}
             className={clsx(
-              "flex flex-col justify-center items-center max-w-48 px-2 py-2 sm:border-b-0 cursor-pointer",
+              "flex flex-col justify-center items-center px-2 py-2 sm:border-b-0 cursor-pointer",
               index !== statusCardItems.length - 1 && "sm:border-r-2 border-b-2"
             )}
           >
             {/* Icon */}
-            <Icon size={30} className="text-[#3B7A99]" />
+            <Icon size={30} className="text-icon" />
             <p className="text-gray-600">{item.title}</p>
             <h2 className="text-lg font-bold">{item.total}</h2>
           </div>

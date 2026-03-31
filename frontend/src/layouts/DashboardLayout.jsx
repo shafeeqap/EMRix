@@ -13,7 +13,7 @@ const DashboardLayout = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 bg-gray-100 min-h-screen">
+      <main className="flex-1  min-h-screen">
         <Topbar />
         <div className="p-6">
           <Outlet />

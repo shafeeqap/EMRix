@@ -21,7 +21,7 @@ const Sidebar = () => {
     <>
       <nav
         className={clsx(
-          "bg-[#3B7A99] h-screen shadow-md p-2 flex flex-col duration-500 text-white",
+          "bg-primary h-screen shadow-md p-2 flex flex-col duration-500 text-white",
           sidebarOpen ? "w-60" : "w-16"
         )}
       >
