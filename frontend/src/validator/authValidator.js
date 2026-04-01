@@ -9,7 +9,7 @@ export const loginSchema = z.object({
     .refine((val) => !/\s/.test(val), {
       message: "Password should not contain spaces",
     })
-    .refine((val) => !/^\d+$/.test(val), {
-      message: "Password cannot be only numbers",
-    }),
+    // .refine((val) => !/^\d+$/.test(val), {
+    //   message: "Password cannot be only numbers",
+    // }),
 });
