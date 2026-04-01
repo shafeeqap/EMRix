@@ -32,6 +32,7 @@ export const handleRefreshTokenService = async (refreshToken) => {
   if (!user) {
     throw new AppError("Invalid refresh token", 401);
   }
+console.log(user, "User found for refresh token...");
 
   // Token rotation
   const newAccessToken = generateAccessToken(user);
