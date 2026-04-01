@@ -4,12 +4,12 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./routes/protectedRoute";
 import { ToastContainer } from "react-toastify";
 import useAuthRestore from "./hooks/useAuthRestore";
-import Loader from "./components/Loader";
 import Dashboard from "./pages/Dashboard";
-import Doctors from "./features/doctors/Doctors";
 import Booking from "./features/appointments/Booking";
 import Patients from "./features/patients/Patients";
 import DashboardLayout from "./layouts/DashboardLayout";
+import Loader from "./components/ui/Loader";
+import Doctors from "./features/dashboard/doctors/Doctors";
 
 function App() {
   const isLoading = useAuthRestore();

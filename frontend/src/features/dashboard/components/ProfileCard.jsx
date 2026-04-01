@@ -1,13 +1,7 @@
 import React from "react";
 import { Stethoscope } from "lucide-react";
-import { useSelector } from "react-redux";
-import { getFullName } from "../../../utils/userHelpers";
 
-const ProfileCard = () => {
-  const { user } = useSelector((state) => state.auth);
-
-  const fullName = getFullName(user);
-
+const ProfileCard = ({ fullName }) => {
   return (
     <div className="min-w-md min-h-28 flex justify-between items-center shadow px-4 py-2 border">
       <div className="flex flex-col px-2">

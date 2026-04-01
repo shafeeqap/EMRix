@@ -1,8 +1,8 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Bell, Settings, UserRound } from "lucide-react";
-import IconButton from "./ui/IconButton";
 import { getFullName, getUserRole } from "../../../utils/userHelpers";
+import IconButton from "./IconButton";
 
 const Topbar = () => {
   const { user } = useSelector((state) => state.auth);

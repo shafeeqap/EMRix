@@ -1,9 +1,10 @@
 import React from "react";
-import SuperAdminDashboard from "../features/dashboard/SuperAdminDashboard";
-import DoctorDashboard from "../features/dashboard/DoctorDashboard";
-import ReceptionistDashboard from "../features/dashboard/ReceptionistDashboard";
 import { useSelector } from "react-redux";
-import Loader from "../components/Loader";
+import Loader from "../components/ui/Loader";
+import SuperAdminDashboard from "../features/dashboard/superAdmin/SuperAdminDashboard";
+import DoctorDashboard from "../features/dashboard/doctors/DoctorDashboard";
+import ReceptionistDashboard from "../features/dashboard/receptionist/ReceptionistDashboard";
+
 
 const Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
