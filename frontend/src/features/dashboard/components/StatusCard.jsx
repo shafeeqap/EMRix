@@ -1,8 +1,8 @@
 import React from "react";
 import clsx from "clsx";
-import { statusCardItems } from "../statusCard.config";
 
-const StatusCard = () => {
+
+const StatusCard = ({statusCardItems}) => {
   return (
     <div className="min-w-md min-h-28 grid grid-cols-1 sm:grid-cols-3 gap-3 shadow px-4 py-2 border">
       {statusCardItems.map((item, index) => {

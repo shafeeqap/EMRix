@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Button from "../../components/Button";
 import { useLoginMutation } from "./authApiSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,8 +8,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../../validator/authValidator";
 import { handleApiError } from "../../utils/handleApiError";
-import InputField from "../../components/InputField";
+import InputField from "../../components/ui/InputField";
 import { Eye, EyeOff } from "lucide-react";
+import Button from "../../components/ui/Button";
 
 const Login = () => {
   const [login, { isLoading }] = useLoginMutation();
