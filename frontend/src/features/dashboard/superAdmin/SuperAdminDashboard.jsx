@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import StatusCard from "../components/StatusCard";
-import ProfileCard from "../components/ProfileCard";
+import {StatusCard, ProfileCard} from "../components/index.js";
 import { statusCardItems, superAdminData } from "./config/superAdmin.config";
 import { useSelector } from "react-redux";
 import { getFullName } from "../../../utils/userHelpers";
@@ -10,7 +9,6 @@ import RevenueOverview from "./charts/RevenueOverview";
 
 
 const SuperAdminDashboard = () => {
-
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useSelector((state) => state.auth);
 

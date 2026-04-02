@@ -18,8 +18,8 @@ const StatusCard = ({statusCardItems}) => {
           >
             {/* Icon */}
             <Icon size={30} className="text-icon" />
-            <p className="text-textPrimary">{item.title}</p>
-            <h2 className="text-lg font-bold">{item.total}</h2>
+            <p className="text-textPrimary text-sm">{item.title}</p>
+            <h2 className="text-lg font-bold">{item.value}</h2>
           </div>
         );
       })}
