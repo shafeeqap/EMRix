@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import StatusCard from "../components/StatusCard";
 import ProfileCard from "../components/ProfileCard";
-import { statusCardItems } from "./config/superAdmin.config";
+import { statusCardItems, superAdminData } from "./config/superAdmin.config";
 import { useSelector } from "react-redux";
 import { getFullName } from "../../../utils/userHelpers";
 import ChartWrapper from "../components/ChartWrapper";
@@ -10,80 +10,6 @@ import RevenueOverview from "./charts/RevenueOverview";
 
 
 const SuperAdminDashboard = () => {
-  const data = [
-    {
-      name: "Jan",
-      uv: 4000,
-      pv: 2400,
-      amt: 2400,
-    },
-    {
-      name: "Feb",
-      uv: 3000,
-      pv: 1398,
-      amt: 2210,
-    },
-    {
-      name: "Mar",
-      uv: 2000,
-      pv: 9800,
-      amt: 2290,
-    },
-    {
-      name: "Apr",
-      uv: 2780,
-      pv: 3908,
-      amt: 2000,
-    },
-    {
-      name: "May",
-      uv: 1890,
-      pv: 5900,
-      amt: 2181,
-    },
-    {
-      name: "Jun",
-      uv: 2390,
-      pv: 3800,
-      amt: 2500,
-    },
-    // {
-    //   name: "Jul",
-    //   uv: 6490,
-    //   pv: 5300,
-    //   amt: 2100,
-    // },
-    // {
-    //   name: "Aug",
-    //   uv: 3370,
-    //   pv: 4390,
-    //   amt: 2400,
-    // },
-    // {
-    //   name: "Sep",
-    //   uv: 3490,
-    //   pv: 8300,
-    //   amt: 2100,
-    // },
-    // {
-    //   name: "Oct",
-    //   uv: 5490,
-    //   pv: 7300,
-    //   amt: 2100,
-    // },
-    // {
-    //   name: "Nov",
-    //   uv: 7490,
-    //   pv: 4300,
-    //   amt: 2100,
-    // },
-    // {
-    //   name: "Dec",
-    //   uv: 3200,
-    //   pv: 4370,
-    //   amt: 2190,
-    // },
-  ];
 
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useSelector((state) => state.auth);
@@ -108,10 +34,10 @@ const SuperAdminDashboard = () => {
       <div className="text-center mt-5 w-full">
         <ChartWrapper
           title="Appointment Trends"
-          data={data}
+          data={superAdminData}
           isLoading={isLoading}
         >
-          <AppointmentTrends data={data} />
+          <AppointmentTrends data={superAdminData} />
         </ChartWrapper>
       </div>
 
