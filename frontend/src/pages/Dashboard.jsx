@@ -5,7 +5,6 @@ import SuperAdminDashboard from "../features/dashboard/superAdmin/SuperAdminDash
 import DoctorDashboard from "../features/dashboard/doctors/DoctorDashboard";
 import ReceptionistDashboard from "../features/dashboard/receptionist/ReceptionistDashboard";
 
-
 const Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
 

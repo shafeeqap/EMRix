@@ -5,7 +5,7 @@ import Topbar from "../features/dashboard/components/Topbar";
 
 const DashboardLayout = () => {
   return (
-    <div className="flex">
+    <div  className="flex">
       {/* Sidebar */}
       <aside>
         {" "}
