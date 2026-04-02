@@ -6,21 +6,21 @@ export const statusCardItems = [
     title: "Total Patients",
     key: "patients",
     icon: Activity,
-    total: 500,
+    value: 500,
   },
   {
     id: 2,
     title: "Total Doctors",
     key: "doctors",
     icon: Stethoscope,
-    total: 50,
+    value: 50,
   },
   {
     id: 3,
     title: "Total Appointments",
     key: "appointments",
     icon: CalendarCheck,
-    total: 450,
+    value: 450,
   },
 ];
 
