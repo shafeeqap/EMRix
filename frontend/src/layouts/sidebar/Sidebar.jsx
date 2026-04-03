@@ -2,9 +2,9 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { Menu } from "lucide-react";
-import { sidebarItems } from "../../../layouts/sidebar.config";
-import { toggleSidebar } from "../../../layouts/layoutSlice";
 import clsx from "clsx";
+import { sidebarItems } from "./sidebar.config";
+import { toggleSidebar } from "../layoutSlice";
 
 const Sidebar = () => {
   const dispatch = useDispatch();

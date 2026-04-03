@@ -17,4 +17,4 @@ const RevenueOverview = () => {
   );
 };
 
-export default RevenueOverview;
+export default React.memo(RevenueOverview);

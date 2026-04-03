@@ -15,15 +15,15 @@ const ReceptionistDashboard = () => {
 
   const fullName = getFullName(user);
 
-  useEffect(() => {
-    // Simulate data fetching
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000); // Simulate a 2-second loading time
+  // useEffect(() => {
+  //   // Simulate data fetching
+  //   setIsLoading(true);
+  //   const timer = setTimeout(() => {
+  //     setIsLoading(false);
+  //   }, 2000); // Simulate a 2-second loading time
 
-    return () => clearTimeout(timer); // Cleanup the timer on unmount
-  }, []);
+  //   return () => clearTimeout(timer); // Cleanup the timer on unmount
+  // }, []);
 
   return (
     <div className="grid gap-3 grid-cols-1 md:grid-cols-2">

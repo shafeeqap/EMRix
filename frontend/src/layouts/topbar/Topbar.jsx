@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { Bell, Settings, UserRound } from "lucide-react";
-import { getFullName, getUserRole } from "../../../utils/userHelpers";
-import IconButton from "./IconButton";
-import DropdownMenu from "../../../components/dropdownMenu/DropdownMenu";
+import { getFullName, getUserRole } from "../../utils/userHelpers";
+import IconButton from "../../features/dashboard/components/IconButton";
+import DropdownMenu from "../../components/dropdownMenu/DropdownMenu";
 
 const Topbar = () => {
   const [dropdownOpen, setDropdownOpen] = React.useState(false);

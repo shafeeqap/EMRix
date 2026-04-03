@@ -16,4 +16,4 @@ const DoctorAvailability = ({ data }) => {
   );
 };
 
-export default DoctorAvailability;
+export default React.memo(DoctorAvailability);
