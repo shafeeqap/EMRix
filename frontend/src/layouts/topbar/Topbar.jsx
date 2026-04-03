@@ -37,7 +37,7 @@ const Topbar = () => {
   // console.log(dropdownOpen, "dropdownOpen");
 
   return (
-    <div className="bg-white shadow p-4 flex justify-between items-center">
+    <div className="bg-white shadow pl-20 p-4 flex justify-between items-center">
       <h1 className="font-semibold text-lg">Dashboard</h1>
 
       <div className="flex gap-2 items-center ">

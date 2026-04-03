@@ -32,7 +32,7 @@ export const sidebarItems = [
     id: 4,
     icons: CalendarDays,
     name: "Doctor Schedules",
-    path: "#",
+    path: "shedules",
     roles: ["super_admin", "doctor", "receptionist"],
   },
   {

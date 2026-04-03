@@ -21,14 +21,14 @@ const Sidebar = () => {
     <>
       <nav
         className={clsx(
-          "bg-primary h-full shadow-md p-2 flex flex-col duration-500 text-white",
+          "fixed top-0 left-0 h-full bg-primary shadow-md p-2 flex flex-col duration-500 text-white z-50",
           sidebarOpen ? "w-60" : "w-16"
         )}
       >
         {/* Header */}
         <div className="flex justify-between items-center px-3 py-2 h-20">
-          <div className={clsx(sidebarOpen ? "w-14" : "w-0", "rounded-md")}>
-            {/* Logo */}
+          <div className={clsx(sidebarOpen ? "w-14" : "w-0 hidden", "rounded-md")}>
+            Logo
           </div>
           <Menu
             size={24}

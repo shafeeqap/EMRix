@@ -10,6 +10,7 @@ import Patients from "./features/patients/Patients";
 import DashboardLayout from "./layouts/DashboardLayout";
 import Loader from "./components/ui/Loader";
 import Doctors from "./features/dashboard/doctors/Doctors";
+import Scheduler from "./features/appointments/Scheduler";
 
 function App() {
   const isLoading = useAuthRestore();
@@ -45,12 +46,13 @@ function App() {
               >
                 <Route path="/patient" element={<Patients />} />
                 <Route path="/appointments" element={<Booking />} />
+                <Route path="/shedules" element={<Scheduler />} />
               </Route>
             </Route>
           </Route>
         </Routes>
 
-        <ToastContainer />
+        <ToastContainer theme="dark" />
       </BrowserRouter>
     </>
   );
