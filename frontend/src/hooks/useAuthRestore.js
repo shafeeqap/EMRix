@@ -7,11 +7,11 @@ const useAuthRestore = () => {
   const dispatch = useDispatch();
   const [refreshToken] = useRefreshTokenMutation();
   const [isLoading, setIsLoading] = useState(true);
-  const { user } = useSelector((state) => state.auth);
+  const { user, isLoggedOut } = useSelector((state) => state.auth);
 
   useEffect(() => {
     const refreshUser = async () => {
-      if (user) {
+      if (user || isLoggedOut) {
         setIsLoading(false);
         return;
       }
@@ -36,7 +36,7 @@ const useAuthRestore = () => {
     };
 
     refreshUser();
-  }, [dispatch, refreshToken, user]);
+  }, []);
 
   return isLoading;
 };
