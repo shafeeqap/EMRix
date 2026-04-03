@@ -9,4 +9,4 @@ const DailyAppointmentsTimelineChart = ({data}) => {
   );
 };
 
-export default DailyAppointmentsTimelineChart;
+export default React.memo(DailyAppointmentsTimelineChart);

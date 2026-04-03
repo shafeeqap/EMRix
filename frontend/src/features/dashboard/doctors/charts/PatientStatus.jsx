@@ -17,4 +17,4 @@ const PatientStatus = () => {
   );
 };
 
-export default PatientStatus;
+export default React.memo(PatientStatus);

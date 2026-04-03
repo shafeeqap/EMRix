@@ -16,4 +16,4 @@ const AppointmentTrends = ({ data }) => {
   );
 };
 
-export default AppointmentTrends;
+export default React.memo(AppointmentTrends);

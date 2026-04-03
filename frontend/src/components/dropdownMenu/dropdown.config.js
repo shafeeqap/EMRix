@@ -5,7 +5,7 @@ import {
   CalendarCheck,
   UserRoundPen,
   Hospital,
-  LogOut
+  LogOut,
 } from "lucide-react";
 
 export const dropdownItems = [
@@ -14,6 +14,7 @@ export const dropdownItems = [
     icons: LayoutDashboard,
     name: "Dashboard",
     path: "/dashboard",
+    type: "link",
     roles: ["super_admin", "doctor", "receptionist"],
   },
   {
@@ -21,6 +22,7 @@ export const dropdownItems = [
     icons: UserRoundPen,
     name: "Profile",
     path: "/profile",
+    type: "link",
     roles: ["super_admin", "doctor", "receptionist"],
   },
   {
@@ -28,6 +30,8 @@ export const dropdownItems = [
     icons: LogOut,
     name: "Logout",
     path: "/logout",
+    type: "action",
+    action: "logout",
     roles: ["super_admin", "doctor", "receptionist"],
   },
 ];

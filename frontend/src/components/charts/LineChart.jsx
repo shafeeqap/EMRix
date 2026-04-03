@@ -55,7 +55,7 @@ const LineChartComponent = ({ data = [] }) => {
           }}
           activeDot={{ stroke: "var(--color-surface-base)" }}
         />
-        <RechartsDevtools />
+        {/* <RechartsDevtools /> */}
       </LineChart>
     </ResponsiveContainer>
   );

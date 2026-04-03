@@ -13,7 +13,7 @@ import { RechartsDevtools } from "@recharts/devtools";
 
 const BarChartComponent = ({ data, xKey, bars }) => {
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer width="100%" height={300}>
       <BarChart
         data={data}
         margin={{
@@ -37,7 +37,7 @@ const BarChartComponent = ({ data, xKey, bars }) => {
             radius={[10, 10, 0, 0]}
           />
         ))}
-        <RechartsDevtools />
+        {/* <RechartsDevtools /> */}
       </BarChart>
     </ResponsiveContainer>
   );
