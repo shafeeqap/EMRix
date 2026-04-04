@@ -1,25 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Outlet } from "react-router-dom";
 import Topbar from "./topbar/Topbar";
 import Sidebar from "./sidebar/Sidebar";
-import { useSelector } from "react-redux";
 
 const DashboardLayout = () => {
-  const { sidebarOpen } = useSelector((state) => state.layout);
-  const [showContent, setShowContent] = useState(true);
-
-  useEffect(() => {
-    setShowContent(false);
-
-    const timer = setTimeout(() => {
-      setShowContent(true);
-    }, 500); // match transition duration
-
-    return () => clearTimeout(timer);
-  }, [sidebarOpen]);
-
   return (
-    <div className="flex">
+    <div className="relative overflow-hidden">
       {/* Sidebar */}
       <aside>
         {" "}
@@ -27,9 +13,11 @@ const DashboardLayout = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 min-h-screen min-w-0">
+      <main className="min-h-screen w-full">
         <Topbar />
-        <div className="p-6">{showContent && <Outlet />}</div>
+        <div className="p-6 pl-20">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

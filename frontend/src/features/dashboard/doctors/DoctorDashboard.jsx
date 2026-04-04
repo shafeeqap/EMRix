@@ -37,7 +37,7 @@ const DoctorDashboard = () => {
       </div>
 
       <div className="text-center mt-5 w-full">
-        <ChartWrapper title="Revenue Overview" data={"3"} isLoading={isLoading}>
+        <ChartWrapper title="Patient Status" data={"3"} isLoading={isLoading}>
           <PatientStatus />
         </ChartWrapper>
       </div>
