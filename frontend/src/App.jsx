@@ -52,7 +52,7 @@ function App() {
           </Route>
         </Routes>
 
-        <ToastContainer theme="dark" />
+        <ToastContainer />
       </BrowserRouter>
     </>
   );
