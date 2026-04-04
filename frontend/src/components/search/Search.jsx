@@ -1,25 +1,25 @@
 import React from "react";
-import { Search } from "lucide-react";
+import { Plus } from "lucide-react";
 
 const SearchField = ({ handleAdd, search, handleSearch }) => {
   return (
     <>
       {/* Add + Search */}
       <div className="flex justify-between mb-5">
-        <button
-          onClick={handleAdd}
-          className="w-10 h-10 flex justify-center items-center bg-blue-500 rounded p-2 cursor-pointer text-white hover:bg-blue-600"
-        >
-          <Search size={20} title="add product" />
-        </button>
-
         <input
           type="text"
           placeholder="Search..."
-          className="input input-bordered w-60 border rounded p-1"
+          className="sm:w-1/2 md:w-1/4  border border-gray-300 rounded p-1 px-3 focus:ring focus:border-primary"
           value={search}
           onChange={handleSearch}
         />
+
+        <button
+          onClick={handleAdd}
+          className="w-10 h-10 flex justify-center items-center bg-primary rounded p-2 cursor-pointer text-white hover:bg-primaryHover transition duration-200"
+        >
+          <Plus size={20} /> 
+        </button>
       </div>
     </>
   );

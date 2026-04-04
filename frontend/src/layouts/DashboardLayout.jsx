@@ -5,7 +5,7 @@ import Sidebar from "./sidebar/Sidebar";
 
 const DashboardLayout = () => {
   return (
-    <div className="relative">
+    <div className="relative overflow-hidden">
       {/* Sidebar */}
       <aside>
         {" "}

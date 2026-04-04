@@ -1,8 +1,11 @@
-import { SquarePen, Trash2 } from "lucide-react";
-import IconButton from "../../components/IconButton";
-import { formatWorkingHours } from "../../../../utils/formatWorkingHours";
+import { Trash2, PenLine } from "lucide-react";
+import { formatWorkingHours } from "../../../utils/formatWorkingHours";
 
 export const Columns = [
+  {
+    header: "SL",
+    render: (_, index) => index + 1,
+  },
   {
     header: "First Name",
     accessor: "firstName",
@@ -32,9 +35,7 @@ export const Columns = [
     render: (row) => (
       <span
         className={`px-2 py-1 text-xs font-medium cursor-pointer text-white ${
-          row.isActive
-            ? "bg-green-700"
-            : "bg-red-700"
+          row.isActive ? "bg-green-700" : "bg-red-700"
         }`}
       >
         {row.isActive ? "Active" : "Inactive"}
@@ -44,13 +45,10 @@ export const Columns = [
   {
     header: "Actions",
     render: (row) => (
-      <div className="flex gap-2">
-        <IconButton className={"border-0 w-0 h-0"}>
-          <SquarePen className="text-green-700" />
-        </IconButton>
-        <IconButton className={"border-0 w-0 h-0"}>
-          <Trash2 className="text-red-700" />
-        </IconButton>
+      <div className="flex gap-5 ">
+        <PenLine  className="cursor-pointer" />
+
+        <Trash2  className="text-red-700 cursor-pointer" />
       </div>
     ),
   },
