@@ -5,6 +5,7 @@ import {
   findUserByIdAndUpdate,
   findUserOne,
   findUsers,
+  findUsersBySearchQuery,
 } from "../repositories/userRepository.js";
 import { logAction } from "../utils/auditLogger.js";
 import { hashValue } from "../utils/hashUtils.js";
@@ -57,6 +58,43 @@ export const getUsersService = async () => {
   const users = await findUsers();
   return users;
 };
+
+// =============> Search users service <=============
+export const searchUsersService = async (query) => {
+  const { search } = query;
+  console.log("Search query:", search);
+
+  if (!search) {
+    throw new AppError("Search query is required", 400);
+  }
+
+  const searchQuery = search
+    ? {
+        $or: [
+          { firstName: { $regex: `^${search}`, $options: "i" } },
+          { lastName: { $regex: `^${search}`, $options: "i" } },
+          { email: { $regex: search, $options: "i" } },
+        ],
+      }
+    : {};
+
+  const users = await findUsersBySearchQuery(searchQuery)
+    // .sort({ firstName: 1, lastName: 1 })
+    .limit(10);
+
+  console.log("Search results:", users);
+
+  const data = users.map((user) => ({
+    _id: user._id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    mobile: user.mobile,
+  }));
+
+  return data;
+};
+
 
 // =============> Get user by ID service <=============
 export const getUserByIdService = async (params) => {

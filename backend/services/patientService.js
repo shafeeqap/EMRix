@@ -5,6 +5,7 @@ import {
   findPatientByIdAndDelete,
   findPatientByIdAndUpdate,
 } from "../repositories/patientRepository.js";
+import { AppError } from "../utils/AppError.js";
 import { logAction } from "../utils/auditLogger.js";
 
 // ===========> Create Patient Service <===========
@@ -14,7 +15,7 @@ export const createPatientService = async (data, user) => {
   const existPatient = await findPatient({ mobile });
 
   if (existPatient) {
-    throw new Error("Patient already exists");
+    throw new AppError("Patient already exists", 400);
   }
 
   const patient = await createPatientRepo({
@@ -45,7 +46,7 @@ export const searchPatientService = async (query) => {
 
   const patient = await findPatient({ mobile });
   if (!patient) {
-    throw new Error("Patien not found");
+    throw new AppError("Patien not found", 404);
   }
 
   return patient;
@@ -58,7 +59,7 @@ export const getPatientByIdService = async (params) => {
   const patient = await findPatientById(patientId);
 
   if (!patient) {
-    throw new Error("Patien not found");
+    throw new AppError("Patien not found", 404);
   }
 
   return patient;
@@ -71,7 +72,7 @@ export const updatePatientService = async (params, data, user) => {
 
   const patient = await findPatientById(id);
   if (!patient) {
-    throw new Error("Patient not found");
+    throw new AppError("Patient not found", 404);
   }
 
   const updatedPatient = await findPatientByIdAndUpdate(
@@ -108,7 +109,7 @@ export const deletePatientService = async (params, user) => {
 
   const patient = await findPatientById(patientId);
   if (!patient) {
-    throw new Error("Patient not found");
+    throw new AppError("Patient not found", 404);
   }
 
   await findPatientByIdAndDelete(patientId);
