@@ -1,22 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import Table from "../../../components/table/Table";
 import { useGetDoctorsQuery } from "./doctorsApiSlice";
 import { Loader } from "../../../components/ui";
 import { Columns } from "./TableColumns";
 import SearchField from "../../../components/search/Search";
-// import ModalBase from "../../../components/modal/GlobalModal";
 import { useDispatch } from "react-redux";
 import { openModal } from "../../../components/modal/modalSlice";
 
 const Doctors = () => {
-  // const [openModal, setOpenModal] = useState(false);
+  const { data, isLoading, error } = useGetDoctorsQuery();
   const dispatch = useDispatch();
 
-  const { data, isLoading, error } = useGetDoctorsQuery();
-  // console.log(data, "doctorsData");
-
   const handleModalOpen = () => {
-    dispatch(openModal({ modalType: "ADD_DOCTOR", modalProps: {doctorId: 123} }));
+    dispatch(openModal({ modalType: "ADD_DOCTOR", modalProps: {} }));
   };
 
   if (isLoading)
@@ -31,10 +27,6 @@ const Doctors = () => {
     <div>
       <SearchField handleAdd={handleModalOpen} />
       <Table columns={Columns} data={data || []} />
-
-      {/* {openModal && (
-        <ModalBase isOpen={openModal} onClose={() => setOpenModal(false)}  />
-      )} */}
     </div>
   );
 };

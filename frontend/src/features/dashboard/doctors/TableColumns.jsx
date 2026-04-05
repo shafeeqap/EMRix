@@ -46,7 +46,7 @@ export const Columns = [
     header: "Actions",
     render: (row) => (
       <div className="flex gap-5 ">
-        <PenLine  className="cursor-pointer" />
+        <PenLine onClick={''}  className="cursor-pointer" />
 
         <Trash2  className="text-red-700 cursor-pointer" />
       </div>

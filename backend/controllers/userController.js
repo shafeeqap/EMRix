@@ -1,12 +1,12 @@
-import { User } from "../models/User.js";
-import bcrypt from "bcryptjs";
 import {
   createUserService,
   deleteUserService,
   getUserByIdService,
   getUsersService,
+  searchUsersService,
   updateUserService,
 } from "../services/userService.js";
+
 
 // =============> Create a new user <=============
 export const createUser = async (req, res, next) => {
@@ -15,6 +15,17 @@ export const createUser = async (req, res, next) => {
     res
       .status(201)
       .json({ message: "User created successfully", user: newUser });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// =============> Search users by search query <=============
+export const searchUsers = async (req, res, next) => {
+  try {
+    const data = await searchUsersService(req.query);
+
+    res.status(200).json({ users: data });
   } catch (error) {
     next(error);
   }
