@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Table from "../../../components/table/Table";
 import { useGetDoctorsQuery } from "./doctorsApiSlice";
 import { Loader } from "../../../components/ui";

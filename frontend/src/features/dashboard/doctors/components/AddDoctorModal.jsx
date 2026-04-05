@@ -14,8 +14,8 @@ const AddDoctorModal = () => {
   const dispatch = useDispatch();
 
   // console.log("Users...", users);
-  console.log("search...", search);
   // console.log("selectedUser", selectedUser);
+  console.log("search...", search);
 
   const {
     register,
