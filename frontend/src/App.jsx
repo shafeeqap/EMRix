@@ -1,25 +1,62 @@
 import "./App.css";
 import Login from "./features/auth/Login";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./routes/protectedRoute";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import useAuthRestore from "./hooks/useAuthRestore";
+import Dashboard from "./pages/Dashboard";
+import Booking from "./features/appointments/Booking";
+import Patients from "./features/patients/Patients";
+import DashboardLayout from "./layouts/DashboardLayout";
+import Loader from "./components/ui/Loader";
+import Doctors from "./features/dashboard/doctors/Doctors";
+import Scheduler from "./features/appointments/Scheduler";
+import GlobalModal from "./components/modal/GlobalModal";
+
 
 function App() {
+  const isLoading = useAuthRestore();
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                {" "}
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
+          {/* Public routes */}
+          <Route path="/" element={<Login />} />
+
+          {/* Protected routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route element={<DashboardLayout />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+
+              <Route
+                element={<ProtectedRoute allowedRoles={["super_admin"]} />}
+              >
+                <Route path="/doctors" element={<Doctors />} />
+              </Route>
+
+              <Route
+                element={
+                  <ProtectedRoute
+                    allowedRoles={["super_admin", "doctor", "receptionist"]}
+                  />
+                }
+              >
+                <Route path="/patient" element={<Patients />} />
+                <Route path="/appointments" element={<Booking />} />
+                <Route path="/shedules" element={<Scheduler />} />
+              </Route>
+            </Route>
+          </Route>
         </Routes>
+        
+        <ToastContainer />
+        <GlobalModal />
       </BrowserRouter>
     </>
   );

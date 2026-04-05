@@ -1,7 +1,7 @@
 import { ZodError } from "zod";
 
 export const errorHandler = (err, req, res, next) => {
-  let statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+  let statusCode = err.statusCode || res.statusCode || 500;
 
   if (err instanceof ZodError) {
     const issues = err.errors || err.issues || [];

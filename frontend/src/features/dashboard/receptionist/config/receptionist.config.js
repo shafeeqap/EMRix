@@ -1,0 +1,59 @@
+import { Stethoscope, CalendarCheck, Activity } from "lucide-react";
+
+export const statusCardItems = [
+  {
+    id: 1,
+    title: "Today's Appointments",
+    key: "appointments",
+    icon: CalendarCheck,
+    value: 150,
+  },
+  {
+    id: 2,
+    title: "Checked-in Patients",
+    key: "patients",
+    icon: Activity,
+    value: 100,
+  },
+  {
+    id: 3,
+    title: "Doctor Availability",
+    key: "doctors",
+    icon: Stethoscope,
+    value: 50,
+  },
+];
+
+export const receptionistData = [
+  {
+    name: "Cardiology",
+    available: 9,
+    busy: 4,
+  },
+  {
+    name: "Neurology",
+    available: 8,
+    busy: 4,
+  },
+  {
+    name: "Traumatology",
+    available: 5,
+    busy: 2,
+  },
+  {
+    name: "Pediatrics",
+    available: 8,
+    busy: 1,
+  },
+  {
+    name: "Orthopedics",
+    available: 8,
+    busy: 2,
+  },
+  // {
+  //   name: "General Surgery",
+  //   uv: 2390,
+  //   pv: 3800,
+  //   amt: 2500,
+  // },
+];

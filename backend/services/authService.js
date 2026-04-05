@@ -4,18 +4,21 @@ import { compareHash } from "../utils/hashUtils.js";
 import { deleteSession } from "./sessionService.js";
 import jwt from "jsonwebtoken";
 import { logAction } from "../utils/auditLogger.js";
+import { AppError } from "../utils/AppError.js";
 
 // =============> Authenticate User Service <=============
 export const authenticateUserService = async (data, ip, deviceInfo) => {
   const { email, password } = data;
-  console.log(email, password);
+  // console.log(email, password);
 
   const user = await findAuthOne({ email }).select("+password");
+  // console.log(user);
 
   if (!user) {
     await logAction({
       action: "LOGIN_FAILED",
       entity: "User",
+      entityId: user?._id,
       metadata: {
         email,
         ip,
@@ -23,7 +26,7 @@ export const authenticateUserService = async (data, ip, deviceInfo) => {
       },
     });
 
-    throw new Error("Invalid credentials");
+    throw new AppError("Invalid email", 401);
   }
 
   const isMatch = await compareHash(password, user.password);
@@ -41,7 +44,7 @@ export const authenticateUserService = async (data, ip, deviceInfo) => {
       },
     });
 
-    throw new Error("Invalid credentials");
+    throw new AppError("Invalid password", 401);
   }
 
   await logAction({
@@ -67,7 +70,7 @@ export const authenticateUserService = async (data, ip, deviceInfo) => {
 // =============> Logout User Service <=============
 export const logoutUserService = async (token) => {
   if (!token) {
-    throw new Error("No refresh token");
+    throw new AppError("No refresh token", 401);
   }
 
   const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);

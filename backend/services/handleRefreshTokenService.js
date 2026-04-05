@@ -5,29 +5,34 @@ import {
   generateRefreshToken,
 } from "../utils/generateTokens.js";
 import { findAuthById } from "../repositories/authRepository.js";
+import { AppError } from "../utils/AppError.js";
 
 // =============> Handle refresh token service <=============
 export const handleRefreshTokenService = async (refreshToken) => {
+  // console.log(refreshToken, 'Refresh token in the handleRefrshTokenService...');
+
   if (!refreshToken) {
-    throw new Error("Refresh token required");
+    throw new AppError("Refresh token required", 400);
   }
 
   let decoded;
   try {
     decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    // console.log(decoded, "Decoded refresh token...");
   } catch (error) {
-    throw new Error("Invalid or expired refresh token");
+    throw new AppError("Invalid or expired refresh token", 401);
   }
 
   let validSession = await findValidationSession(decoded.id, refreshToken);
   if (!validSession) {
-    throw new Error("Invalid refresh token");
+    throw new AppError("Invalid refresh token", 401);
   }
 
   const user = await findAuthById(decoded.id);
   if (!user) {
-    throw new Error("Invalid refresh token");
+    throw new AppError("Invalid refresh token", 401);
   }
+console.log(user, "User found for refresh token...");
 
   // Token rotation
   const newAccessToken = generateAccessToken(user);
@@ -35,5 +40,16 @@ export const handleRefreshTokenService = async (refreshToken) => {
 
   await rotateRefreshToken(validSession, newRefreshToken);
 
-  return { newAccessToken, newRefreshToken };
+  return {
+    newAccessToken,
+    newRefreshToken,
+    user: {
+      _id: user._id,
+      email: user.email,
+      role: user.role,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      mobile: user.mobile,
+    },
+  };
 };

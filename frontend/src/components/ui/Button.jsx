@@ -1,5 +1,7 @@
 import React from "react";
 import clsx from "clsx";
+import Loader from "./Loader";
+
 
 const Button = ({
   children,
@@ -15,7 +17,7 @@ const Button = ({
   const baseStyles = `rounded-lg font-medium transition duration-200 focus:outline-none ${calssName}`;
 
   const variants = {
-    primary: "bg-[#3B7A99] text-white hover:bg-[#1F4E79]",
+    primary: "bg-primary text-white hover:bg-primaryHover",
     secondary: "bg-[#6FA3D8] text-black hover:bg-gray-300",
     danger: "bg-red-500 text-white hover:bg-red-600",
   };
@@ -40,7 +42,7 @@ const Button = ({
         onClick={onClick}
         {...props}
       >
-        {isLoading ? "Loading..." : children}
+        {isLoading ? <Loader size="small" /> : children}
       </button>
     </div>
   );

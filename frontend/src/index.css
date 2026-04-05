@@ -3,5 +3,14 @@
 @tailwind utilities;
 
 body{
-    background-color: #e5e7eb;
+    /* background-color: #e5e7eb; */
 }
+
+:root {
+    --color-chart-1: #04af29;
+    --color-chart-2: #6c20dd;
+    --color-border-3: #e5e7eb;
+    --color-text-3: #6b7280;
+    --color-surface-base: #ffffff;
+    --color-surface-raised: #f9fafb;
+  }
