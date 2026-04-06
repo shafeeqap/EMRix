@@ -6,10 +6,15 @@ import { InputField } from "../../../../components/ui";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addDoctorSchema } from "../../../../validator/addDoctorValidator";
+import { useCreateDoctorMutation } from "../doctorsApiSlice";
+import { handleApiError } from "../../../../utils/handleApiError";
+import { toast } from "react-toastify";
+// import { useCreateDoctorMutation } from "../doctorsApiSlice";
 
 const AddDoctorModal = () => {
   const [selectedUser, setSelectedUser] = useState(null);
-  const { search, setSearch, users, isLoading } = useUserSearch();
+  const { search, setSearch, users } = useUserSearch();
+  const [createDoctor] = useCreateDoctorMutation();
 
   const dispatch = useDispatch();
 
@@ -61,7 +66,16 @@ const AddDoctorModal = () => {
 
     console.log("Final Payload:", payload);
 
-    dispatch(closeModal());
+    try {
+      const res = await createDoctor(payload).unwrap();
+      console.log(res, "Doctor created successfully");
+      toast.success(res.message || "Doctor created successfully");
+
+      dispatch(closeModal());
+    } catch (error) {
+      console.error("Error creating doctor:", error);
+      handleApiError(error, setError);
+    }
   };
 
   const nameField = register("name");
@@ -131,22 +145,19 @@ const AddDoctorModal = () => {
         <div className="mb-4">
           <div className="flex gap-2 justify-between">
             <div>
-              <label className="block text-gray-700 mb-2">
-                Working Hours Start
-              </label>
-              <input
+              <InputField
+                label="Working Hours Start"
                 type="time"
-                placeholder="Start Time"
+                error={errors.workingStart}
                 {...register("workingStart")}
                 className="w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
               />
             </div>
             <div>
-              <label className="block text-gray-700 mb-2">
-                Working Hours End
-              </label>
-              <input
+              <InputField
+                label="Working Hours End"
                 type="time"
+                error={errors.workingEnd}
                 {...register("workingEnd")}
                 className=" w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
               />
@@ -158,21 +169,20 @@ const AddDoctorModal = () => {
         <div className="mb-4">
           <div className="flex justify-between gap-2">
             <div>
-              <label className="block text-gray-700 mb-2">
-                Break Time Start
-              </label>
-
-              <input
+              <InputField
+                label="Break Time Start"
                 type="time"
+                error={errors.breakStart}
                 {...register("breakStart")}
                 className="w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
               />
             </div>
             <div>
-              <label className="block text-gray-700 mb-2">Break Time End</label>
-              <input
+              <InputField
+                label="Break Time End"
                 type="time"
                 {...register("breakEnd")}
+                error={errors.breakEnd}
                 className="w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
               />
             </div>

@@ -1,6 +1,6 @@
 import { User } from "../../models/User.js";
 import { logAction } from "../../utils/auditLogger.js";
-import { hashOTP } from "../../utils/otp.js";
+import { hashOTP } from "../../utils/otpUtils.js";
 
 export const verifyOtpService = async (mobile, otp) => {
   const user = await User.findOne({ mobile });
