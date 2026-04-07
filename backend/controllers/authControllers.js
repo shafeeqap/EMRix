@@ -57,15 +57,11 @@ export const login = async (req, res, next) => {
 export const refreshAccessToken = async (req, res, next) => {
   try {
     const refreshToken = req.cookies.refreshToken;
-    // console.log(refreshToken, "Trying refresh...");
 
     const { newAccessToken, newRefreshToken, user } =
       await handleRefreshTokenService(refreshToken);
 
     res.cookie("refreshToken", newRefreshToken, cookieOptions);
-
-    // console.log(newRefreshToken, "New access refresh token generated...");
-    // console.log(user, "User data from refresh token service...");
 
     res.json({ accessToken: newAccessToken, user: user });
   } catch (error) {
