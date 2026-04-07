@@ -1,7 +1,7 @@
 import { Trash2, PenLine } from "lucide-react";
 import { formatWorkingHours } from "../../../utils/formatWorkingHours";
 
-export const Columns = [
+export const getColumns = ({ onEdit, onDelete }) => [
   {
     header: "SL",
     render: (_, index) => index + 1,
@@ -46,9 +46,12 @@ export const Columns = [
     header: "Actions",
     render: (row) => (
       <div className="flex gap-5 ">
-        <PenLine onClick={''}  className="cursor-pointer" />
+        <PenLine onClick={() => onEdit(row)} className="cursor-pointer" />
 
-        <Trash2  className="text-red-700 cursor-pointer" />
+        <Trash2
+          onClick={() => onDelete(row)}
+          className="text-red-700 cursor-pointer"
+        />
       </div>
     ),
   },
