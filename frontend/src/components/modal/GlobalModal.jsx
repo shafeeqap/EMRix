@@ -6,6 +6,8 @@ import { closeModal } from "./modalSlice";
 const GlobalModal = () => {
   const dispatch = useDispatch();
   const { isOpen, modalType, modalProps } = useSelector((state) => state.modal);
+  console.log(isOpen, "Open Modal...");
+  
 
   useEffect(() => {
     if (!isOpen) return;

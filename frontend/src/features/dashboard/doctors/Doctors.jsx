@@ -12,13 +12,19 @@ const Doctors = () => {
   const dispatch = useDispatch();
 
   const handleEditModalOpen = (row) => {
-    dispatch(openModal({modalType: "EDIT_DOCTOR", modalProps: { doctorData: row }}));
-    console.log("Edit", row);
+    dispatch(
+      openModal({ modalType: "EDIT_DOCTOR", modalProps: { doctorId: row } })
+    );
+    console.log("EDIT CLICKED", row);
   };
 
   const handleDeleteModalOpen = (row) => {
-    dispatch(openModal({modalType: "DELETE_DOCTOR", modalProps: { doctorData: row }}));
-    console.log("Delete", row);
+    dispatch(
+      openModal({
+        modalType: "DELETE_DOCTOR",
+        modalProps: { doctorId: row._id },
+      })
+    );
   };
 
   const columns = getColumns({
@@ -41,7 +47,7 @@ const Doctors = () => {
   return (
     <div>
       <SearchField handleAdd={handleAddModalOpen} />
-      <Table columns={columns} data={data || []} />
+      <Table columns={columns} data={data.doctors || []} />
     </div>
   );
 };

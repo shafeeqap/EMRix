@@ -1,21 +1,32 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { closeModal } from "../../../../components/modal/modalSlice";
-import { OctagonX, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
+import { useDeleteDoctorMutation } from "../doctorsApiSlice";
+import { handleApiError } from "../../../../utils/handleApiError";
+import { toast } from "react-toastify";
 
-const DeleteDoctorModal = ({ userId }) => {
+const DeleteDoctorModal = () => {
+  const { doctorId } = useSelector((state) => state.modal.modalProps || {});
+  const [deleteDoctor] = useDeleteDoctorMutation();
+
   const dispatch = useDispatch();
 
-  const handleDelete = () => {
-    console.log("Deleting user:", userId);
-    dispatch(closeModal());
+  const handleDelete = async () => {
+    try {
+      const res = await deleteDoctor(doctorId).unwrap();
+      toast.success(res.message || "Doctor deleted successfully");
+
+      dispatch(closeModal());
+    } catch (error) {
+      console.error("Error deleting doctor:", error);
+      handleApiError(error);
+    }
   };
 
   return (
     <div className="flex flex-col items-center px-5 py-5 space-y-3 w-64 sm:w-fit max-w-sm">
-
       <Trash2 strokeWidth={1.25} size={60} className="text-red-600" />
-      {/* <h2 className="text-lg font-semibold">Delete User</h2> */}
       <h1 className="text-2xl">Are you sure?</h1>
       <p className="text-textSecondary text-center">
         Do you really want to delete these records? This process cannot be

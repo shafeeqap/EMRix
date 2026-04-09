@@ -17,7 +17,7 @@ const Table = ({ columns = [], data = [] }) => {
         </thead>
 
         <tbody className="divide-y divide-gray-200">
-          {data.doctors.map((row, rowIndex) => (
+          {data.map((row, rowIndex) => (
             <tr
               key={rowIndex}
               className="hover:bg-gray-50 transition duration-150"

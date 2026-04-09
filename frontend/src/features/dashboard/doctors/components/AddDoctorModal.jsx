@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { closeModal } from "../../../../components/modal/modalSlice";
 import useUserSearch from "../../../../hooks/useUserSearch";
-import { InputField } from "../../../../components/ui";
+import { Button, InputField } from "../../../../components/ui";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addDoctorSchema } from "../../../../validator/addDoctorValidator";
@@ -10,11 +10,10 @@ import { useCreateDoctorMutation } from "../doctorsApiSlice";
 import { handleApiError } from "../../../../utils/handleApiError";
 import { toast } from "react-toastify";
 
-
 const AddDoctorModal = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const { search, setSearch, users } = useUserSearch();
-  const [createDoctor] = useCreateDoctorMutation();
+  const [createDoctor, { isLoading }] = useCreateDoctorMutation();
 
   const dispatch = useDispatch();
 
@@ -30,11 +29,45 @@ const AddDoctorModal = () => {
     formState: { errors },
   } = useForm({ resolver: zodResolver(addDoctorSchema) });
 
+  const validateTime = (start, end, cb) => {
+    if (start >= end) {
+      return cb("Start time must be before end time");
+    }
+    return cb(null);
+  };
+
   const onSubmit = async (data) => {
     if (!selectedUser) {
       setError("name", { message: "Please select a user" });
       return;
     }
+
+    if (data.breakStart >= data.breakEnd) {
+      setError("breakStart", {
+        message: "Break start time must be before break end time",
+      });
+      setError("breakEnd", {
+        message: "Break end time must be after break start time",
+      });
+      return;
+    }
+
+    // if (data.workingStart >= data.workingEnd) {
+    //   setError("workingStart", {
+    //     message: "Working hours start time must be before end time",
+    //   });
+    //   setError("workingEnd", {
+    //     message: "Working hours end time must be after start time",
+    //   });
+    //   return;
+    // }
+
+    validateTime(data.workingStart, data.workingEnd, (error) => {
+      if (error) {
+        setError("workingStart", { message: error });
+        return;
+      }
+    });
 
     const payload = {
       userId: selectedUser._id,
@@ -212,19 +245,17 @@ const AddDoctorModal = () => {
         </div>
 
         <div className="flex justify-end">
-          <button
+          <Button
             onClick={() => dispatch(closeModal())}
             type="button"
-            className="mr-2 px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition duration-200"
+            variant="secondary"
+            className="mr-2 px-4 py-2 transition duration-200"
           >
             Cancel
-          </button>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-primary text-white rounded hover:bg-primaryHover transition duration-200"
-          >
-            Add
-          </button>
+          </Button>
+          <Button type="submit" variant="primary">
+            {isLoading} Add
+          </Button>
         </div>
       </form>
     </div>
