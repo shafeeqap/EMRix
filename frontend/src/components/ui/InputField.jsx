@@ -9,7 +9,8 @@ const InputField = ({
   error,
   ...props
 }) => {
-  const baseStyles = `w-full border border-gray-300 rounded px-3 py-2 focus:outline-none`;
+  const baseStyles =
+    "w-full border border-gray-300 rounded px-3 py-2 focus:outline-none";
 
   return (
     <div>
@@ -21,7 +22,7 @@ const InputField = ({
         {...props}
       />
       {error?.message && (
-        <p className="text-red-500 text-sm">{error.message}</p>
+        <p className="text-red-500 text-sm">{error?.message}</p>
       )}
     </div>
   );

@@ -29,45 +29,11 @@ const AddDoctorModal = () => {
     formState: { errors },
   } = useForm({ resolver: zodResolver(addDoctorSchema) });
 
-  const validateTime = (start, end, cb) => {
-    if (start >= end) {
-      return cb("Start time must be before end time");
-    }
-    return cb(null);
-  };
-
   const onSubmit = async (data) => {
     if (!selectedUser) {
       setError("name", { message: "Please select a user" });
       return;
     }
-
-    if (data.breakStart >= data.breakEnd) {
-      setError("breakStart", {
-        message: "Break start time must be before break end time",
-      });
-      setError("breakEnd", {
-        message: "Break end time must be after break start time",
-      });
-      return;
-    }
-
-    // if (data.workingStart >= data.workingEnd) {
-    //   setError("workingStart", {
-    //     message: "Working hours start time must be before end time",
-    //   });
-    //   setError("workingEnd", {
-    //     message: "Working hours end time must be after start time",
-    //   });
-    //   return;
-    // }
-
-    validateTime(data.workingStart, data.workingEnd, (error) => {
-      if (error) {
-        setError("workingStart", { message: error });
-        return;
-      }
-    });
 
     const payload = {
       userId: selectedUser._id,
@@ -191,45 +157,41 @@ const AddDoctorModal = () => {
         </div>
 
         {/* Working Hours */}
-        <div className="mb-4">
-          <div className="flex flex-col space-y-3 sm:flex-row sm:justify-between sm:items-center sm:space-y-0">
-            <InputField
-              label="Working Hours Start"
-              type="time"
-              error={errors.workingStart}
-              {...register("workingStart")}
-              className="w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
-            />
+        <div className="flex flex-col mb-4 gap-5 ">
+          <InputField
+            label="Working Hours Start"
+            type="time"
+            error={errors.workingStart}
+            {...register("workingStart")}
+            className="w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
+          />
 
-            <InputField
-              label="Working Hours End"
-              type="time"
-              error={errors.workingEnd}
-              {...register("workingEnd")}
-              className=" w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
-            />
-          </div>
+          <InputField
+            label="Working Hours End"
+            type="time"
+            error={errors.workingEnd}
+            {...register("workingEnd")}
+            className=" w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
+          />
         </div>
 
         {/* Break Time */}
-        <div className="mb-4">
-          <div className="flex flex-col space-y-3 sm:flex-row sm:justify-between sm:items-center sm:space-y-0">
-            <InputField
-              label="Break Time Start"
-              type="time"
-              error={errors.breakStart}
-              {...register("breakStart")}
-              className="w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
-            />
+        <div className="flex flex-col mb-4 ">
+          <InputField
+            label="Break Time Start"
+            type="time"
+            error={errors.breakStart}
+            {...register("breakStart")}
+            className="w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
+          />
 
-            <InputField
-              label="Break Time End"
-              type="time"
-              {...register("breakEnd")}
-              error={errors.breakEnd}
-              className="w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
-            />
-          </div>
+          <InputField
+            label="Break Time End"
+            type="time"
+            {...register("breakEnd")}
+            error={errors.breakEnd}
+            className="w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
+          />
         </div>
 
         {/* Slot Duration */}
