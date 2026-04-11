@@ -6,6 +6,7 @@ import { openModal } from "../../components/modal/modalSlice";
 import { useGetUserQuery } from "./userApiSlice";
 import { getColumns } from "./TableColumns";
 import { Loader } from "../../components/ui";
+import SearchField from "../../components/search/Search";
 
 const Users = () => {
   const { data, isLoading, error } = useGetUserQuery();
@@ -15,6 +16,10 @@ const Users = () => {
 
   console.log(users, "Users...");
   console.log(isLoading, "Loading...");
+
+  const handleAddModalOpen = () => {
+    dispatch(openModal({ modalType: "ADD_USER", modalProps: {} }));
+  };
 
   const handleEditModalOpen = (row) => {
     dispatch(
@@ -46,6 +51,7 @@ const Users = () => {
 
   return (
     <>
+      <SearchField handleAdd={handleAddModalOpen} />
       <Table columns={columns} data={users} />
     </>
   );
