@@ -6,7 +6,44 @@ export const doctorApiSlice = apiSlice.injectEndpoints({
       query: () => "/doctors",
       providesTags: ["Doctor"],
     }),
+
+    createDoctor: builder.mutation({
+      query: (doctorData) => ({
+        url: "/doctors",
+        method: "POST",
+        body: doctorData,
+      }),
+      invalidatesTags: ["Doctor"],
+    }),
+
+    getDoctorById: builder.query({
+      query: (id) => `/doctors/${id}`,
+      providesTags: ["Doctor"],
+    }),
+
+    updateDoctor: builder.mutation({
+      query: ({ id, doctorData }) => ({
+        url: `/doctors/${id}`,
+        method: "PUT",
+        body: doctorData,
+      }),
+      invalidatesTags: ["Doctor"],
+    }),
+
+    deleteDoctor: builder.mutation({
+      query: (id) => ({
+        url: `/doctors/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Doctor"],
+    }),
   }),
 });
 
-export const { useGetDoctorsQuery } = doctorApiSlice;
+export const {
+  useGetDoctorsQuery,
+  useCreateDoctorMutation,
+  useGetDoctorByIdQuery,
+  useUpdateDoctorMutation,
+  useDeleteDoctorMutation,
+} = doctorApiSlice;

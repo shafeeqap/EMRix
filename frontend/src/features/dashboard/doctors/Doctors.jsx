@@ -1,22 +1,39 @@
-import React, { useState } from "react";
+import React from "react";
 import Table from "../../../components/table/Table";
 import { useGetDoctorsQuery } from "./doctorsApiSlice";
 import { Loader } from "../../../components/ui";
-import { Columns } from "./TableColumns";
+import { getColumns } from "./TableColumns";
 import SearchField from "../../../components/search/Search";
-// import ModalBase from "../../../components/modal/GlobalModal";
 import { useDispatch } from "react-redux";
 import { openModal } from "../../../components/modal/modalSlice";
 
 const Doctors = () => {
-  // const [openModal, setOpenModal] = useState(false);
+  const { data, isLoading, error } = useGetDoctorsQuery();
   const dispatch = useDispatch();
 
-  const { data, isLoading, error } = useGetDoctorsQuery();
-  // console.log(data, "doctorsData");
+  const handleEditModalOpen = (row) => {
+    dispatch(
+      openModal({ modalType: "EDIT_DOCTOR", modalProps: { doctorId: row } })
+    );
+    console.log("EDIT CLICKED", row);
+  };
 
-  const handleModalOpen = () => {
-    dispatch(openModal({ modalType: "ADD_DOCTOR", modalProps: {doctorId: 123} }));
+  const handleDeleteModalOpen = (row) => {
+    dispatch(
+      openModal({
+        modalType: "DELETE_DOCTOR",
+        modalProps: { doctorId: row._id },
+      })
+    );
+  };
+
+  const columns = getColumns({
+    onEdit: handleEditModalOpen,
+    onDelete: handleDeleteModalOpen,
+  });
+
+  const handleAddModalOpen = () => {
+    dispatch(openModal({ modalType: "ADD_DOCTOR", modalProps: {} }));
   };
 
   if (isLoading)
@@ -29,12 +46,8 @@ const Doctors = () => {
 
   return (
     <div>
-      <SearchField handleAdd={handleModalOpen} />
-      <Table columns={Columns} data={data || []} />
-
-      {/* {openModal && (
-        <ModalBase isOpen={openModal} onClose={() => setOpenModal(false)}  />
-      )} */}
+      <SearchField handleAdd={handleAddModalOpen} />
+      <Table columns={columns} data={data.doctors || []} />
     </div>
   );
 };

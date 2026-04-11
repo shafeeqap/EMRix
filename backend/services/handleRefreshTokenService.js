@@ -9,8 +9,6 @@ import { AppError } from "../utils/AppError.js";
 
 // =============> Handle refresh token service <=============
 export const handleRefreshTokenService = async (refreshToken) => {
-  // console.log(refreshToken, 'Refresh token in the handleRefrshTokenService...');
-
   if (!refreshToken) {
     throw new AppError("Refresh token required", 400);
   }
@@ -18,7 +16,6 @@ export const handleRefreshTokenService = async (refreshToken) => {
   let decoded;
   try {
     decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-    // console.log(decoded, "Decoded refresh token...");
   } catch (error) {
     throw new AppError("Invalid or expired refresh token", 401);
   }
@@ -32,7 +29,6 @@ export const handleRefreshTokenService = async (refreshToken) => {
   if (!user) {
     throw new AppError("Invalid refresh token", 401);
   }
-console.log(user, "User found for refresh token...");
 
   // Token rotation
   const newAccessToken = generateAccessToken(user);

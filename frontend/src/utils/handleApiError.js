@@ -1,23 +1,39 @@
 import { toast } from "react-toastify";
 
 export const handleApiError = (error, setError) => {
-  if (error?.status === 400 && error?.data?.errors) {
+  const status = error?.status;
+  const message = error?.data?.message || "Something went wrong";
+
+  // 1. Validation errors (field-level)
+  if (status === 400 && error?.data?.errors) {
     error.data.errors.forEach((err) => {
-      setError(err.feild, {
+      setError(err.field, {
         type: "server",
         message: err.message,
       });
     });
-  } else if (error?.status === 401) {
-    const message = error?.data?.message || "Invalid credentials";
 
+    return;
+  }
+
+  // 2. Auth errors
+  if (status === 401) {
     setError("root", {
       type: "server",
       message,
     });
     toast.error(message);
-  } else {
-    toast.error("Something went wrong");
-    console.error(error);
+
+    return;
   }
+
+  // 3. Business logic errors
+  if (status === 409) {
+    toast.error(message);
+    
+    return;
+  }
+
+  toast.error(message);
+  console.error(error);
 };

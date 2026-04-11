@@ -89,7 +89,7 @@ const Login = () => {
             />
             <div
               onClick={handleShowPassword}
-              className="absolute top-10 right-2 cursor-pointer"
+              className="absolute top-12 right-2 cursor-pointer"
             >
               {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
             </div>

@@ -1,5 +1,5 @@
 import { Trash2, PenLine } from "lucide-react";
-import { formatWorkingHours } from "../../../utils/formatWorkingHours";
+// import { formatWorkingHours } from "../../../utils/formatWorkingHours";
 
 export const getColumns = ({ onEdit, onDelete }) => [
   {
@@ -18,18 +18,18 @@ export const getColumns = ({ onEdit, onDelete }) => [
     header: "Email",
     accessor: "email",
   },
-  {
-    header: "Department",
-    accessor: "department",
-  },
-  {
-    header: "Working Hours",
-    render: (row) => formatWorkingHours(row.workingHours),
-  },
-  {
-    header: "Slot Duration",
-    accessor: "slotDuration",
-  },
+//   {
+//     header: "Department",
+//     accessor: "department",
+//   },
+//   {
+//     header: "Working Hours",
+//     render: (row) => formatWorkingHours(row.workingHours),
+//   },
+//   {
+//     header: "Slot Duration",
+//     accessor: "slotDuration",
+//   },
   {
     header: "Status",
     render: (row) => (

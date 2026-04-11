@@ -30,6 +30,10 @@ export const createDoctorService = async (data, user) => {
     throw new AppError("User not found", 404);
   }
 
+  if (userData.role !== "doctor") {
+    throw new AppError("Assigned user must have doctor role", 400);
+  }
+
   const existingDoctor = await findDoctorByEmail(email);
 
   if (existingDoctor) {
@@ -117,7 +121,7 @@ export const updateDoctorService = async (params, data, user) => {
       slotDuration,
       breakTimes,
     },
-    { returnDocument: 'after' }
+    { returnDocument: "after" }
   );
 
   await logAction({

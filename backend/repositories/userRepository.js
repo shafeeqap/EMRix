@@ -16,6 +16,10 @@ export const findUsers = async () => {
   return User.find();
 };
 
+export const findUsersBySearchQuery = (query) => {
+  return User.find(query);
+};
+
 export const findUserByIdAndUpdate = async (id, updates, option) => {
   return User.findByIdAndUpdate(id, updates, option);
 };
