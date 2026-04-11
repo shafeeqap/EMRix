@@ -2,19 +2,18 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { closeModal } from "../../../../components/modal/modalSlice";
 import useUserSearch from "../../../../hooks/useUserSearch";
-import { InputField } from "../../../../components/ui";
+import { Button, InputField } from "../../../../components/ui";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addDoctorSchema } from "../../../../validator/addDoctorValidator";
 import { useCreateDoctorMutation } from "../doctorsApiSlice";
 import { handleApiError } from "../../../../utils/handleApiError";
 import { toast } from "react-toastify";
-// import { useCreateDoctorMutation } from "../doctorsApiSlice";
 
 const AddDoctorModal = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const { search, setSearch, users } = useUserSearch();
-  const [createDoctor] = useCreateDoctorMutation();
+  const [createDoctor, { isLoading }] = useCreateDoctorMutation();
 
   const dispatch = useDispatch();
 
@@ -81,7 +80,7 @@ const AddDoctorModal = () => {
   const nameField = register("name");
 
   return (
-    <div className="bg-white rounded-lg p-6 w-full max-w-md">
+    <div className="bg-white rounded-lg p-6 max-w-md">
       <h2 className="text-xl font-semibold mb-4">Add Doctor</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* Search Input */}
@@ -130,6 +129,22 @@ const AddDoctorModal = () => {
           )}
         </div>
 
+        {/* Selected User */}
+        {selectedUser && (
+          <div className="mb-4 p-2 bg-gray-200 rounded">
+            <p className="text-sm">
+              <strong>Name:</strong> {selectedUser.firstName}{" "}
+              {selectedUser.lastName}
+            </p>
+            <p className="text-sm">
+              <strong>Email:</strong> {selectedUser.email}
+            </p>
+            <p className="text-sm">
+              <strong>Mobile:</strong> {selectedUser.mobile}
+            </p>
+          </div>
+        )}
+
         <div className="mb-4">
           <InputField
             label="Specialization/Department"
@@ -142,51 +157,41 @@ const AddDoctorModal = () => {
         </div>
 
         {/* Working Hours */}
-        <div className="mb-4">
-          <div className="flex gap-2 justify-between">
-            <div>
-              <InputField
-                label="Working Hours Start"
-                type="time"
-                error={errors.workingStart}
-                {...register("workingStart")}
-                className="w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
-              />
-            </div>
-            <div>
-              <InputField
-                label="Working Hours End"
-                type="time"
-                error={errors.workingEnd}
-                {...register("workingEnd")}
-                className=" w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
-              />
-            </div>
-          </div>
+        <div className="flex flex-col mb-4 gap-5 ">
+          <InputField
+            label="Working Hours Start"
+            type="time"
+            error={errors.workingStart}
+            {...register("workingStart")}
+            className="w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
+          />
+
+          <InputField
+            label="Working Hours End"
+            type="time"
+            error={errors.workingEnd}
+            {...register("workingEnd")}
+            className=" w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
+          />
         </div>
 
         {/* Break Time */}
-        <div className="mb-4">
-          <div className="flex justify-between gap-2">
-            <div>
-              <InputField
-                label="Break Time Start"
-                type="time"
-                error={errors.breakStart}
-                {...register("breakStart")}
-                className="w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
-              />
-            </div>
-            <div>
-              <InputField
-                label="Break Time End"
-                type="time"
-                {...register("breakEnd")}
-                error={errors.breakEnd}
-                className="w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
-              />
-            </div>
-          </div>
+        <div className="flex flex-col mb-4 ">
+          <InputField
+            label="Break Time Start"
+            type="time"
+            error={errors.breakStart}
+            {...register("breakStart")}
+            className="w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
+          />
+
+          <InputField
+            label="Break Time End"
+            type="time"
+            {...register("breakEnd")}
+            error={errors.breakEnd}
+            className="w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
+          />
         </div>
 
         {/* Slot Duration */}
@@ -202,19 +207,17 @@ const AddDoctorModal = () => {
         </div>
 
         <div className="flex justify-end">
-          <button
+          <Button
             onClick={() => dispatch(closeModal())}
             type="button"
-            className="mr-2 px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition duration-200"
+            variant="secondary"
+            className="mr-2 px-4 py-2 transition duration-200"
           >
             Cancel
-          </button>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-primary text-white rounded hover:bg-primaryHover transition duration-200"
-          >
-            Add
-          </button>
+          </Button>
+          <Button type="submit" variant="primary">
+            {isLoading} Add
+          </Button>
         </div>
       </form>
     </div>

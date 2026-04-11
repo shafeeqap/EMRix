@@ -4,6 +4,7 @@ import {
   CalendarDays,
   CalendarCheck,
   Hospital,
+  Users,
 } from "lucide-react";
 
 export const sidebarItems = [
@@ -41,5 +42,12 @@ export const sidebarItems = [
     name: "Patient Appointments",
     path: "/appointments",
     roles: ["super_admin", "doctor", "receptionist"],
+  },
+  {
+    id: 6,
+    icons: Users,
+    name: "Users",
+    path: "/users",
+    roles: ["super_admin"],
   },
 ];

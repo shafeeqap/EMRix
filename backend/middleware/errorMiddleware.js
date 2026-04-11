@@ -9,7 +9,7 @@ export const errorHandler = (err, req, res, next) => {
     return res.status(400).json({
       success: false,
       errors: issues.map((e) => ({
-        field: e.path?.[0] || "unknown",
+        field: e.path?.join("."),
         message: e.message,
       })),
     });
@@ -17,7 +17,7 @@ export const errorHandler = (err, req, res, next) => {
 
   res.status(statusCode).json({
     success: false,
-    message: err.message || "Intrnal Server Error",
+    message: err.message || "Internal Server Error",
     stack: process.env.NODE_ENV === "production" ? null : err.stack,
   });
 };

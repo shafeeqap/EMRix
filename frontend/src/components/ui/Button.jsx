@@ -2,23 +2,23 @@ import React from "react";
 import clsx from "clsx";
 import Loader from "./Loader";
 
-
 const Button = ({
   children,
-  varient = "primary",
+  variant = "primary",
   size = "md",
   isLoading = false,
-  didabled = false,
+  disabled = false,
   type = "button",
   onClick,
-  calssName,
+  className,
   ...props
 }) => {
-  const baseStyles = `rounded-lg font-medium transition duration-200 focus:outline-none ${calssName}`;
+  const baseStyles =
+    "rounded font-medium transition duration-200 focus:outline-none";
 
   const variants = {
     primary: "bg-primary text-white hover:bg-primaryHover",
-    secondary: "bg-[#6FA3D8] text-black hover:bg-gray-300",
+    secondary: "bg-gray-300 text-black hover:bg-gray-400",
     danger: "bg-red-500 text-white hover:bg-red-600",
   };
 
@@ -34,11 +34,12 @@ const Button = ({
         type={type}
         className={clsx(
           baseStyles,
-          variants[varient],
+          className,
+          variants[variant],
           sizes[size],
-          (didabled || isLoading) && "opacity-50 cursor-not-allowed"
+          (disabled || isLoading) && "opacity-50 cursor-not-allowed"
         )}
-        disabled={didabled || isLoading}
+        disabled={disabled || isLoading}
         onClick={onClick}
         {...props}
       >

@@ -1,11 +1,61 @@
 import { z } from "zod";
 
-export const addDoctorSchema = z.object({
-  name: z.string().min(1, "User is required"),
-  department: z.string().min(1, "Department required"),
-  slotDuration: z.string().min(1, "Slot duration must be greater than 0"),
-  workingStart: z.string().min(1, "Working hours start time required"),
-  workingEnd: z.string().min(1, "Working hours end time required"),
-  breakStart: z.string().min(1, "Break start time required"),
-  breakEnd: z.string().min(1, "Break end time required"),
-});
+const timeRegex = /^\d{2}:\d{2}$/;
+
+const toMinutes = (time) => {
+  const [h, m] = time.split(":").map(Number);
+  return h * 60 + m;
+};
+
+export const addDoctorSchema = z
+  .object({
+    name: z.string().min(1, "User is required"),
+    department: z.string().min(1, "Department required"),
+    slotDuration: z.string().min(1, "Slot duration must be greater than 0"),
+    workingStart: z
+      .string()
+      .min(1, "Working hours start time required")
+      .regex(timeRegex, "Time must be HH:MM"),
+    workingEnd: z
+      .string()
+      .min(1, "Working hours end time required")
+      .regex(timeRegex, "Time must be HH:MM"),
+    breakStart: z
+      .string()
+      .min(1, "Break start time required")
+      .regex(timeRegex, "Time must be HH:MM"),
+    breakEnd: z
+      .string()
+      .min(1, "Break end time required")
+      .regex(timeRegex, "Time must be HH:MM"),
+  })
+  .superRefine((data, ctx) => {
+    // working hours validation
+    if (toMinutes(data.workingStart) >= toMinutes(data.workingEnd)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Working hours start time must be before end time",
+        path: ["workingStart"],
+      });
+    }
+
+    // break time validation
+    if (toMinutes(data.breakStart) >= toMinutes(data.breakEnd)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Break start must be before break end",
+        path: ["breakStart"],
+      });
+    }
+    // break must be inside working hours
+    if (
+      toMinutes(data.breakStart) < toMinutes(data.workingStart) ||
+      toMinutes(data.breakEnd) > toMinutes(data.workingEnd)
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Break time must be within working hours",
+        path: ["breakStart"],
+      });
+    }
+  });

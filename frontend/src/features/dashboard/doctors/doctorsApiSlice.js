@@ -13,6 +13,7 @@ export const doctorApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: doctorData,
       }),
+      invalidatesTags: ["Doctor"],
     }),
 
     getDoctorById: builder.query({
@@ -25,16 +26,16 @@ export const doctorApiSlice = apiSlice.injectEndpoints({
         url: `/doctors/${id}`,
         method: "PUT",
         body: doctorData,
-        invalidatesTags: ["Doctor"],
       }),
+      invalidatesTags: ["Doctor"],
     }),
 
     deleteDoctor: builder.mutation({
       query: (id) => ({
         url: `/doctors/${id}`,
         method: "DELETE",
-        invalidatesTags: ["Doctor"],
       }),
+      invalidatesTags: ["Doctor"],
     }),
   }),
 });
