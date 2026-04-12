@@ -29,7 +29,7 @@ const Button = ({
   };
 
   return (
-    <div>
+    <>
       <button
         type={type}
         className={clsx(
@@ -37,7 +37,7 @@ const Button = ({
           className,
           variants[variant],
           sizes[size],
-          (disabled || isLoading) && "opacity-50 cursor-not-allowed"
+          (disabled || isLoading) && "flex justify-center items-center opacity-50 cursor-not-allowed"
         )}
         disabled={disabled || isLoading}
         onClick={onClick}
@@ -45,7 +45,7 @@ const Button = ({
       >
         {isLoading ? <Loader size="small" /> : children}
       </button>
-    </div>
+    </>
   );
 };
 

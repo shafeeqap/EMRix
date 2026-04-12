@@ -14,9 +14,9 @@ import { logAction } from "../utils/auditLogger.js";
 export const createDoctorService = async (data, user) => {
   const {
     userId,
-    firstName,
-    lastName,
-    email,
+    // firstName,
+    // lastName,
+    // email,
     department,
     workingHours,
     slotDuration,
@@ -25,6 +25,7 @@ export const createDoctorService = async (data, user) => {
   console.log(data, "Doctor data");
 
   const userData = await findUserById(userId);
+  console.log(userData, "User data");
 
   if (!userData) {
     throw new AppError("User not found", 404);
@@ -42,9 +43,9 @@ export const createDoctorService = async (data, user) => {
 
   const doctor = await createDoctorRepo({
     userId,
-    firstName,
-    lastName,
-    email,
+    firstName: userData.firstName,
+    lastName: userData.lastName,
+    email: userData.email,
     department,
     workingHours,
     slotDuration,

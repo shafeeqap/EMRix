@@ -5,8 +5,9 @@ import { useDispatch } from "react-redux";
 import { openModal } from "../../components/modal/modalSlice";
 import { useGetUserQuery } from "./userApiSlice";
 import { getColumns } from "./TableColumns";
-import { Loader } from "../../components/ui";
+import { Button, Loader } from "../../components/ui";
 import SearchField from "../../components/search/Search";
+import { Plus } from "lucide-react";
 
 const Users = () => {
   const { data, isLoading, error } = useGetUserQuery();
@@ -51,7 +52,12 @@ const Users = () => {
 
   return (
     <>
-      <SearchField handleAdd={handleAddModalOpen} />
+      <div className="flex justify-between">
+        <SearchField handleAdd={handleAddModalOpen} />
+        <Button>
+          <Plus size={20} />
+        </Button>
+      </div>
       <Table columns={columns} data={users} />
     </>
   );

@@ -1,11 +1,12 @@
 import React from "react";
 import Table from "../../../components/table/Table";
 import { useGetDoctorsQuery } from "./doctorsApiSlice";
-import { Loader } from "../../../components/ui";
+import { Button, Loader } from "../../../components/ui";
 import { getColumns } from "./TableColumns";
 import SearchField from "../../../components/search/Search";
 import { useDispatch } from "react-redux";
 import { openModal } from "../../../components/modal/modalSlice";
+import { Plus } from "lucide-react";
 
 const Doctors = () => {
   const { data, isLoading, error } = useGetDoctorsQuery();
@@ -45,10 +46,15 @@ const Doctors = () => {
   if (error) return <p>Something went wrong</p>;
 
   return (
-    <div>
-      <SearchField handleAdd={handleAddModalOpen} />
+    <>
+      <div className="flex justify-between">
+        <SearchField />
+        <Button onClick={handleAddModalOpen} >
+          <Plus size={20} />
+        </Button>
+      </div>
       <Table columns={columns} data={data.doctors || []} />
-    </div>
+    </>
   );
 };
 
