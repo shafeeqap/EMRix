@@ -1,33 +1,39 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { closeModal } from "../../../../components/modal/modalSlice";
-import useUserSearch from "../../../../hooks/useUserSearch";
 import { Button, InputField } from "../../../../components/ui";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addDoctorSchema } from "../../../../validator/addDoctorValidator";
 import { useCreateDoctorMutation } from "../doctorsApiSlice";
 import { handleApiError } from "../../../../utils/handleApiError";
 import { toast } from "react-toastify";
+import { useSearchUsersQuery } from "../../../users/userApiSlice";
+import SearchField from "../../../../components/search/Search";
+import { getFullName } from "../../../../utils/userHelpers";
 
 const AddDoctorModal = () => {
   const [selectedUser, setSelectedUser] = useState(null);
-  const { search, setSearch, users } = useUserSearch();
-  const [createDoctor, { isLoading }] = useCreateDoctorMutation();
-
+  const [search, setSearch] = useState("");
+  const [breakTime, setBreakTime] = useState(false);
+  const [createDoctor] = useCreateDoctorMutation();
   const dispatch = useDispatch();
 
-  // console.log("Users...", users);
-  // console.log("selectedUser", selectedUser);
-  console.log("search...", search);
+  const { data: users = [], isLoading } = useSearchUsersQuery(search, {
+    refetchOnMountOrArgChange: false,
+    skip: search.length < 2,
+  });
 
   const {
     register,
     handleSubmit,
-    setValue,
+    control,
     setError,
     formState: { errors },
-  } = useForm({ resolver: zodResolver(addDoctorSchema) });
+  } = useForm({
+    resolver: zodResolver(addDoctorSchema),
+    defaultValues: { name: "" },
+  });
 
   const onSubmit = async (data) => {
     if (!selectedUser) {
@@ -37,11 +43,6 @@ const AddDoctorModal = () => {
 
     const payload = {
       userId: selectedUser._id,
-
-      // optional (if backend needs)
-      firstName: selectedUser.firstName,
-      lastName: selectedUser.lastName,
-      email: selectedUser.email,
 
       department: data.department,
 
@@ -63,8 +64,6 @@ const AddDoctorModal = () => {
           : [],
     };
 
-    console.log("Final Payload:", payload);
-
     try {
       const res = await createDoctor(payload).unwrap();
       console.log(res, "Doctor created successfully");
@@ -77,69 +76,62 @@ const AddDoctorModal = () => {
     }
   };
 
-  const nameField = register("name");
-
   return (
     <div className="bg-white rounded-lg p-6 max-w-md">
       <h2 className="text-xl font-semibold mb-4">Add Doctor</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="w-56 sm:w-fit">
         {/* Search Input */}
-        <div className="mb-4 relative">
-          <InputField
-            label="Search User"
-            type="text"
-            {...nameField}
-            error={errors.name}
-            placeholder="Type to search for users..."
-            className="focus:ring focus:border-primary"
-            onChange={(e) => {
-              nameField.onChange(e); // Update react-hook-form state
-              setSearch(e.target.value);
-              setSelectedUser(null);
-            }}
+        <div className="mb-4">
+          <Controller
+            name="name"
+            control={control}
+            render={({ field }) => (
+              <SearchField
+                label="Search user"
+                value={field.value ?? ""}
+                placeholder="Type to search for users..."
+                onChange={(val) => {
+                  field.onChange(val);
+                  setSearch(val);
+                  setSelectedUser(null);
+                }}
+                onSelect={(user) => {
+                  const fullName = getFullName(user);
+
+                  field.onChange(fullName);
+                  setSearch(fullName);
+                  setSelectedUser(user);
+                }}
+                fetchItems={async () => users}
+                renderItem={(user) => {
+                  const fullName = getFullName(user);
+
+                  return (
+                    <div className="text-sm border-b py-2">
+                      <p>{fullName}</p>
+                      <p className="text-gray-500 text-xs">{user.email}</p>
+                      <p className="text-gray-500 text-xs">{user.mobile}</p>
+                    </div>
+                  );
+                }}
+                error={errors?.name}
+              />
+            )}
           />
-
-          {/* Dropdown */}
-          {search && !selectedUser && (
-            <ul className="absolute w-full bg-white border mt-1 max-h-40 overflow-y-auto shadow rounded z-10">
-              {users.map((user) => (
-                <li
-                  key={user._id}
-                  onClick={() => {
-                    setSelectedUser(user);
-
-                    const fullName = user.firstName + " " + user.lastName;
-                    setSearch(fullName);
-                    setValue("name", fullName);
-                  }}
-                  className="px-3 py-2 border-b hover:bg-gray-100 cursor-pointer"
-                >
-                  <p className="flex flex-col p-1 text-sm">
-                    {user.firstName} {user.lastName}
-                    <span className="text-textSecondary">
-                      Email: {user.email}
-                    </span>
-                    <span className="text-textSecondary">
-                      Mobile: {user.mobile}
-                    </span>
-                  </p>
-                </li>
-              ))}
-            </ul>
-          )}
         </div>
 
         {/* Selected User */}
         {selectedUser && (
-          <div className="mb-4 p-2 bg-gray-200 rounded">
-            <p className="text-sm">
+          <div className="mb-4 text-xs mt-2 p-2 bg-gray-200 rounded">
+            <p>
               <strong>Name:</strong> {selectedUser.firstName}{" "}
               {selectedUser.lastName}
             </p>
-            <p className="text-sm">
+            <p>
               <strong>Email:</strong> {selectedUser.email}
             </p>
-            <p className="text-sm">
+            <p>
               <strong>Mobile:</strong> {selectedUser.mobile}
             </p>
           </div>
@@ -157,42 +149,64 @@ const AddDoctorModal = () => {
         </div>
 
         {/* Working Hours */}
-        <div className="flex flex-col mb-4 gap-5 ">
-          <InputField
-            label="Working Hours Start"
-            type="time"
-            error={errors.workingStart}
-            {...register("workingStart")}
-            className="w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
-          />
+        <fieldset className="mb-4 border border-gray-300 rounded p-4">
+          <legend className="px-2 text-sm font-medium">Work Time</legend>
 
-          <InputField
-            label="Working Hours End"
-            type="time"
-            error={errors.workingEnd}
-            {...register("workingEnd")}
-            className=" w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
+          <div className="flex flex-col sm:flex-row mb-4 gap-5 ">
+            <InputField
+              label="Start"
+              type="time"
+              error={errors.workingStart}
+              {...register("workingStart")}
+              className="w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
+            />
+
+            <InputField
+              label="End"
+              type="time"
+              error={errors.workingEnd}
+              {...register("workingEnd")}
+              className=" w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
+            />
+          </div>
+        </fieldset>
+
+        <div className="mb-4">
+          <input
+            type="checkbox"
+            {...register("hasBreak")}
+            onClick={() => setBreakTime(!breakTime)}
+            className="mr-1"
           />
+          <label htmlFor="" className="text-gray-700">
+            Does the doctor have a break during working hours?
+          </label>
         </div>
 
         {/* Break Time */}
-        <div className="flex flex-col mb-4 ">
-          <InputField
-            label="Break Time Start"
-            type="time"
-            error={errors.breakStart}
-            {...register("breakStart")}
-            className="w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
-          />
+        {breakTime && (
+          <fieldset className="mb-4 border border-gray-300 rounded p-4">
+            <legend className="px-2 text-sm font-medium">Break Time</legend>
 
-          <InputField
-            label="Break Time End"
-            type="time"
-            {...register("breakEnd")}
-            error={errors.breakEnd}
-            className="w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
-          />
-        </div>
+            <div className="flex flex-col sm:flex-row gap-5 mb-4 ">
+              <InputField
+                label="Start"
+                type="time"
+                {...register("breakStart")}
+                error={errors.breakStart}
+                className="w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
+              />
+
+              <InputField
+                label="End"
+                type="time"
+                {...register("breakEnd")}
+                error={errors.breakEnd}
+                className="w-full border p-1 border-gray-300 rounded focus:outline-none focus:ring focus:border-primary"
+              />
+            </div>
+          </fieldset>
+        )}
 
         {/* Slot Duration */}
         <div className="mb-4">

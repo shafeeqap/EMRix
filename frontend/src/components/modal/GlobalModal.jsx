@@ -6,7 +6,7 @@ import { closeModal } from "./modalSlice";
 const GlobalModal = () => {
   const dispatch = useDispatch();
   const { isOpen, modalType, modalProps } = useSelector((state) => state.modal);
-  console.log(isOpen, "Open Modal...");
+
   
 
   useEffect(() => {
@@ -49,7 +49,7 @@ const GlobalModal = () => {
       <div className="fixed inset-0 flex pl-10 justify-center items-center z-50">
         {/* Overlay */}
         <div
-          onClick={() => dispatch(closeModal())}
+          // onClick={() => dispatch(closeModal())}
           className="absolute inset-0 bg-black bg-opacity-50"
         />
         {/* Modal Content */}

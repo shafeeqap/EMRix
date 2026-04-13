@@ -1,5 +1,6 @@
 import { Trash2, PenLine } from "lucide-react";
 import { formatWorkingHours } from "../../../utils/formatWorkingHours";
+import { getDuration } from "../../../utils/calculateDuration";
 
 export const getColumns = ({ onEdit, onDelete }) => [
   {
@@ -24,7 +25,33 @@ export const getColumns = ({ onEdit, onDelete }) => [
   },
   {
     header: "Working Hours",
-    render: (row) => formatWorkingHours(row.workingHours),
+    render: (row) => {
+      const duration = getDuration(row.workingHours);
+      console.log(duration, "Duration...");
+      let color = "text-gray-700";
+
+      if (duration <= 240) color = "text-green-600"; // <= 4h
+      else if (duration <= 480) color = "text-blue-600"; // <= 8h
+      else color = "text-red-600"; // long shift
+
+      return (
+        <span className={`${color} font-medium`}>
+          {formatWorkingHours(row.workingHours)}
+        </span>
+      );
+    },
+  },
+  {
+    header: "Break Time",
+    render: (row) => {
+      return row.breakTimes?.length ? (
+        <span className="text-gray-500">
+          {formatWorkingHours(row.breakTimes[0])}
+        </span>
+      ) : (
+        <span className="text-red-600">No break time</span>
+      );
+    },
   },
   {
     header: "Slot Duration",
