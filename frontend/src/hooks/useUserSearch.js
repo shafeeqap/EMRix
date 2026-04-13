@@ -1,24 +1,18 @@
 import { useEffect, useState } from "react";
-import { useSearchUsersQuery } from "../features/users/userApiSlice";
 
-const useUserSearch = () => {
-  const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+const useDebouncedSearch = ({ value, delay = 300 }) => {
+  const [debouncedSearch, setDebouncedSearch] = useState(value || "");
 
+  // debounce
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedSearch(search);
-    }, 300);
+      setDebouncedSearch(value || "");
+    }, delay);
 
     return () => clearTimeout(timer);
-  }, [search]);
+  }, [value, delay]);
 
-  const { data: users = [], isLoading } = useSearchUsersQuery(debouncedSearch, {
-    refetchOnMountOrArgChange: false,
-    skip: debouncedSearch.length < 2,
-  });
-
-  return { search, setSearch, users, isLoading };
+  return debouncedSearch;
 };
 
-export default useUserSearch;
+export default useDebouncedSearch;
