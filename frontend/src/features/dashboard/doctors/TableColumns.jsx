@@ -27,7 +27,7 @@ export const getColumns = ({ onEdit, onDelete }) => [
     header: "Working Hours",
     render: (row) => {
       const duration = getDuration(row.workingHours);
-      console.log(duration, "Duration...");
+
       let color = "text-gray-700";
 
       if (duration <= 240) color = "text-green-600"; // <= 4h

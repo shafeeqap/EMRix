@@ -48,6 +48,7 @@ export const updateDoctor = async (req, res, next) => {
       req.body,
       req.user
     );
+    console.log(req.body, "Doctor data...");
 
     res
       .status(200)

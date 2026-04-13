@@ -12,12 +12,9 @@ const Doctors = () => {
   const { data, isLoading, error } = useGetDoctorsQuery();
   const dispatch = useDispatch();
 
-  console.log(data, 'Doctor data...');
-  
-
   const handleEditModalOpen = (row) => {
     dispatch(
-      openModal({ modalType: "EDIT_DOCTOR", modalProps: { doctorId: row } })
+      openModal({ modalType: "EDIT_DOCTOR", modalProps: { doctorId: row._id } })
     );
     console.log("EDIT CLICKED", row);
   };
@@ -52,7 +49,7 @@ const Doctors = () => {
     <>
       <div className="flex justify-between">
         <SearchField />
-        <Button onClick={handleAddModalOpen} >
+        <Button onClick={handleAddModalOpen}>
           <Plus size={20} />
         </Button>
       </div>
