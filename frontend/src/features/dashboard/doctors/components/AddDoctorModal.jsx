@@ -66,7 +66,6 @@ const AddDoctorModal = () => {
 
     try {
       const res = await createDoctor(payload).unwrap();
-      console.log(res, "Doctor created successfully");
       toast.success(res.message || "Doctor created successfully");
 
       dispatch(closeModal());

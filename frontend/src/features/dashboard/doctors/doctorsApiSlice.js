@@ -22,10 +22,10 @@ export const doctorApiSlice = apiSlice.injectEndpoints({
     }),
 
     updateDoctor: builder.mutation({
-      query: ({ id, doctorData }) => ({
+      query: ({ id, ...data }) => ({
         url: `/doctors/${id}`,
         method: "PUT",
-        body: doctorData,
+        body: data,
       }),
       invalidatesTags: ["Doctor"],
     }),

@@ -85,15 +85,17 @@ export const getDoctorByIdServices = async (doctorId) => {
 // =============> update doctor service <=============
 export const updateDoctorService = async (params, data, user) => {
   const doctorId = params.id;
+  console.log(doctorId, 'Doctor id...');
+  
   const {
-    firstName,
-    lastName,
-    email,
     department,
     workingHours,
     slotDuration,
     breakTimes,
   } = data;
+
+  console.log(data, 'Doctor data...');
+  
 
   const doctor = await findDoctorById(doctorId);
   if (!doctor) {
@@ -103,9 +105,9 @@ export const updateDoctorService = async (params, data, user) => {
   const updatedData = await findDoctorByIdAndUpdate(
     doctorId,
     {
-      firstName,
-      lastName,
-      email,
+      firstName: doctor.firstName,
+      lastName: doctor.lastName,
+      email : doctor.email,
       department,
       workingHours,
       slotDuration,
@@ -132,9 +134,9 @@ export const updateDoctorService = async (params, data, user) => {
         breakTime: doctor.breakTimes,
       },
       updatedData: {
-        firstName,
-        lastName,
-        email,
+        firstName: updatedData.firstName,
+        lastName: updatedData.lastName,
+        email: updatedData.email,
         department,
         workingHours,
         slotDuration,

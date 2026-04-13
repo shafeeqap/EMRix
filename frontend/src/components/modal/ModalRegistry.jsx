@@ -3,9 +3,11 @@ import {
   DeleteDoctorModal,
   EditDoctorModal,
 } from "../../features/dashboard/doctors/components";
-import AddUserModal from "../../features/users/components/AddUserModal";
-import DeleteUserModal from "../../features/users/components/DeleteUserModal";
-import EditUserModal from "../../features/users/components/EditUserModal";
+import {
+  AddUserModal,
+  DeleteUserModal,
+  EditUserModal,
+} from "../../features/users/components";
 
 export const MODAL_COMPONENTS = {
   // Doctor Modals

@@ -1,8 +1,6 @@
 import React from "react";
 
 const Table = ({ columns = [], data = [] }) => {
-  console.log(data, "tableData");
-
   return (
     <div className="overflow-x-auto mt-6 bg-base-100 shadow-md rounded-lg">
       <table className="min-w-full text-sm text-left text-gray-700">
