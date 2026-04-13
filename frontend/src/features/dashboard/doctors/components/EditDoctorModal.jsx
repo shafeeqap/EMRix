@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { closeModal } from "../../../../components/modal/modalSlice";
 import {
@@ -15,7 +15,6 @@ import { handleApiError } from "../../../../utils/handleApiError";
 
 const EditDoctorModal = () => {
   const [breakTime, setBreakTime] = useState(false);
-  const [initialData, setInitialData] = useState(null);
 
   const { doctorId } = useSelector((state) => state.modal.modalProps || {});
 
@@ -29,22 +28,21 @@ const EditDoctorModal = () => {
     defaultValues: {
       name: "",
       department: "",
+      slotDuration: "",
       workingStart: "",
       workingEnd: "",
       breakStart: "",
       breakEnd: "",
-      slotDuration: "",
+      hasBreak: "",
     },
   });
-
-  console.log(form.formState.errors, "Errors...");
 
   useEffect(() => {
     if (!doctorData?.doctor) return;
 
     const doctor = doctorData.doctor;
 
-    const formatted = {
+    form.reset({
       name: getFullName(doctor),
       department: doctor.department,
       workingStart: doctor.workingHours?.start || "",
@@ -53,29 +51,17 @@ const EditDoctorModal = () => {
       breakEnd: doctor.breakTimes?.[0]?.end || "",
       slotDuration: String(doctor.slotDuration),
       hasBreak: doctor.breakTimes?.length > 0,
-    };
+    });
+  }, [doctorData, form]);
 
-    form.reset(formatted);
-    setInitialData(formatted);
-  }, [doctorData]);
-
-  
-console.log(initialData, 'Initial data..,.');
-
-  
   const onSubmit = async (data) => {
-    const isChanged = (data) => {
-      return JSON.stringify(data) !== JSON.stringify(initialData);
-    };
-
-    if (!isChanged(data)) {
-      console.log("No changes detected");
-      return; 
+    if (!form.formState.isDirty) {
+      toast.warning("No changes detected");
+      return;
     }
 
     const payload = {
       department: data.department,
-
       workingHours: {
         start: data.workingStart,
         end: data.workingEnd,
@@ -85,12 +71,7 @@ console.log(initialData, 'Initial data..,.');
 
       breakTimes:
         data.breakStart && data.breakEnd
-          ? [
-              {
-                start: data.breakStart,
-                end: data.breakEnd,
-              },
-            ]
+          ? [{ start: data.breakStart, end: data.breakEnd }]
           : [],
     };
 
