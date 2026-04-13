@@ -85,17 +85,8 @@ export const getDoctorByIdServices = async (doctorId) => {
 // =============> update doctor service <=============
 export const updateDoctorService = async (params, data, user) => {
   const doctorId = params.id;
-  console.log(doctorId, 'Doctor id...');
-  
-  const {
-    department,
-    workingHours,
-    slotDuration,
-    breakTimes,
-  } = data;
 
-  console.log(data, 'Doctor data...');
-  
+  const { department, workingHours, slotDuration, breakTimes } = data;
 
   const doctor = await findDoctorById(doctorId);
   if (!doctor) {
@@ -107,7 +98,7 @@ export const updateDoctorService = async (params, data, user) => {
     {
       firstName: doctor.firstName,
       lastName: doctor.lastName,
-      email : doctor.email,
+      email: doctor.email,
       department,
       workingHours,
       slotDuration,
@@ -146,6 +137,34 @@ export const updateDoctorService = async (params, data, user) => {
   });
 
   return updatedData;
+};
+
+// =============> Update doctor status service <=============
+export const updateDoctorStatusService = async (params, data, user) => {
+  const id = params.id;
+  const { status } = data;
+
+  const doctor = await findDoctorById(id);
+  if (!doctor) {
+    throw new AppError("Doctor not found", 404);
+  }
+
+  doctor.isActive = status;
+  await doctor.save();
+
+  await logAction({
+    userId: user.id,
+    role: user.role,
+    action: "UPDATE_DOCTOR_STATUS",
+    entity: "Doctor",
+    entityId: doctor._id,
+    metadata: {
+      oldStatus: status,
+      newStatus: doctor.isActive,
+    },
+  });
+
+  return doctor;
 };
 
 // =============> Delete doctor service <=============

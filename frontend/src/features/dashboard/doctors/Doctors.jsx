@@ -10,13 +10,17 @@ import { Plus } from "lucide-react";
 
 const Doctors = () => {
   const { data, isLoading, error } = useGetDoctorsQuery();
+
   const dispatch = useDispatch();
+
+  const handleAddModalOpen = () => {
+    dispatch(openModal({ modalType: "ADD_DOCTOR", modalProps: {} }));
+  };
 
   const handleEditModalOpen = (row) => {
     dispatch(
       openModal({ modalType: "EDIT_DOCTOR", modalProps: { doctorId: row._id } })
     );
-    console.log("EDIT CLICKED", row);
   };
 
   const handleDeleteModalOpen = (row) => {
@@ -28,14 +32,20 @@ const Doctors = () => {
     );
   };
 
+  const handleStatusModalOpen = (row) => {
+    dispatch(
+      openModal({
+        modalType: "UPDATE_DOCTOR_STATUS",
+        modalProps: { doctorData: row },
+      })
+    );
+  };
+
   const columns = getColumns({
     onEdit: handleEditModalOpen,
     onDelete: handleDeleteModalOpen,
+    onUpdateStatus: handleStatusModalOpen,
   });
-
-  const handleAddModalOpen = () => {
-    dispatch(openModal({ modalType: "ADD_DOCTOR", modalProps: {} }));
-  };
 
   if (isLoading)
     return (

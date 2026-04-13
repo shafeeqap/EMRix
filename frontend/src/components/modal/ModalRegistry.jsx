@@ -2,6 +2,7 @@ import {
   AddDoctorModal,
   DeleteDoctorModal,
   EditDoctorModal,
+  UpdateDoctorStatusModal,
 } from "../../features/dashboard/doctors/components";
 import {
   AddUserModal,
@@ -14,6 +15,7 @@ export const MODAL_COMPONENTS = {
   ADD_DOCTOR: AddDoctorModal,
   EDIT_DOCTOR: EditDoctorModal,
   DELETE_DOCTOR: DeleteDoctorModal,
+  UPDATE_DOCTOR_STATUS: UpdateDoctorStatusModal,
 
   // Patient Modals
   ADD_PATIENT: "ADD_PATIENT",

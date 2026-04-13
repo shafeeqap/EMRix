@@ -30,6 +30,15 @@ export const doctorApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ["Doctor"],
     }),
 
+    updateDoctorStatus: builder.mutation({
+      query: ({ id, status }) => ({
+        url: `/doctors/${id}/status`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: ["Doctor"],
+    }),
+
     deleteDoctor: builder.mutation({
       query: (id) => ({
         url: `/doctors/${id}`,
@@ -45,5 +54,6 @@ export const {
   useCreateDoctorMutation,
   useGetDoctorByIdQuery,
   useUpdateDoctorMutation,
+  useUpdateDoctorStatusMutation,
   useDeleteDoctorMutation,
 } = doctorApiSlice;
