@@ -5,16 +5,19 @@ import { Trash2 } from "lucide-react";
 import { useDeleteDoctorMutation } from "../doctorsApiSlice";
 import { handleApiError } from "../../../../utils/handleApiError";
 import { toast } from "react-toastify";
+import { getFullName } from "../../../../utils/userHelpers";
 
 const DeleteDoctorModal = () => {
-  const { doctorId } = useSelector((state) => state.modal.modalProps || {});
+  const { doctorData } = useSelector((state) => state.modal.modalProps || {});
   const [deleteDoctor] = useDeleteDoctorMutation();
+
+  const fullName = getFullName(doctorData);
 
   const dispatch = useDispatch();
 
   const handleDelete = async () => {
     try {
-      const res = await deleteDoctor(doctorId).unwrap();
+      const res = await deleteDoctor(doctorData._id).unwrap();
       toast.success(res.message || "Doctor deleted successfully");
 
       dispatch(closeModal());
@@ -29,8 +32,9 @@ const DeleteDoctorModal = () => {
       <Trash2 strokeWidth={1.25} size={60} className="text-red-600" />
       <h1 className="text-2xl">Are you sure?</h1>
       <p className="text-textSecondary text-center">
-        Do you really want to delete these records? This process cannot be
-        undone.
+        Do you really want to delete{" "}
+        <span className="text-red-600">{fullName}</span> records? This process
+        cannot be undone.
       </p>
 
       <div className="flex justify-between w-full gap-2 mt-5">

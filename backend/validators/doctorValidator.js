@@ -11,15 +11,15 @@ const timeSchema = z
 // create doctor validation
 export const createDoctorSchema = z.object({
   userId: z.string(),
-  firstName: z
-    .string()
-    .min(2, "First name too short")
-    .regex(/^[A-Za-z\s]+$/, "Name should contain only letters"),
-  lastName: z
-    .string()
-    .min(1, "Last name required")
-    .regex(/^[A-Za-z\s]+$/, "Name should contain only letters"),
-  email: z.email("Invalid email"),
+  // firstName: z
+  //   .string()
+  //   .min(2, "First name too short")
+  //   .regex(/^[A-Za-z\s]+$/, "Name should contain only letters"),
+  // lastName: z
+  //   .string()
+  //   .min(1, "Last name required")
+  //   .regex(/^[A-Za-z\s]+$/, "Name should contain only letters"),
+  // email: z.email("Invalid email"),
   department: z.string().min(2, "Department required"),
   workingHours: z
     .object({

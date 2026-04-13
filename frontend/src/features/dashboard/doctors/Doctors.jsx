@@ -12,6 +12,9 @@ const Doctors = () => {
   const { data, isLoading, error } = useGetDoctorsQuery();
   const dispatch = useDispatch();
 
+  console.log(data, 'Doctor data...');
+  
+
   const handleEditModalOpen = (row) => {
     dispatch(
       openModal({ modalType: "EDIT_DOCTOR", modalProps: { doctorId: row } })
@@ -23,7 +26,7 @@ const Doctors = () => {
     dispatch(
       openModal({
         modalType: "DELETE_DOCTOR",
-        modalProps: { doctorId: row._id },
+        modalProps: { doctorData: row },
       })
     );
   };

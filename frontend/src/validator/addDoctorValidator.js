@@ -3,6 +3,7 @@ import { z } from "zod";
 const timeRegex = /^\d{2}:\d{2}$/;
 
 const toMinutes = (time) => {
+  if (!time) return null;
   const [h, m] = time.split(":").map(Number);
   return h * 60 + m;
 };
@@ -53,25 +54,25 @@ export const addDoctorSchema = z
         });
         return;
       }
-    }
 
-    // break time validation
-    if (toMinutes(data.breakStart) >= toMinutes(data.breakEnd)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Break start must be before break end",
-        path: ["breakStart"],
-      });
-    }
-    // break must be inside working hours
-    if (
-      toMinutes(data.breakStart) < toMinutes(data.workingStart) ||
-      toMinutes(data.breakEnd) > toMinutes(data.workingEnd)
-    ) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Break time must be within working hours",
-        path: ["breakStart"],
-      });
+      // break time validation
+      if (toMinutes(data.breakStart) >= toMinutes(data.breakEnd)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Break start must be before break end",
+          path: ["breakStart"],
+        });
+      }
+      // break must be inside working hours
+      if (
+        toMinutes(data.breakStart) < toMinutes(data.workingStart) ||
+        toMinutes(data.breakEnd) > toMinutes(data.workingEnd)
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Break time must be within working hours",
+          path: ["breakStart"],
+        });
+      }
     }
   });

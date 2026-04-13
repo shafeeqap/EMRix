@@ -41,15 +41,8 @@ const AddDoctorModal = () => {
       return;
     }
 
-    console.log(data, "Doctor data...");
-
     const payload = {
       userId: selectedUser._id,
-
-      // optional (if backend needs)
-      firstName: selectedUser.firstName,
-      lastName: selectedUser.lastName,
-      email: selectedUser.email,
 
       department: data.department,
 
@@ -70,8 +63,6 @@ const AddDoctorModal = () => {
             ]
           : [],
     };
-
-    console.log("Final Payload:", payload);
 
     try {
       const res = await createDoctor(payload).unwrap();
@@ -182,10 +173,11 @@ const AddDoctorModal = () => {
 
         <div className="mb-4">
           <input
-            onClick={() => setBreakTime(!breakTime)}
             type="checkbox"
-            // className="focus:ring focus:border-primary"
-          />{" "}
+            {...register("hasBreak")}
+            onClick={() => setBreakTime(!breakTime)}
+            className="mr-1"
+          />
           <label htmlFor="" className="text-gray-700">
             Does the doctor have a break during working hours?
           </label>

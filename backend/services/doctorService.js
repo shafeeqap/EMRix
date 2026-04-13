@@ -12,20 +12,9 @@ import { logAction } from "../utils/auditLogger.js";
 
 // =============> create doctor service <=============
 export const createDoctorService = async (data, user) => {
-  const {
-    userId,
-    // firstName,
-    // lastName,
-    // email,
-    department,
-    workingHours,
-    slotDuration,
-    breakTimes,
-  } = data;
-  console.log(data, "Doctor data");
+  const { userId, department, workingHours, slotDuration, breakTimes } = data;
 
   const userData = await findUserById(userId);
-  console.log(userData, "User data");
 
   if (!userData) {
     throw new AppError("User not found", 404);
@@ -35,7 +24,7 @@ export const createDoctorService = async (data, user) => {
     throw new AppError("Assigned user must have doctor role", 400);
   }
 
-  const existingDoctor = await findDoctorByEmail(email);
+  const existingDoctor = await findDoctorByEmail(userData.email);
 
   if (existingDoctor) {
     throw new AppError("Doctor already exists", 409);
@@ -61,8 +50,8 @@ export const createDoctorService = async (data, user) => {
     entityId: doctor._id,
     metadata: {
       doctorId: doctor._id,
-      firstName,
-      lastName,
+      firstName: userData.firstName,
+      lastName: userData.lastName,
     },
   });
 

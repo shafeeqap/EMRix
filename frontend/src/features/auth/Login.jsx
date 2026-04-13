@@ -101,7 +101,7 @@ const Login = () => {
           <Button
             type="submit"
             varient="primary"
-            calssName="w-full"
+            className="w-full"
             isLoading={isLoading}
           >
             Login
