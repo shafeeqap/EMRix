@@ -4,6 +4,7 @@ import {
   getDoctorByIdServices,
   getDoctorsServices,
   updateDoctorService,
+  updateDoctorStatusService,
 } from "../services/doctorService.js";
 
 // =============> Create a new doctor <=============
@@ -48,11 +49,28 @@ export const updateDoctor = async (req, res, next) => {
       req.body,
       req.user
     );
-    console.log(req.body, "Doctor data...");
 
     res
       .status(200)
       .json({ message: "Doctor updated successfully", doctor: updatedData });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// =============> Update doctor status <=============
+export const updateDoctorStatus = async (req, res, next) => {
+  try {
+    const updatedData = await updateDoctorStatusService(
+      req.params,
+      req.body,
+      req.user
+    );
+
+    res.status(200).json({
+      message: "Status updated successfully",
+      updatedData,
+    });
   } catch (error) {
     next(error);
   }

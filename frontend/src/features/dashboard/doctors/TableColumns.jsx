@@ -2,7 +2,7 @@ import { Trash2, PenLine } from "lucide-react";
 import { formatWorkingHours } from "../../../utils/formatWorkingHours";
 import { getDuration } from "../../../utils/calculateDuration";
 
-export const getColumns = ({ onEdit, onDelete }) => [
+export const getColumns = ({ onEdit, onDelete, onUpdateStatus }) => [
   {
     header: "SL",
     render: (_, index) => index + 1,
@@ -60,7 +60,7 @@ export const getColumns = ({ onEdit, onDelete }) => [
   {
     header: "Status",
     render: (row) => (
-      <span
+      <span onClick={() => onUpdateStatus(row)}
         className={`px-2 py-1 text-xs font-medium cursor-pointer text-white ${
           row.isActive ? "bg-green-700" : "bg-red-700"
         }`}

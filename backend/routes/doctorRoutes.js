@@ -7,6 +7,7 @@ import {
   getDoctorById,
   getDoctors,
   updateDoctor,
+  updateDoctorStatus,
 } from "../controllers/doctorController.js";
 import { validate } from "../middleware/validationMiddleware.js";
 import {
@@ -32,6 +33,7 @@ router.put(
   validate(updateDoctorSchema),
   updateDoctor
 );
+router.patch("/:id/status", protect, authorize("super_admin"), updateDoctorStatus);
 router.delete("/:id", protect, authorize("super_admin"), deleteDoctor);
 
 export const doctorRoutes = router;
