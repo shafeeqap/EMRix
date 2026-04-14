@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { InputField } from "../ui";
+import { InputField } from ".";
 import useDebouncedSearch from "../../hooks/useUserSearch";
 
-const SearchField = ({
+const AutocompleteInput = ({
   label,
   value,
   onChange,
@@ -10,6 +10,7 @@ const SearchField = ({
   fetchItems,
   renderItem,
   placeholder,
+  className,
   error,
 }) => {
   const [options, setOptions] = useState([]);
@@ -92,7 +93,7 @@ const SearchField = ({
           placeholder={placeholder}
           onKeyDown={handleKeyDown}
           error={error}
-          className="focus:ring focus:border-primary"
+          className={`focus:ring focus:border-primary ${className}`}
         />
 
         {isOpen && (
@@ -123,4 +124,4 @@ const SearchField = ({
   );
 };
 
-export default SearchField;
+export default AutocompleteInput;

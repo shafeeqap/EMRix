@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { closeModal } from "../../../../components/modal/modalSlice";
-import { Button, InputField } from "../../../../components/ui";
+import { AutocompleteInput, Button, InputField } from "../../../../components/ui";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addDoctorSchema } from "../../../../validator/addDoctorValidator";
@@ -9,7 +9,6 @@ import { useCreateDoctorMutation } from "../doctorsApiSlice";
 import { handleApiError } from "../../../../utils/handleApiError";
 import { toast } from "react-toastify";
 import { useSearchUsersQuery } from "../../../users/userApiSlice";
-import SearchField from "../../../../components/search/Search";
 import { getFullName } from "../../../../utils/userHelpers";
 
 const AddDoctorModal = () => {
@@ -86,7 +85,7 @@ const AddDoctorModal = () => {
             name="name"
             control={control}
             render={({ field }) => (
-              <SearchField
+              <AutocompleteInput
                 label="Search user"
                 value={field.value ?? ""}
                 placeholder="Type to search for users..."

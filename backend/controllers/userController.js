@@ -7,7 +7,6 @@ import {
   updateUserService,
 } from "../services/userService.js";
 
-
 // =============> Create a new user <=============
 export const createUser = async (req, res, next) => {
   try {
@@ -34,9 +33,9 @@ export const searchUsers = async (req, res, next) => {
 // =============> Get all users <=============
 export const getUsers = async (req, res, next) => {
   try {
-    const users = await getUsersService();
+    const { users, page, totalPages, total } = await getUsersService(req.query);
 
-    res.status(200).json({ users });
+    res.status(200).json({ users, page, totalPages, total });
   } catch (error) {
     next(error);
   }

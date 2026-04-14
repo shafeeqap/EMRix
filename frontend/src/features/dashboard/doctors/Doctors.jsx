@@ -1,14 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import Table from "../../../components/table/Table";
 import { useGetDoctorsQuery } from "./doctorsApiSlice";
-import { Button, Loader } from "../../../components/ui";
+import { Button, Loader, Pagination, FilterSearch } from "../../../components/ui";
 import { getColumns } from "./TableColumns";
-import SearchField from "../../../components/search/Search";
 import { useDispatch } from "react-redux";
 import { openModal } from "../../../components/modal/modalSlice";
 import { Plus } from "lucide-react";
 
+
 const Doctors = () => {
+  const [page, setPage] = useState(1);
+  const [limit] = useState(5);
+  const [totalPages, setTotalPages] = useState(1);
+
   const { data, isLoading, error } = useGetDoctorsQuery();
 
   const dispatch = useDispatch();
@@ -58,12 +62,13 @@ const Doctors = () => {
   return (
     <>
       <div className="flex justify-between">
-        <SearchField />
+        <FilterSearch />
         <Button onClick={handleAddModalOpen}>
           <Plus size={20} />
         </Button>
       </div>
       <Table columns={columns} data={data.doctors || []} />
+      <Pagination page={page} setPage={setPage} totalPages={totalPages} />
     </>
   );
 };
