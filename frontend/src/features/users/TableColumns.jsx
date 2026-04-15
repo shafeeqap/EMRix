@@ -18,10 +18,10 @@ export const getColumns = ({ onEdit, onDelete }) => [
     header: "Email",
     accessor: "email",
   },
-//   {
-//     header: "Department",
-//     accessor: "department",
-//   },
+  {
+    header: "Role",
+    accessor: "role",
+  },
 //   {
 //     header: "Working Hours",
 //     render: (row) => formatWorkingHours(row.workingHours),

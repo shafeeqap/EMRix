@@ -1,4 +1,5 @@
 import {
+  countUserDocuments,
   createUserRepo,
   findUserById,
   findUserByIdAndDelete,
@@ -54,15 +55,42 @@ export const createUserService = async (data, user) => {
 };
 
 // =============> Get users service <=============
-export const getUsersService = async () => {
-  const users = await findUsers();
-  return users;
+export const getUsersService = async (query) => {
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 5;
+  const skip = (page - 1) * limit;
+  const search = query.search;
+  const status = query.status;
+
+  const filter = {};
+
+  if (search) {
+    filter.$or = [
+      { firstName: { $regex: `^${search}`, $options: "i" } },
+      { lastName: { $regex: `^${search}`, $options: "i" } },
+      { email: { $regex: search, $options: "i" } },
+      { role: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  if (status === "active") {
+    filter.isActive = true;
+  } else if (status === "inactive") {
+    filter.isActive = false;
+  }
+
+  const total = await countUserDocuments(filter);
+
+  const users = await findUsers(filter, skip, limit);
+
+  const totalPages = Math.ceil(total / limit);
+
+  return { users, page, totalPages };
 };
 
 // =============> Search users service <=============
 export const searchUsersService = async (query) => {
   const { search } = query;
-  console.log("Search query:", search);
 
   if (!search) {
     throw new AppError("Search query is required", 400);
@@ -82,8 +110,6 @@ export const searchUsersService = async (query) => {
     // .sort({ firstName: 1, lastName: 1 })
     .limit(10);
 
-  console.log("Search results:", users);
-
   const data = users.map((user) => ({
     _id: user._id,
     firstName: user.firstName,
@@ -94,7 +120,6 @@ export const searchUsersService = async (query) => {
 
   return data;
 };
-
 
 // =============> Get user by ID service <=============
 export const getUserByIdService = async (params) => {
@@ -126,7 +151,7 @@ export const updateUserService = async (params, data, user) => {
   const updatedUser = await findUserByIdAndUpdate(
     userId,
     { firstName, lastName, email, password, role },
-    { returnDocument: 'after' }
+    { returnDocument: "after" }
   );
 
   await logAction({

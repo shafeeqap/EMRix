@@ -3,7 +3,9 @@ import { apiSlice } from "../../app/apiSlice";
 const userApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getUser: builder.query({
-      query: () => "/users",
+      query: ({ page = 1, limit = 5, search, status }) =>
+        `/users?page=${page}&limit=${limit}&search=${search}&status=${status}`,
+
       providesTags: ["User"],
     }),
 

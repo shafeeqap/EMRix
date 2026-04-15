@@ -3,7 +3,9 @@ import { apiSlice } from "../../../app/apiSlice";
 export const doctorApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getDoctors: builder.query({
-      query: () => "/doctors",
+      query: ({ page = 1, limit = 5, search, status }) =>
+        `/doctors?page=${page}&limit=${limit}&search=${search}&status=${status}`,
+      
       providesTags: ["Doctor"],
     }),
 
@@ -30,6 +32,15 @@ export const doctorApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ["Doctor"],
     }),
 
+    updateDoctorStatus: builder.mutation({
+      query: ({ id, status }) => ({
+        url: `/doctors/${id}/status`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: ["Doctor"],
+    }),
+
     deleteDoctor: builder.mutation({
       query: (id) => ({
         url: `/doctors/${id}`,
@@ -45,5 +56,6 @@ export const {
   useCreateDoctorMutation,
   useGetDoctorByIdQuery,
   useUpdateDoctorMutation,
+  useUpdateDoctorStatusMutation,
   useDeleteDoctorMutation,
 } = doctorApiSlice;

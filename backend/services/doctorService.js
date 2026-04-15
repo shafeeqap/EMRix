@@ -1,4 +1,5 @@
 import {
+  countDoctorDocuments,
   createDoctorRepo,
   findDoctorByEmail,
   findDoctorById,
@@ -59,10 +60,37 @@ export const createDoctorService = async (data, user) => {
 };
 
 // =============> get all doctors service <=============
-export const getDoctorsServices = async () => {
-  const doctors = await findDoctors().populate("userId", "firstName lastName");
+export const getDoctorsServices = async (query) => {
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 5;
+  const skip = (page - 1) * limit;
+  const search = query.search;
+  const status = query.status;
 
-  return doctors;
+  const filter = {};
+
+  if (search) {
+    filter.$or = [
+      { firstName: { $regex: `^${search}`, $options: "i" } },
+      { lastName: { $regex: `^${search}`, $options: "i" } },
+      { email: { $regex: search, $options: "i" } },
+      { department: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  if (status === "active") {
+    filter.isActive = true;
+  } else if (status === "inactive") {
+    filter.isActive = false;
+  }
+
+  const total = await countDoctorDocuments(filter);
+
+  const doctors = await findDoctors(filter, skip, limit);
+
+  const totalPages = Math.ceil(total / limit);
+
+  return { doctors, page, totalPages };
 };
 
 // =============> get doctor by id service <=============
@@ -85,17 +113,8 @@ export const getDoctorByIdServices = async (doctorId) => {
 // =============> update doctor service <=============
 export const updateDoctorService = async (params, data, user) => {
   const doctorId = params.id;
-  console.log(doctorId, 'Doctor id...');
-  
-  const {
-    department,
-    workingHours,
-    slotDuration,
-    breakTimes,
-  } = data;
 
-  console.log(data, 'Doctor data...');
-  
+  const { department, workingHours, slotDuration, breakTimes } = data;
 
   const doctor = await findDoctorById(doctorId);
   if (!doctor) {
@@ -107,7 +126,7 @@ export const updateDoctorService = async (params, data, user) => {
     {
       firstName: doctor.firstName,
       lastName: doctor.lastName,
-      email : doctor.email,
+      email: doctor.email,
       department,
       workingHours,
       slotDuration,
@@ -146,6 +165,34 @@ export const updateDoctorService = async (params, data, user) => {
   });
 
   return updatedData;
+};
+
+// =============> Update doctor status service <=============
+export const updateDoctorStatusService = async (params, data, user) => {
+  const id = params.id;
+  const { status } = data;
+
+  const doctor = await findDoctorById(id);
+  if (!doctor) {
+    throw new AppError("Doctor not found", 404);
+  }
+
+  doctor.isActive = status;
+  await doctor.save();
+
+  await logAction({
+    userId: user.id,
+    role: user.role,
+    action: "UPDATE_DOCTOR_STATUS",
+    entity: "Doctor",
+    entityId: doctor._id,
+    metadata: {
+      oldStatus: status,
+      newStatus: doctor.isActive,
+    },
+  });
+
+  return doctor;
 };
 
 // =============> Delete doctor service <=============
