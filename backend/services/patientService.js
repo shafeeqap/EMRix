@@ -1,5 +1,6 @@
 import {
   createPatientRepo,
+  findOnePatient,
   findPatient,
   findPatientById,
   findPatientByIdAndDelete,
@@ -39,12 +40,22 @@ export const createPatientService = async (data, user) => {
 };
 
 // ===========> Search Patient Service <===========
+export const getPatientService = async () => {
+  const patients = await findPatient();
+
+  if (!patients) {
+    throw new AppError("Patien not found", 404);
+  }
+
+  return patients;
+};
+
+// ===========> Search Patient Service <===========
 export const searchPatientService = async (query) => {
   const { mobile } = query;
   console.log(mobile);
-  
 
-  const patient = await findPatient({ mobile });
+  const patient = await findOnePatient({ mobile });
   if (!patient) {
     throw new AppError("Patien not found", 404);
   }
@@ -78,7 +89,7 @@ export const updatePatientService = async (params, data, user) => {
   const updatedPatient = await findPatientByIdAndUpdate(
     id,
     { name, mobile },
-    { returnDocument: 'after' }
+    { returnDocument: "after" }
   );
 
   await logAction({

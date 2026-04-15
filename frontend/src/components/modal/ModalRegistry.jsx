@@ -4,6 +4,10 @@ import {
   EditDoctorModal,
   UpdateDoctorStatusModal,
 } from "../../features/dashboard/doctors/components";
+import AddPatientModal from "../../features/patients/components/AddPatientModal";
+import DeletePatientModal from "../../features/patients/components/DeletePatientModal";
+import DetailsPatientModal from "../../features/patients/components/DetailsPatientModal";
+import EditPatientModal from "../../features/patients/components/EditPatientModal";
 import {
   AddUserModal,
   DeleteUserModal,
@@ -18,9 +22,10 @@ export const MODAL_COMPONENTS = {
   UPDATE_DOCTOR_STATUS: UpdateDoctorStatusModal,
 
   // Patient Modals
-  ADD_PATIENT: "ADD_PATIENT",
-  EDIT_PATIENT: "EDIT_PATIENT",
-  DELETE_PATIENT: "DELETE_PATIENT",
+  ADD_PATIENT: AddPatientModal,
+  EDIT_PATIENT: EditPatientModal,
+  DELETE_PATIENT: DeletePatientModal,
+  DETAILS_PATIENT: DetailsPatientModal,
 
   // Appointment Modals
   ADD_APPOINTMENT: "ADD_APPOINTMENT",
