@@ -12,8 +12,8 @@ export const findUserOne = async (filter) => {
   return User.findOne(filter);
 };
 
-export const findUsers = async (search, skip, limit) => {
-  return User.find(search).skip(skip).limit(limit).sort({ createdAt: -1 });
+export const findUsers = async (filter, skip, limit) => {
+  return User.find(filter).skip(skip).limit(limit).sort({ createdAt: -1 });
 };
 
 export const findUsersBySearchQuery = (query) => {
@@ -28,6 +28,6 @@ export const findUserByIdAndDelete = async (id) => {
   return User.findByIdAndDelete(id);
 };
 
-export const countUserDocuments = () => {
-  return User.countDocuments();
+export const countUserDocuments = async(filter) => {
+  return User.countDocuments(filter);
 };

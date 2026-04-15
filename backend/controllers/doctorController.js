@@ -21,8 +21,9 @@ export const createDoctor = async (req, res, next) => {
 // =============> Get all doctors <=============
 export const getDoctors = async (req, res, next) => {
   try {
-    const doctors = await getDoctorsServices();
-    res.status(200).json({ doctors });
+    const { doctors, page, totalPages } = await getDoctorsServices(req.query);
+    
+    res.status(200).json({ doctors, page, totalPages });
   } catch (error) {
     next(error);
   }

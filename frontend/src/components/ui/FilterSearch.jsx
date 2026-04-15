@@ -2,8 +2,6 @@ import React from "react";
 import InputField from "./InputField";
 
 const FilterSearch = ({ value, onChange }) => {
-    console.log(value, 'Value');
-    
   return (
     <>
       <InputField

@@ -3,7 +3,9 @@ import { apiSlice } from "../../../app/apiSlice";
 export const doctorApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getDoctors: builder.query({
-      query: () => "/doctors",
+      query: ({ page = 1, limit = 5, search, status }) =>
+        `/doctors?page=${page}&limit=${limit}&search=${search}&status=${status}`,
+      
       providesTags: ["Doctor"],
     }),
 

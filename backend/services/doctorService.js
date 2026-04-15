@@ -1,4 +1,5 @@
 import {
+  countDoctorDocuments,
   createDoctorRepo,
   findDoctorByEmail,
   findDoctorById,
@@ -59,10 +60,37 @@ export const createDoctorService = async (data, user) => {
 };
 
 // =============> get all doctors service <=============
-export const getDoctorsServices = async () => {
-  const doctors = await findDoctors().populate("userId", "firstName lastName");
+export const getDoctorsServices = async (query) => {
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 5;
+  const skip = (page - 1) * limit;
+  const search = query.search;
+  const status = query.status;
 
-  return doctors;
+  const filter = {};
+
+  if (search) {
+    filter.$or = [
+      { firstName: { $regex: `^${search}`, $options: "i" } },
+      { lastName: { $regex: `^${search}`, $options: "i" } },
+      { email: { $regex: search, $options: "i" } },
+      { department: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  if (status === "active") {
+    filter.isActive = true;
+  } else if (status === "inactive") {
+    filter.isActive = false;
+  }
+
+  const total = await countDoctorDocuments(filter);
+
+  const doctors = await findDoctors(filter, skip, limit);
+
+  const totalPages = Math.ceil(total / limit);
+
+  return { doctors, page, totalPages };
 };
 
 // =============> get doctor by id service <=============

@@ -4,3 +4,4 @@ export { default as Button } from "./Button";
 export { default as AutocompleteInput } from "./AutocompleteInput";
 export { default as Pagination } from "./Pagination";
 export { default as FilterSearch } from "./FilterSearch";
+export { default as FilterOption } from "./FilterOption";

@@ -62,13 +62,6 @@ export const getUsersService = async (query) => {
   const search = query.search;
   const status = query.status;
 
-  // console.log(page, "Page...");
-  // console.log(limit, "Limit...");
-  // console.log(skip, "Skip...");
-  console.log(search, "Search...");
-  console.log(status, 'Status...');
-  
-
   const filter = {};
 
   if (search) {
@@ -80,8 +73,10 @@ export const getUsersService = async (query) => {
     ];
   }
 
-  if (status) {
-    filter.isActive = status === "active";
+  if (status === "active") {
+    filter.isActive = true;
+  } else if (status === "inactive") {
+    filter.isActive = false;
   }
 
   const total = await countUserDocuments(filter);
@@ -90,13 +85,12 @@ export const getUsersService = async (query) => {
 
   const totalPages = Math.ceil(total / limit);
 
-  return { users, page, totalPages, total };
+  return { users, page, totalPages };
 };
 
 // =============> Search users service <=============
 export const searchUsersService = async (query) => {
   const { search } = query;
-  console.log("Search query:", search);
 
   if (!search) {
     throw new AppError("Search query is required", 400);

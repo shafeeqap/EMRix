@@ -4,15 +4,20 @@ import { useDispatch } from "react-redux";
 import { openModal } from "../../components/modal/modalSlice";
 import { useGetUserQuery } from "./userApiSlice";
 import { getColumns } from "./TableColumns";
-import { Button, FilterSearch, Loader, Pagination } from "../../components/ui";
+import {
+  Button,
+  FilterOption,
+  FilterSearch,
+  Loader,
+  Pagination,
+} from "../../components/ui";
 import { Plus } from "lucide-react";
+import ErrorMessage from "../../components/ErrorMessage";
 
 const Users = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
-
-  console.log(search, "Search...");
 
   const { data, isLoading, error } = useGetUserQuery({
     page,
@@ -20,12 +25,13 @@ const Users = () => {
     search,
     status,
   });
+  
   const dispatch = useDispatch();
 
-  const users = data?.users || [];
+  console.log(data, 'User data...');
+  
 
-  // console.log(users, "Users...");
-  console.log(isLoading, "Loading...");
+  const users = data?.users || [];
 
   useEffect(() => {
     setPage(1);
@@ -62,7 +68,7 @@ const Users = () => {
       </div>
     );
 
-  if (error) return <p>Something went wrong</p>;
+  if (error) return <ErrorMessage />;
 
   return (
     <>
@@ -74,25 +80,17 @@ const Users = () => {
         </Button>
       </div>
 
-      <div className="py-3">
-        <select
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-          className="border px-3 py-2 rounded w-52 bg-gray-100"
-        >
-          <option value="">All</option>
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
-        </select>
-      </div>
+      <FilterOption status={status} setStatus={setStatus} />
 
       <Table columns={columns} data={users} />
 
-      <Pagination
-        page={page}
-        setPage={setPage}
-        totalPages={data?.totalPages || 1}
-      />
+      {data.totalPages > 1 && (
+        <Pagination
+          page={page}
+          setPage={setPage}
+          totalPages={data?.totalPages || 1}
+        />
+      )}
     </>
   );
 };

@@ -33,9 +33,9 @@ export const searchUsers = async (req, res, next) => {
 // =============> Get all users <=============
 export const getUsers = async (req, res, next) => {
   try {
-    const { users, page, totalPages, total } = await getUsersService(req.query);
+    const { users, page, totalPages } = await getUsersService(req.query);
 
-    res.status(200).json({ users, page, totalPages, total });
+    res.status(200).json({ users, page, totalPages });
   } catch (error) {
     next(error);
   }
