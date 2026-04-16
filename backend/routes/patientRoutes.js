@@ -4,6 +4,7 @@ import {
   createPatient,
   deletePatient,
   getPatientById,
+  getPatients,
   searchPatient,
   updatePatient,
 } from "../controllers/patientController.js";
@@ -16,6 +17,7 @@ import {
 
 const router = express.Router();
 
+router.get("/", protect, getPatients);
 router.post("/", protect, validate(createPatientSchema), createPatient);
 router.get(
   "/search",

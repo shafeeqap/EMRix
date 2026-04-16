@@ -3,6 +3,7 @@ import {
   createPatientService,
   deletePatientService,
   getPatientByIdService,
+  getPatientService,
   searchPatientService,
   updatePatientService,
 } from "../services/patientService.js";
@@ -15,6 +16,17 @@ export const createPatient = async (req, res, next) => {
     return res
       .status(201)
       .json({ message: "Patien created successfully", patient });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ===========> Get patient <===========
+export const getPatients = async (req, res, next) => {
+  try {
+    const patients = await getPatientService();
+
+    res.status(200).json({ patients });
   } catch (error) {
     next(error);
   }
