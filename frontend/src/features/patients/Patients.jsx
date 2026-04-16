@@ -5,6 +5,7 @@ import {
   FilterOption,
   FilterSearch,
   Loader,
+  Pagination,
 } from "../../components/ui";
 import ErrorMessage from "../../components/ErrorMessage";
 import Table from "../../components/table/Table";
@@ -16,13 +17,12 @@ import { Plus } from "lucide-react";
 const Patients = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [status, setStatus] = useState("");
+  // const [status, setStatus] = useState("");
 
   const { data, isLoading, error } = useGetPatientQuery({
     page,
     limit: 5,
     search,
-    status,
   });
 
   const dispatch = useDispatch();
@@ -33,7 +33,7 @@ const Patients = () => {
 
   useEffect(() => {
     setPage(1);
-  }, [search, status]);
+  }, [search]);
 
   const handleAddModalOpen = (row) => {
     dispatch(openModal({ modalType: "ADD_PATIENT", modalProps: {} }));
@@ -42,20 +42,26 @@ const Patients = () => {
 
   const handleEditModalOpen = (row) => {
     dispatch(
-      openModal({ modalType: "EDIT_PATIENT", modalProps: { usersData: row } })
+      openModal({ modalType: "EDIT_PATIENT", modalProps: { patientData: row } })
     );
     console.log("EDIT CLICKED", row);
   };
 
   const handleDeleteModalOpen = (row) => {
     dispatch(
-      openModal({ modalType: "DELETE_PATIENT", modalProps: { usersData: row } })
+      openModal({
+        modalType: "DELETE_PATIENT",
+        modalProps: { patientData: row },
+      })
     );
     console.log("DELETE CLICKED", row);
   };
   const handleDetailsModalOpen = (row) => {
     dispatch(
-      openModal({ modalType: "DETAILS_PATIENT", modalProps: { usersData: row } })
+      openModal({
+        modalType: "DETAILS_PATIENT",
+        modalProps: { usersData: row },
+      })
     );
     console.log("DETAILS CLICKED", row);
   };
@@ -79,14 +85,23 @@ const Patients = () => {
     <>
       <div className="flex justify-between">
         <FilterSearch value={search} onChange={setSearch} />
+
         <Button onClick={handleAddModalOpen}>
           <Plus size={20} />
         </Button>
       </div>
 
-      <FilterOption status={status} setStatus={setStatus} />
+      {/* <FilterOption status={status} setStatus={setStatus} /> */}
 
       <Table columns={columns} data={patients} />
+
+      {data.totalPages > 1 && (
+        <Pagination
+          page={page}
+          setPage={setPage}
+          totalPages={data?.totalPages || 1}
+        />
+      )}
     </>
   );
 };

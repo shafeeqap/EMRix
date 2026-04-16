@@ -33,7 +33,7 @@ const DeleteDoctorModal = () => {
       <h1 className="text-2xl">Are you sure?</h1>
       <p className="text-textSecondary text-center">
         Do you really want to delete{" "}
-        <span className="text-red-600">{fullName}</span> records? This process
+        <span className="text-red-600">{fullName}'s</span> records? This process
         cannot be undone.
       </p>
 
