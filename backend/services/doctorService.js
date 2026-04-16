@@ -64,7 +64,7 @@ export const getDoctorsServices = async (query) => {
   const page = Number(query.page) || 1;
   const limit = Number(query.limit) || 5;
   const skip = (page - 1) * limit;
-  const search = query.search;
+  const search = query.search?.trim();
   const status = query.status;
 
   const filter = {};

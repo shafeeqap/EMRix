@@ -1,4 +1,5 @@
 import {
+  countPatientDocuments,
   createPatientRepo,
   findOnePatient,
   findPatient,
@@ -45,14 +46,33 @@ export const createPatientService = async (data, user) => {
 };
 
 // ===========> Search Patient Service <===========
-export const getPatientService = async () => {
-  const patients = await findPatient();
+export const getPatientService = async (query) => {
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 5;
+  const skip = (page - 1) * limit;
+  const search = query.search?.trim();
 
-  if (!patients) {
-    throw new AppError("Patien not found", 404);
+  const filter = {};
+
+  if (search) {
+    const isNumeric = /^\d+$/.test(search);
+
+    filter.$or = [
+      { name: { $regex: `^${search}`, $options: "i" } },
+      { patientId: { $regex: search, $options: "i" } },
+    ];
+
+    if (isNumeric) {
+      filter.$or.push({ mobile: { $regex: search } });
+    }
   }
 
-  return patients;
+  const total = await countPatientDocuments(filter);
+  const patients = await findPatient(filter, skip, limit);
+
+  const totalPages = Math.ceil(total / limit);
+
+  return { patients, page, totalPages };
 };
 
 // ===========> Search Patient Service <===========

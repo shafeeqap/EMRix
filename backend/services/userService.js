@@ -59,7 +59,7 @@ export const getUsersService = async (query) => {
   const page = Number(query.page) || 1;
   const limit = Number(query.limit) || 5;
   const skip = (page - 1) * limit;
-  const search = query.search;
+  const search = query.search?.trim();
   const status = query.status;
 
   const filter = {};
@@ -80,7 +80,6 @@ export const getUsersService = async (query) => {
   }
 
   const total = await countUserDocuments(filter);
-
   const users = await findUsers(filter, skip, limit);
 
   const totalPages = Math.ceil(total / limit);
