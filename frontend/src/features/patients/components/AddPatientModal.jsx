@@ -3,14 +3,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch } from "react-redux";
 import { closeModal } from "../../../components/modal/modalSlice";
-import { useCreateDoctorMutation } from "../../dashboard/doctors/doctorsApiSlice";
 import { addPatientSchema } from "../../../validator/addPatientValidator";
 import { Button, InputField } from "../../../components/ui";
 import { handleApiError } from "../../../utils/handleApiError";
 import { toast } from "react-toastify";
+import { useCreatePatientMutation } from "../patientsApiSlice";
 
 const AddPatientModal = () => {
-  const [createPatient, { isLoading }] = useCreateDoctorMutation();
+  const [createPatient, { isLoading }] = useCreatePatientMutation();
   const dispatch = useDispatch();
 
   const {
@@ -23,16 +23,13 @@ const AddPatientModal = () => {
     defaultValues: { name: "" },
   });
 
-  console.log(errors, "Errors...");
-
-
   const onSubmit = async (data) => {
-    console.log(data, "Patient data...");
-
     try {
       const res = await createPatient(data).unwrap();
-      console.log(res, "Response...");
+
       toast.success(res.message || "Patient created successfully");
+
+      dispatch(closeModal());
     } catch (error) {
       console.error("Error creating patient:", error);
       handleApiError(error, setError);
@@ -69,6 +66,7 @@ const AddPatientModal = () => {
             label="Mobile"
             type="text"
             {...register("mobile")}
+            maxLength={10}
             error={errors.mobile}
             placeholder="Enter mobile number"
             className="focus:ring focus:border-primary"
