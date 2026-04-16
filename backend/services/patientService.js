@@ -8,18 +8,20 @@ import {
 } from "../repositories/patientRepository.js";
 import { AppError } from "../utils/AppError.js";
 import { logAction } from "../utils/auditLogger.js";
+import { generatePatientID } from "../utils/generatePatientID.js";
 
 // ===========> Create Patient Service <===========
 export const createPatientService = async (data, user) => {
   const { name, age, mobile } = data;
-  console.log(data, 'Data...');
-  
+  console.log(data, "Data...");
 
-  const existPatient = await findPatient({ mobile });
+  const existPatient = await findOnePatient({ mobile });
 
   if (existPatient) {
     throw new AppError("Patient already exists", 400);
   }
+
+  const patientId = await generatePatientID();
 
   const patient = await createPatientRepo({
     name,
