@@ -11,7 +11,9 @@ import { logAction } from "../utils/auditLogger.js";
 
 // ===========> Create Patient Service <===========
 export const createPatientService = async (data, user) => {
-  const { name, mobile, patientId } = data;
+  const { name, age, mobile } = data;
+  console.log(data, 'Data...');
+  
 
   const existPatient = await findPatient({ mobile });
 
@@ -21,6 +23,7 @@ export const createPatientService = async (data, user) => {
 
   const patient = await createPatientRepo({
     name,
+    age,
     mobile,
     patientId,
   });

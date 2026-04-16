@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { closeModal } from "../../../../components/modal/modalSlice";
-import { AutocompleteInput, Button, InputField } from "../../../../components/ui";
+import {
+  AutocompleteInput,
+  Button,
+  InputField,
+} from "../../../../components/ui";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addDoctorSchema } from "../../../../validator/addDoctorValidator";
@@ -15,10 +19,11 @@ const AddDoctorModal = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [search, setSearch] = useState("");
   const [breakTime, setBreakTime] = useState(false);
-  const [createDoctor] = useCreateDoctorMutation();
+  
+  const [createDoctor, { isLoading }] = useCreateDoctorMutation();
   const dispatch = useDispatch();
 
-  const { data: users = [], isLoading } = useSearchUsersQuery(search, {
+  const { data: users = [] } = useSearchUsersQuery(search, {
     refetchOnMountOrArgChange: false,
     skip: search.length < 2,
   });

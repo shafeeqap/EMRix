@@ -10,6 +10,10 @@ export const getColumns = ({ onEdit, onDelete, onDetails }) => [
     accessor: "name",
   },
   {
+    header: "Age",
+    accessor: "age",
+  },
+  {
     header: "Mobile",
     accessor: "mobile",
   },

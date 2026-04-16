@@ -16,6 +16,10 @@ const patientSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    age: {
+      type: String,
+      required: true,
+    },
     patientId: {
       type: String,
       unique: true,
