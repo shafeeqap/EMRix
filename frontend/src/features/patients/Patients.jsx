@@ -42,14 +42,14 @@ const Patients = () => {
 
   const handleEditModalOpen = (row) => {
     dispatch(
-      openModal({ modalType: "EDIT_PATIENT", modalProps: { usersData: row } })
+      openModal({ modalType: "EDIT_PATIENT", modalProps: { patientData: row } })
     );
     console.log("EDIT CLICKED", row);
   };
 
   const handleDeleteModalOpen = (row) => {
     dispatch(
-      openModal({ modalType: "DELETE_PATIENT", modalProps: { usersData: row } })
+      openModal({ modalType: "DELETE_PATIENT", modalProps: { patientData: row } })
     );
     console.log("DELETE CLICKED", row);
   };
