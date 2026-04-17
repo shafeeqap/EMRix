@@ -29,7 +29,7 @@ const Patients = () => {
 
   const patients = data?.patients || [];
 
-  console.log(patients, "Patients...");
+  // console.log(patients, "Patients...");
 
   useEffect(() => {
     if (data && page > data.totalPages) {

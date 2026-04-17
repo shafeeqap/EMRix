@@ -104,7 +104,7 @@ export const getPatientByIdService = async (params) => {
 // ===========> Update Patient Service <===========
 export const updatePatientService = async (params, data, user) => {
   const id = params.id;
-  const { name, mobile } = data;
+  const { name, age, mobile } = data;
 
   const patient = await findPatientById(id);
   if (!patient) {
@@ -113,7 +113,7 @@ export const updatePatientService = async (params, data, user) => {
 
   const updatedPatient = await findPatientByIdAndUpdate(
     id,
-    { name, mobile },
+    { name, age, mobile },
     { returnDocument: "after" }
   );
 

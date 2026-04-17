@@ -10,6 +10,7 @@ import {
   useGetPatientByIdQuery,
   useUpdatePatientMutation,
 } from "../patientsApiSlice";
+import { handleApiError } from "../../../utils/handleApiError";
 
 const EditPatientModal = () => {
   const { patientId } = useSelector((state) => state.modal.modalProps || {});
@@ -19,9 +20,6 @@ const EditPatientModal = () => {
     useUpdatePatientMutation();
 
   const dispatch = useDispatch();
-
-  console.log(patientData, "Patient data...");
-  console.log(error, "Error...");
 
   const form = useForm({
     resolver: zodResolver(editPatientSchema),
@@ -45,15 +43,26 @@ const EditPatientModal = () => {
   }, [patientData, form]);
 
   const onSubmit = async (data) => {
-    console.log(data, "Submit data...");
+    const isChanged =
+      data.name !== patientData.name ||
+      Number(data.age) !== Number(patientData.age) ||
+      data.mobile !== patientData.mobile;
 
-    if (!form.formState.isDirty) {
+    if (!isChanged) {
       toast.warning("No changes detected");
       return;
     }
 
-    const res = await updatePatient({ id: patientId, ...data }).unwrap();
-    console.log(res, "Response...");
+    try {
+      const res = await updatePatient({ id: patientId, ...data }).unwrap();
+      console.log(res, "Patient updated successfully");
+      toast.success(res.message || "Patient updated successfully");
+
+      dispatch(closeModal());
+    } catch (error) {
+      console.error("Error updating patient:", error);
+      handleApiError(error, form.setError);
+    }
   };
 
   if (isLoading)
@@ -111,7 +120,7 @@ const EditPatientModal = () => {
             Cancel
           </Button>
           <Button type="submit" variant="primary">
-            {loading ? <Loader /> : "Update Patient"}
+            {loading ? <Loader size="small" /> : "Update Patient"}
           </Button>
         </div>
       </form>
