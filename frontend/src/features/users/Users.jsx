@@ -25,11 +25,10 @@ const Users = () => {
     search,
     status,
   });
-  
+
   const dispatch = useDispatch();
 
-  console.log(data, 'User data...');
-  
+  console.log(data, "User data...");
 
   const users = data?.users || [];
 
@@ -82,7 +81,13 @@ const Users = () => {
 
       <FilterOption status={status} setStatus={setStatus} />
 
-      <Table columns={columns} data={users} />
+      {users.length === 0 ? (
+        <div className="flex justify-center items-center bg-gray-100 mt-5 rounded min-h-20">
+          <p>{search ? "No results found" : "No users available"}</p>
+        </div>
+      ) : (
+        <Table columns={columns} data={users} />
+      )}
 
       {data.totalPages > 1 && (
         <Pagination

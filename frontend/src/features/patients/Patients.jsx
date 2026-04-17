@@ -17,7 +17,7 @@ import { Plus } from "lucide-react";
 const Patients = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  // const [status, setStatus] = useState("");
+
 
   const { data, isLoading, error } = useGetPatientQuery({
     page,
@@ -32,8 +32,10 @@ const Patients = () => {
   console.log(patients, "Patients...");
 
   useEffect(() => {
-    setPage(1);
-  }, [search]);
+    if (data && page > data.totalPages) {
+      setPage(data.totalPages);
+    }
+  }, [search, data, page]);
 
   const handleAddModalOpen = (row) => {
     dispatch(openModal({ modalType: "ADD_PATIENT", modalProps: {} }));
@@ -42,7 +44,7 @@ const Patients = () => {
 
   const handleEditModalOpen = (row) => {
     dispatch(
-      openModal({ modalType: "EDIT_PATIENT", modalProps: { patientData: row } })
+      openModal({ modalType: "EDIT_PATIENT", modalProps: { patientId: row._id } })
     );
     console.log("EDIT CLICKED", row);
   };
@@ -93,7 +95,13 @@ const Patients = () => {
 
       {/* <FilterOption status={status} setStatus={setStatus} /> */}
 
-      <Table columns={columns} data={patients} />
+      {patients.length === 0 ? (
+        <div className="flex justify-center items-center bg-gray-100 mt-5 rounded min-h-20">
+          <p>{search ? "No results found" : "No patients available"}</p>
+        </div>
+      ) : (
+        <Table columns={columns} data={patients} />
+      )}
 
       {data.totalPages > 1 && (
         <Pagination

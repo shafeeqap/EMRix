@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch } from "react-redux";
 import { closeModal } from "../../../components/modal/modalSlice";
 import { addPatientSchema } from "../../../validator/addPatientValidator";
-import { Button, InputField } from "../../../components/ui";
+import { Button, InputField, Loader } from "../../../components/ui";
 import { handleApiError } from "../../../utils/handleApiError";
 import { toast } from "react-toastify";
 import { useCreatePatientMutation } from "../patientsApiSlice";
@@ -82,7 +82,7 @@ const AddPatientModal = () => {
             Cancel
           </Button>
           <Button type="submit" variant="primary">
-            {isLoading} Add
+            {isLoading ? <Loader/> : "Add"}
           </Button>
         </div>
       </form>
