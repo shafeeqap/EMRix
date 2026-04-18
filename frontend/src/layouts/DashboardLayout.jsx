@@ -13,7 +13,7 @@ const DashboardLayout = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="min-h-screen w-full">
+      <main className="min-h-screen w-full bg-gray-100">
         <Topbar />
         <div className="p-6 pl-20">
           <Outlet />

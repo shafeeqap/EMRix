@@ -7,8 +7,6 @@ const GlobalModal = () => {
   const dispatch = useDispatch();
   const { isOpen, modalType, modalProps } = useSelector((state) => state.modal);
 
-  
-
   useEffect(() => {
     if (!isOpen) return;
 

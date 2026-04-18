@@ -6,7 +6,7 @@ const FilterOption = ({ status, setStatus }) => {
       <select
         value={status}
         onChange={(e) => setStatus(e.target.value)}
-        className="border px-3 py-2 rounded w-52 bg-gray-100"
+        className="border px-3 py-2 rounded w-52 bg-white"
       >
         <option value="">All</option>
         <option value="active">Active</option>

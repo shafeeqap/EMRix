@@ -9,6 +9,12 @@ const patientApiSlice = apiSlice.injectEndpoints({
       providesTags: ["Patient"],
     }),
 
+    getPatientDetails: builder.query({
+      query: (id) => `/patients/${id}/details`,
+
+      providesTags: ["Patient"],
+    }),
+    
     createPatient: builder.mutation({
       query: (patientData) => ({
         url: "/patients",
@@ -44,8 +50,9 @@ const patientApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useGetPatientQuery,
+  useGetPatientDetailsQuery,
   useCreatePatientMutation,
   useDeletePatientMutation,
   useUpdatePatientMutation,
-  useGetPatientByIdQuery
+  useGetPatientByIdQuery,
 } = patientApiSlice;

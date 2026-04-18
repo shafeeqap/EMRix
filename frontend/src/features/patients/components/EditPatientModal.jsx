@@ -16,6 +16,7 @@ const EditPatientModal = () => {
   const { patientId } = useSelector((state) => state.modal.modalProps || {});
 
   const { data: patientData, isLoading } = useGetPatientByIdQuery(patientId);
+  
   const [updatePatient, { isLoading: loading, error }] =
     useUpdatePatientMutation();
 

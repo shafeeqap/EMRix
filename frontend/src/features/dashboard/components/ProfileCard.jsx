@@ -3,7 +3,7 @@ import { Stethoscope } from "lucide-react";
 
 const ProfileCard = ({ fullName, department }) => {
   return (
-    <div className="min-w-md min-h-28 flex justify-between items-center shadow px-4 py-2 border">
+    <div className="bg-white min-w-md min-h-28 flex justify-between items-center shadow px-4 py-2 border">
       <div className="flex flex-col px-2">
         <h2 className="text-lg font-bold">Hello, {fullName}</h2>
         <p className="text-secondary text-sm">Department{department}</p>

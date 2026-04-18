@@ -44,7 +44,7 @@ export const getColumns = ({ onEdit, onDelete, onDetails }) => [
   {
     header: "Actions",
     render: (row) => (
-      <div className="flex gap-5 ">
+      <div className="flex gap-5">
         <PenLine onClick={() => onEdit(row)} className="cursor-pointer" />
 
         <Trash2
@@ -57,7 +57,7 @@ export const getColumns = ({ onEdit, onDelete, onDetails }) => [
   {
     header: "Details",
     render: (row) => (
-      <div className="flex gap-5 ">
+      <div className="flex gap-5">
         <Eye onClick={() => onDetails(row)} className="cursor-pointer" />
       </div>
     ),

@@ -62,7 +62,7 @@ const Patients = () => {
     dispatch(
       openModal({
         modalType: "DETAILS_PATIENT",
-        modalProps: { usersData: row },
+        modalProps: { patientId: row._id },
       })
     );
     console.log("DETAILS CLICKED", row);
