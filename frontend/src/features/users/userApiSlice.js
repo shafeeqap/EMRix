@@ -19,7 +19,16 @@ const userApiSlice = apiSlice.injectEndpoints({
 
       keepUnusedDataFor: 60,
     }),
+
+    createUser: builder.mutation({
+      query: (userData) => ({
+        url: "/users",
+        method: "POST",
+        body: userData,
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 });
 
-export const { useGetUserQuery, useSearchUsersQuery } = userApiSlice;
+export const { useGetUserQuery, useSearchUsersQuery, useCreateUserMutation } = userApiSlice;

@@ -37,7 +37,7 @@ const AddPatientModal = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg p-6 max-w-md">
+    <div className="bg-white rounded-lg p-6 sm:w-96">
       <h2 className="text-xl font-semibold mb-4">Add Patient</h2>
 
       <form onSubmit={handleSubmit(onSubmit)}>
