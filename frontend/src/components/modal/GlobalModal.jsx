@@ -7,8 +7,6 @@ const GlobalModal = () => {
   const dispatch = useDispatch();
   const { isOpen, modalType, modalProps } = useSelector((state) => state.modal);
 
-  
-
   useEffect(() => {
     if (!isOpen) return;
 
@@ -57,7 +55,7 @@ const GlobalModal = () => {
           role="dialog"
           aria-modal="true"
           onClick={(e) => e.stopPropagation()}
-          className="relative bg-white rounded-lg shadow-lg sm:p-6 sm:w-full max-w-md max-h-[580px] overflow-y-auto z-10"
+          className="relative bg-white rounded-lg shadow-lg sm:p-6 max-h-[580px] overflow-y-auto z-10"
         >
           <Component {...modalProps} />
         </div>

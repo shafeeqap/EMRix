@@ -1,4 +1,6 @@
+import { findAppointmentDetails } from "../repositories/appointmentRepository.js";
 import {
+  countPatientDocuments,
   createPatientRepo,
   findOnePatient,
   findPatient,
@@ -45,17 +47,36 @@ export const createPatientService = async (data, user) => {
 };
 
 // ===========> Search Patient Service <===========
-export const getPatientService = async () => {
-  const patients = await findPatient();
+export const getPatientService = async (query) => {
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 5;
+  const skip = (page - 1) * limit;
+  const search = query.search?.trim();
 
-  if (!patients) {
-    throw new AppError("Patien not found", 404);
+  const filter = {};
+
+  if (search) {
+    const isNumeric = /^\d+$/.test(search);
+
+    filter.$or = [
+      { name: { $regex: `^${search}`, $options: "i" } },
+      { patientId: { $regex: search, $options: "i" } },
+    ];
+
+    if (isNumeric) {
+      filter.$or.push({ mobile: { $regex: search } });
+    }
   }
 
-  return patients;
+  const total = await countPatientDocuments(filter);
+  const patients = await findPatient(filter, skip, limit);
+
+  const totalPages = Math.ceil(total / limit);
+
+  return { patients, page, totalPages };
 };
 
-// ===========> Search Patient Service <===========
+// ===========> Search Patient Service <=========== (Pending for remove)
 export const searchPatientService = async (query) => {
   const { mobile } = query;
   console.log(mobile);
@@ -68,9 +89,27 @@ export const searchPatientService = async (query) => {
   return patient;
 };
 
+// ===========> Get Patinet full details Service <===========
+export const getPatientFullDetailsService = async (params) => {
+  const patientId = params.id;
+  console.log(patientId, "Patient id...");
+
+  const patient = await findPatientById(patientId);
+
+  if (!patient) {
+    throw new AppError("Patient not found", 404);
+  }
+
+  const appointments = await findAppointmentDetails(patientId);
+  console.log(appointments, "Appointment...");
+
+  return { patient, appointments };
+};
+
 // ===========> Get Patient By ID Service <===========
 export const getPatientByIdService = async (params) => {
   const patientId = params.id;
+  console.log(patientId, "Patient ID");
 
   const patient = await findPatientById(patientId);
 
@@ -84,16 +123,17 @@ export const getPatientByIdService = async (params) => {
 // ===========> Update Patient Service <===========
 export const updatePatientService = async (params, data, user) => {
   const id = params.id;
-  const { name, mobile } = data;
+  const { name, age, mobile } = data;
 
   const patient = await findPatientById(id);
+
   if (!patient) {
     throw new AppError("Patient not found", 404);
   }
 
   const updatedPatient = await findPatientByIdAndUpdate(
     id,
-    { name, mobile },
+    { name, age, mobile },
     { returnDocument: "after" }
   );
 

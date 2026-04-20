@@ -11,7 +11,7 @@ const Pagination = ({ setPage, page, totalPages }) => {
       <button
         disabled={page === 1}
         onClick={() => setPage(page - 1)}
-        className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
+        className="px-3 py-1 b bg-white border rounded disabled:opacity-50 cursor-pointer"
       >
         Previous
       </button>
@@ -23,7 +23,7 @@ const Pagination = ({ setPage, page, totalPages }) => {
             key={p}
             onClick={() => setPage(p)}
             className={`px-3 py-2 border rounded cursor-pointer ${
-              page === p ? "bg-primary text-white" : ""
+              page === p ? "bg-primary text-white" : "bg-white"
             }`}
           >
             {p}
@@ -34,7 +34,7 @@ const Pagination = ({ setPage, page, totalPages }) => {
       <button
         disabled={page === totalPages}
         onClick={() => setPage(page + 1)}
-        className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
+        className="px-3 py-1 bg-white border rounded disabled:opacity-50 cursor-pointer"
       >
         Next
       </button>

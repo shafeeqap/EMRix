@@ -13,12 +13,10 @@ import { hashValue } from "../utils/hashUtils.js";
 
 // =============> Create user service <=============
 export const createUserService = async (data, user) => {
-  const { firstName, lastName, email, password, role } = data;
-
-  console.log(data);
+  const { firstName, lastName, email, mobile, password, role } = data;
 
   // validate input
-  if (!firstName || !lastName || !email || !password || !role) {
+  if (!firstName || !lastName || !email || !mobile || !password || !role) {
     throw new Error("All fields are required");
   }
 
@@ -33,6 +31,7 @@ export const createUserService = async (data, user) => {
     firstName,
     lastName,
     email,
+    mobile,
     password: hashedPassword,
     role,
   });
@@ -51,7 +50,15 @@ export const createUserService = async (data, user) => {
     },
   });
 
-  return newUser;
+  const userData = {
+    firstName: newUser.firstName,
+    lastName: newUser.lastName,
+    email: newUser.email,
+    mobile: newUser.mobile,
+    role: newUser.role,
+  };
+
+  return userData;
 };
 
 // =============> Get users service <=============
@@ -59,7 +66,7 @@ export const getUsersService = async (query) => {
   const page = Number(query.page) || 1;
   const limit = Number(query.limit) || 5;
   const skip = (page - 1) * limit;
-  const search = query.search;
+  const search = query.search?.trim();
   const status = query.status;
 
   const filter = {};
@@ -80,7 +87,6 @@ export const getUsersService = async (query) => {
   }
 
   const total = await countUserDocuments(filter);
-
   const users = await findUsers(filter, skip, limit);
 
   const totalPages = Math.ceil(total / limit);
@@ -124,6 +130,7 @@ export const searchUsersService = async (query) => {
 // =============> Get user by ID service <=============
 export const getUserByIdService = async (params) => {
   const userId = params.id;
+  console.log(userId, "user id...");
 
   const user = await findUserById(userId);
   if (!user) {
@@ -137,9 +144,9 @@ export const getUserByIdService = async (params) => {
 export const updateUserService = async (params, data, user) => {
   const userId = params.id;
 
-  const { firstName, lastName, email, password, role } = data;
+  const { firstName, lastName, email, mobile, password, role } = data;
 
-  if (!firstName || !lastName || !email || !password || !role) {
+  if (!firstName || !lastName || !email || !password || !mobile || !role) {
     throw new Error("Missing required fields");
   }
 
@@ -150,7 +157,7 @@ export const updateUserService = async (params, data, user) => {
 
   const updatedUser = await findUserByIdAndUpdate(
     userId,
-    { firstName, lastName, email, password, role },
+    { firstName, lastName, email, mobile, password, role },
     { returnDocument: "after" }
   );
 
@@ -166,12 +173,14 @@ export const updateUserService = async (params, data, user) => {
         firstName: userFound.firstName,
         lastName: userFound.lastName,
         email: userFound.email,
+        mobile: userFound.mobile,
         role: userFound.role,
       },
       updatedData: {
         firstName,
         lastName,
         email,
+        mobile,
         role,
       },
     },
@@ -180,6 +189,7 @@ export const updateUserService = async (params, data, user) => {
   return updatedUser;
 };
 
+// =============> Delete user service <=============
 export const deleteUserService = async (params, user) => {
   const userId = params.id;
 
