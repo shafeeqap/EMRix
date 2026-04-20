@@ -3,6 +3,8 @@ import {
   createPatientService,
   deletePatientService,
   getPatientByIdService,
+  getPatientFullDetailsService,
+  getPatientService,
   searchPatientService,
   updatePatientService,
 } from "../services/patientService.js";
@@ -20,12 +22,34 @@ export const createPatient = async (req, res, next) => {
   }
 };
 
-// ===========> Search Patinet information by mobile <===========
+// ===========> Get patient <===========
+export const getPatients = async (req, res, next) => {
+  try {
+    const { patients, page, totalPages } = await getPatientService(req.query);
+
+    res.status(200).json({ patients, page, totalPages });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ===========> Search Patinet information by mobile <=========== Pending for remove
 export const searchPatient = async (req, res, next) => {
   try {
     const patient = await searchPatientService(req.validatedData);
 
     res.status(200).json({ patient });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ===========> Get Patinet full details <===========
+export const getPatientFullDetails = async (req, res, next) => {
+  try {
+    const data = await getPatientFullDetailsService(req.params);
+
+    res.json(data);
   } catch (error) {
     next(error);
   }

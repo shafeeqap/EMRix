@@ -5,7 +5,8 @@ import { fomattedDate } from "../utils/formatedDated.js";
 // =============> generate available slots <=============
 export const generateAvailableSlots = async (data) => {
   const { doctorId, date } = data;
-
+  console.log(data, 'Slot data...');
+  
   const { startTime, endTime } = fomattedDate(date);
 
   const doctor = await findDoctorOne({ _id: doctorId });

@@ -1,19 +1,74 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Table from "../../../components/table/Table";
 import { useGetDoctorsQuery } from "./doctorsApiSlice";
-import { Loader } from "../../../components/ui";
-import { Columns } from "./TableColumns";
-import SearchField from "../../../components/search/Search";
+import {
+  Button,
+  Loader,
+  Pagination,
+  FilterSearch,
+  FilterOption,
+} from "../../../components/ui";
+import { getColumns } from "./TableColumns";
 import { useDispatch } from "react-redux";
 import { openModal } from "../../../components/modal/modalSlice";
+import { Plus } from "lucide-react";
+import ErrorMessage from "../../../components/ErrorMessage";
 
 const Doctors = () => {
-  const { data, isLoading, error } = useGetDoctorsQuery();
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("");
+
+  const { data, isLoading, error } = useGetDoctorsQuery({
+    page,
+    limit: 5,
+    search,
+    status,
+  });
+
   const dispatch = useDispatch();
 
-  const handleModalOpen = () => {
+  console.log(data, "Doctors data...");
+
+  const doctors = data?.doctors || [];
+
+  useEffect(() => {
+    setPage(1);
+  }, [search, status]);
+
+  const handleAddModalOpen = () => {
     dispatch(openModal({ modalType: "ADD_DOCTOR", modalProps: {} }));
   };
+
+  const handleEditModalOpen = (row) => {
+    dispatch(
+      openModal({ modalType: "EDIT_DOCTOR", modalProps: { doctorId: row._id } })
+    );
+  };
+
+  const handleDeleteModalOpen = (row) => {
+    dispatch(
+      openModal({
+        modalType: "DELETE_DOCTOR",
+        modalProps: { doctorData: row },
+      })
+    );
+  };
+
+  const handleStatusModalOpen = (row) => {
+    dispatch(
+      openModal({
+        modalType: "UPDATE_DOCTOR_STATUS",
+        modalProps: { doctorData: row },
+      })
+    );
+  };
+
+  const columns = getColumns({
+    onEdit: handleEditModalOpen,
+    onDelete: handleDeleteModalOpen,
+    onUpdateStatus: handleStatusModalOpen,
+  });
 
   if (isLoading)
     return (
@@ -21,13 +76,37 @@ const Doctors = () => {
         <Loader />
       </>
     );
-  if (error) return <p>Something went wrong</p>;
+
+  if (error) return <ErrorMessage />;
 
   return (
-    <div>
-      <SearchField handleAdd={handleModalOpen} />
-      <Table columns={Columns} data={data || []} />
-    </div>
+    <>
+      <div className="flex justify-between">
+        <FilterSearch value={search} onChange={setSearch} />
+
+        <Button onClick={handleAddModalOpen}>
+          <Plus size={20} />
+        </Button>
+      </div>
+
+      <FilterOption status={status} setStatus={setStatus} />
+
+      {doctors.length === 0 ? (
+        <div className="flex justify-center items-center bg-gray-100 mt-5 rounded min-h-20">
+          <p>{search ? "No results found" : "No doctors available"}</p>
+        </div>
+      ) : (
+        <Table columns={columns} data={doctors} />
+      )}
+
+      {data.totalPages > 1 && (
+        <Pagination
+          page={page}
+          setPage={setPage}
+          totalPages={data.totalPages || 1}
+        />
+      )}
+    </>
   );
 };
 

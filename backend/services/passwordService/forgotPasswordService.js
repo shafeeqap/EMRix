@@ -1,6 +1,6 @@
 import { User } from "../../models/User.js";
 import { logAction } from "../../utils/auditLogger.js";
-import { generateOTP, hashOTP } from "../../utils/otp.js";
+import { generateOTP, hashOTP } from "../../utils/otpUtils.js";
 import { sendSMS } from "../smsService/smsService.js";
 
 export const forgotPasswordService = async (mobile, ip, deviceInfo) => {

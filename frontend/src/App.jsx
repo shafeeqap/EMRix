@@ -13,7 +13,8 @@ import Loader from "./components/ui/Loader";
 import Doctors from "./features/dashboard/doctors/Doctors";
 import Scheduler from "./features/appointments/Scheduler";
 import GlobalModal from "./components/modal/GlobalModal";
-
+import Users from "./features/users/Users";
+import NotFound from "./pages/NotFound";
 
 function App() {
   const isLoading = useAuthRestore();
@@ -50,11 +51,14 @@ function App() {
                 <Route path="/patient" element={<Patients />} />
                 <Route path="/appointments" element={<Booking />} />
                 <Route path="/shedules" element={<Scheduler />} />
+                <Route path="/users" element={<Users />} />
               </Route>
             </Route>
           </Route>
+
+          <Route path="/*" element={<NotFound />} />
         </Routes>
-        
+
         <ToastContainer />
         <GlobalModal />
       </BrowserRouter>

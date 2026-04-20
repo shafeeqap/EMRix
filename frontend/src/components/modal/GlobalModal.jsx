@@ -47,7 +47,7 @@ const GlobalModal = () => {
       <div className="fixed inset-0 flex pl-10 justify-center items-center z-50">
         {/* Overlay */}
         <div
-          onClick={() => dispatch(closeModal())}
+          // onClick={() => dispatch(closeModal())}
           className="absolute inset-0 bg-black bg-opacity-50"
         />
         {/* Modal Content */}
@@ -55,7 +55,7 @@ const GlobalModal = () => {
           role="dialog"
           aria-modal="true"
           onClick={(e) => e.stopPropagation()}
-          className="relative bg-white rounded-lg shadow-lg sm:p-6 sm:w-full max-w-md max-h-[580px] overflow-y-auto z-10"
+          className="relative bg-white rounded-lg shadow-lg sm:p-6 max-h-[580px] overflow-y-auto z-10"
         >
           <Component {...modalProps} />
         </div>

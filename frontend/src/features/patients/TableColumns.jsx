@@ -1,0 +1,65 @@
+import { Trash2, PenLine, Eye } from "lucide-react";
+
+export const getColumns = ({ onEdit, onDelete, onDetails }) => [
+  {
+    header: "SL",
+    render: (_, index) => index + 1,
+  },
+  {
+    header: "Name",
+    accessor: "name",
+  },
+  {
+    header: "Age",
+    accessor: "age",
+  },
+  {
+    header: "Mobile",
+    accessor: "mobile",
+  },
+  {
+    header: "PatientID",
+    accessor: "patientId",
+  },
+//   {
+//     header: "Working Hours",
+//     render: (row) => formatWorkingHours(row.workingHours),
+//   },
+//   {
+//     header: "Slot Duration",
+//     accessor: "slotDuration",
+//   },
+//   {
+//     header: "Status",
+//     render: (row) => (
+//       <span
+//         className={`px-2 py-1 text-xs font-medium cursor-pointer text-white ${
+//           row.isActive ? "bg-green-700" : "bg-red-700"
+//         }`}
+//       >
+//         {row.isActive ? "Active" : "Inactive"}
+//       </span>
+//     ),
+//   },
+  {
+    header: "Actions",
+    render: (row) => (
+      <div className="flex gap-5">
+        <PenLine onClick={() => onEdit(row)} className="cursor-pointer" />
+
+        <Trash2
+          onClick={() => onDelete(row)}
+          className="text-red-700 cursor-pointer"
+        />
+      </div>
+    ),
+  },
+  {
+    header: "Details",
+    render: (row) => (
+      <div className="flex gap-5">
+        <Eye onClick={() => onDetails(row)} className="cursor-pointer" />
+      </div>
+    ),
+  },
+];

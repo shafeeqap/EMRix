@@ -5,8 +5,8 @@ import {
   getUsersService,
   searchUsersService,
   updateUserService,
+  updateUserStatusService,
 } from "../services/userService.js";
-
 
 // =============> Create a new user <=============
 export const createUser = async (req, res, next) => {
@@ -34,9 +34,9 @@ export const searchUsers = async (req, res, next) => {
 // =============> Get all users <=============
 export const getUsers = async (req, res, next) => {
   try {
-    const users = await getUsersService();
+    const { users, page, totalPages } = await getUsersService(req.query);
 
-    res.status(200).json({ users });
+    res.status(200).json({ users, page, totalPages });
   } catch (error) {
     next(error);
   }
@@ -61,6 +61,23 @@ export const updateUserById = async (req, res, next) => {
     res
       .status(200)
       .json({ message: "User updated successfully", user: updatedUser });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateUserStatus = async (req, res, next) => {
+  try {
+    const updatedData = await updateUserStatusService(
+      req.params,
+      req.body,
+      req.user
+    );
+
+    res.status(200).json({
+      message: "Status updated successfully",
+      updatedData,
+    });
   } catch (error) {
     next(error);
   }

@@ -9,22 +9,20 @@ const InputField = ({
   error,
   ...props
 }) => {
-  const baseStyles = `w-full border border-gray-300 rounded px-3 py-2 focus:outline-none ${className}`;
-console.log(type,'type');
+  const baseStyles =
+    "w-full border border-gray-300 rounded px-3 py-2 focus:outline-none";
 
   return (
     <div>
       {label && <label className="block text-gray-700 mb-2">{label}</label>}
       <input
-        className={clsx(
-          type[type],
-          baseStyles,
-        )}
+        type={type}
+        className={clsx(baseStyles, className)}
         placeholder={placeholder}
         {...props}
       />
       {error?.message && (
-        <p className="text-red-500 text-sm">{error.message}</p>
+        <p className="text-red-500 text-sm">{error?.message}</p>
       )}
     </div>
   );

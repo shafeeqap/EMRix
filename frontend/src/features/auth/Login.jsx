@@ -67,16 +67,14 @@ const Login = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 mt-10">
-          <div>
-            <InputField
-              label="Email"
-              type="email"
-              error={errors.email}
-              {...register("email")}
-              placeholder="Enter your email"
-              className="w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:outline-none"
-            />
-          </div>
+          <InputField
+            label="Email"
+            type="email"
+            error={errors.email}
+            {...register("email")}
+            placeholder="Enter your email"
+            className="w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:outline-none"
+          />
 
           <div className="relative">
             <InputField
@@ -89,7 +87,7 @@ const Login = () => {
             />
             <div
               onClick={handleShowPassword}
-              className="absolute top-10 right-2 cursor-pointer"
+              className="absolute top-12 right-2 cursor-pointer"
             >
               {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
             </div>
@@ -103,8 +101,7 @@ const Login = () => {
           <Button
             type="submit"
             varient="primary"
-            calssName="w-full"
-            size="md"
+            className="w-full"
             isLoading={isLoading}
           >
             Login

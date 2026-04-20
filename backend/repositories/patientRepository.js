@@ -4,7 +4,11 @@ export const createPatientRepo = async (data) => {
   return Patient.create(data);
 };
 
-export const findPatient = async (filter) => {
+export const findPatient = async (filter, skip, limit) => {
+  return Patient.find(filter).skip(skip).limit(limit).sort({ createdAt: -1 });
+};
+
+export const findOnePatient = async (filter) => {
   return Patient.findOne(filter);
 };
 
@@ -18,4 +22,8 @@ export const findPatientByIdAndUpdate = async (id, update, options) => {
 
 export const findPatientByIdAndDelete = async (id) => {
   return Patient.findByIdAndDelete(id);
+};
+
+export const countPatientDocuments = async (filter) => {
+  return Patient.countDocuments(filter);
 };
