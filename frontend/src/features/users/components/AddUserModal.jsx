@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addUserSchema } from "../../../validator/addUserValidator.js";
@@ -6,9 +6,12 @@ import { Button, InputField, Loader } from "../../../components/ui";
 import { useCreateUserMutation } from "../userApiSlice.js";
 import { useDispatch } from "react-redux";
 import { closeModal } from "../../../components/modal/modalSlice.js";
+import { handleApiError } from "../../../utils/handleApiError.js";
+import { toast } from "react-toastify";
 
 const AddUserModal = () => {
-  const [createdUser, { isLoading }] = useCreateUserMutation();
+  const [role, setRole] = useState("");
+  const [createUser, { isLoading }] = useCreateUserMutation();
   const {
     register,
     handleSubmit,
@@ -21,7 +24,17 @@ const AddUserModal = () => {
 
   const dispatch = useDispatch();
 
-  const onSubmit = async (data) => {};
+  const onSubmit = async (data) => {
+    try {
+      const res = await createUser(data).unwrap();
+      toast.success(res.message || "User created successfully");
+
+      dispatch(closeModal());
+    } catch (error) {
+      console.error("Error creating user:", error);
+      handleApiError(error, setError);
+    }
+  };
 
   return (
     <div className="bg-white rounded-lg p-6 sm:w-96 md:w-[700px]">
@@ -45,6 +58,16 @@ const AddUserModal = () => {
               {...register("lastName")}
               error={errors.lastName}
               placeholder="Enter last name"
+              className="focus:ring focus:border-primary mb-4"
+            />
+
+            <InputField
+              label="Mobile"
+              type="text"
+              {...register("mobile")}
+              maxLength={10}
+              error={errors.mobile}
+              placeholder="Enter mobile"
               className="focus:ring focus:border-primary"
             />
           </div>
@@ -67,20 +90,28 @@ const AddUserModal = () => {
               placeholder="Enter email"
               className="focus:ring focus:border-primary mb-4"
             />
-          </div>
-
-          <div className="mb-4">
-            <InputField
-              label="Mobile"
-              type="text"
-              {...register("mobile")}
-              maxLength={10}
-              error={errors.mobile}
-              placeholder="Enter mobile"
-              className="focus:ring focus:border-primary"
-            />
+            <div className="flex flex-col">
+              <label htmlFor="" className="mb-2">
+                Select Role
+              </label>
+              <select
+                value={role}
+                {...register("role")}
+                onChange={(e) => setRole(e.target.value)}
+                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none bg-white"
+              >
+                <option value="">Select role</option>
+                <option value="admin">Admin</option>
+                <option value="doctor">Doctor</option>
+                <option value="receptionist">Receptionist</option>
+              </select>
+              {errors?.role && (
+                <p className="text-red-500 text-sm">{errors?.role}</p>
+              )}
+            </div>
           </div>
         </div>
+
         <div className="flex justify-end">
           <Button
             onClick={() => dispatch(closeModal())}

@@ -43,14 +43,14 @@ const Users = () => {
 
   const handleEditModalOpen = (row) => {
     dispatch(
-      openModal({ modalType: "EDIT_USER", modalProps: { usersData: row } })
+      openModal({ modalType: "EDIT_USER", modalProps: { userId: row._id } })
     );
     console.log("EDIT CLICKED", row);
   };
 
   const handleDeleteModalOpen = (row) => {
     dispatch(
-      openModal({ modalType: "DELETE_USER", modalProps: { usersData: row } })
+      openModal({ modalType: "DELETE_USER", modalProps: { userData: row } })
     );
     console.log("DELETE CLICKED", row);
   };

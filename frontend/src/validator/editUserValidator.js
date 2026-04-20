@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const roles = ["admin", "doctor", "receptionist"];
 
-export const addUserSchema = z.object({
+export const editUserSchema = z.object({
   firstName: z
     .string()
     .min(2, "Name must be at least 2 characters")
