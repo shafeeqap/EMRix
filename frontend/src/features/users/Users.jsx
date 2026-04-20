@@ -55,9 +55,20 @@ const Users = () => {
     console.log("DELETE CLICKED", row);
   };
 
+  const handleStatusModalOpen = (row) => {
+    dispatch(
+      openModal({
+        modalType: "UPDATE_USER_STATUS",
+        modalProps: { userId: row._id },
+      })
+    );
+    console.log("UPDATE USER STATUS CLICKED", row);
+  };
+
   const columns = getColumns({
     onEdit: handleEditModalOpen,
     onDelete: handleDeleteModalOpen,
+    onUpdateStatus: handleStatusModalOpen,
   });
 
   if (isLoading)

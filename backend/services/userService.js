@@ -130,7 +130,6 @@ export const searchUsersService = async (query) => {
 // =============> Get user by ID service <=============
 export const getUserByIdService = async (params) => {
   const userId = params.id;
-  console.log(userId, "user id...");
 
   const user = await findUserById(userId);
   if (!user) {
@@ -144,9 +143,9 @@ export const getUserByIdService = async (params) => {
 export const updateUserService = async (params, data, user) => {
   const userId = params.id;
 
-  const { firstName, lastName, email, mobile, password, role } = data;
+  const { firstName, lastName, email, mobile, role } = data;
 
-  if (!firstName || !lastName || !email || !password || !mobile || !role) {
+  if (!firstName || !lastName || !email || !mobile || !role) {
     throw new Error("Missing required fields");
   }
 
@@ -157,7 +156,7 @@ export const updateUserService = async (params, data, user) => {
 
   const updatedUser = await findUserByIdAndUpdate(
     userId,
-    { firstName, lastName, email, mobile, password, role },
+    { firstName, lastName, email, mobile, role },
     { returnDocument: "after" }
   );
 
@@ -187,6 +186,35 @@ export const updateUserService = async (params, data, user) => {
   });
 
   return updatedUser;
+};
+
+// =============> Update user status service <=============
+export const updateUserStatusService = async (params, data, user) => {
+  const id = params.id;
+  const { status } = data;
+
+  const userData = await findUserById(id);
+
+  if (!userData) {
+    throw new AppError("User not found", 404);
+  }
+
+  userData.isActive = status;
+  await userData.save();
+
+  await logAction({
+    userId: user.id,
+    role: user.role,
+    action: "UPDATE_USER_STATUS",
+    entity: "User",
+    entityId: user._id,
+    metadata: {
+      oldStatus: status,
+      newStatus: user.isActive,
+    },
+  });
+
+  return user;
 };
 
 // =============> Delete user service <=============

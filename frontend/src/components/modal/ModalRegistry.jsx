@@ -12,6 +12,7 @@ import {
   AddUserModal,
   DeleteUserModal,
   EditUserModal,
+  UpdateUserStatusModal
 } from "../../features/users/components";
 
 export const MODAL_COMPONENTS = {
@@ -41,4 +42,5 @@ export const MODAL_COMPONENTS = {
   ADD_USER: AddUserModal,
   EDIT_USER: EditUserModal,
   DELETE_USER: DeleteUserModal,
+  UPDATE_USER_STATUS: UpdateUserStatusModal,
 };

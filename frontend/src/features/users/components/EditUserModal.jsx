@@ -6,13 +6,16 @@ import { editUserSchema } from "../../../validator/editUserValidator";
 import { useGetUserByIdQuery, useUpdateUserMutation } from "../userApiSlice";
 import { Button, InputField, Loader } from "../../../components/ui";
 import { closeModal } from "../../../components/modal/modalSlice";
-
+import { toast } from "react-toastify";
+import { handleApiError } from "../../../utils/handleApiError";
+import isEqual from "lodash/isEqual";
 
 const EditUserModal = () => {
   const { userId } = useSelector((state) => state.modal.modalProps || {});
+
   const { data: userData, isLoading } = useGetUserByIdQuery(userId);
-  console.log(userId, "user id...");
-  console.log(userData, "user data...");
+
+  const user = userData?.user;
 
   const [updateUser] = useUpdateUserMutation();
 
@@ -24,28 +27,48 @@ const EditUserModal = () => {
       firstName: "",
       lastName: "",
       email: "",
-      password: "",
       mobile: "",
       role: "",
     },
   });
 
   useEffect(() => {
-    if (!userData?.user) return;
-
-    const user = userData.user;
+    if (!user) return;
 
     form.reset({
       firstName: user.firstName,
       lastName: user.lastName,
-      mobile: user.mobile,
       email: user.email,
-      password: user.password,
+      mobile: user.mobile,
       role: user.role,
     });
-  }, [userData, form]);
+  }, [user, form]);
 
-  const onSubmit = async (data) => {};
+  const onSubmit = async (data) => {
+    const isChanged = !isEqual(data, {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      mobile: user.mobile,
+      role: user.role,
+    });
+
+    if (!isChanged) {
+      toast.warning("No changes detected");
+      return;
+    }
+
+    try {
+      const res = await updateUser({ id: userId, ...data }).unwrap();
+
+      toast.success(res.message || "User updated successfully");
+
+      dispatch(closeModal());
+    } catch (error) {
+      console.error("Error updating user:", error);
+      handleApiError(error, form.setError);
+    }
+  };
 
   return (
     <div className="bg-white rounded-lg p-6 sm:w-96 md:w-[700px]">
@@ -93,22 +116,14 @@ const EditUserModal = () => {
               className="focus:ring focus:border-primary mb-4"
             />
 
-            <InputField
-              label="Password"
-              type="password"
-              {...form.register("password")}
-              error={form.formState.errors.password?.message}
-              placeholder="Enter email"
-              className="focus:ring focus:border-primary mb-4"
-            />
             <div className="flex flex-col">
               <label htmlFor="" className="mb-2">
                 Select Role
               </label>
               <select
-                value={form.role}
+                // value={form.role}
                 {...form.register("role")}
-                onChange={(e) => form.setRole(e.target.value)}
+                // onChange={(e) => form.setRole(e.target.value)}
                 className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none bg-white"
               >
                 <option value="">Select role</option>
@@ -133,7 +148,7 @@ const EditUserModal = () => {
             Cancel
           </Button>
           <Button type="submit" variant="primary">
-            {isLoading ? <Loader /> : "Add"}
+            {isLoading ? <Loader /> : "Update"}
           </Button>
         </div>
       </form>

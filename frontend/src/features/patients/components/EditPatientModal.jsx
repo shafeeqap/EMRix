@@ -16,7 +16,7 @@ const EditPatientModal = () => {
   const { patientId } = useSelector((state) => state.modal.modalProps || {});
 
   const { data: patientData, isLoading } = useGetPatientByIdQuery(patientId);
-  
+
   const [updatePatient, { isLoading: loading, error }] =
     useUpdatePatientMutation();
 
@@ -44,19 +44,14 @@ const EditPatientModal = () => {
   }, [patientData, form]);
 
   const onSubmit = async (data) => {
-    const isChanged =
-      data.name !== patientData.name ||
-      Number(data.age) !== Number(patientData.age) ||
-      data.mobile !== patientData.mobile;
-
-    if (!isChanged) {
+    if (!form.formState.isDirty) {
       toast.warning("No changes detected");
       return;
     }
 
     try {
       const res = await updatePatient({ id: patientId, ...data }).unwrap();
-      console.log(res, "Patient updated successfully");
+
       toast.success(res.message || "Patient updated successfully");
 
       dispatch(closeModal());
