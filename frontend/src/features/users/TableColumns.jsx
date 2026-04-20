@@ -1,5 +1,4 @@
 import { Trash2, PenLine } from "lucide-react";
-// import { formatWorkingHours } from "../../../utils/formatWorkingHours";
 
 export const getColumns = ({ onEdit, onDelete }) => [
   {
@@ -22,14 +21,14 @@ export const getColumns = ({ onEdit, onDelete }) => [
     header: "Role",
     accessor: "role",
   },
-//   {
-//     header: "Working Hours",
-//     render: (row) => formatWorkingHours(row.workingHours),
-//   },
-//   {
-//     header: "Slot Duration",
-//     accessor: "slotDuration",
-//   },
+  //   {
+  //     header: "Working Hours",
+  //     render: (row) => formatWorkingHours(row.workingHours),
+  //   },
+  //   {
+  //     header: "Slot Duration",
+  //     accessor: "slotDuration",
+  //   },
   {
     header: "Status",
     render: (row) => (
@@ -47,11 +46,12 @@ export const getColumns = ({ onEdit, onDelete }) => [
     render: (row) => (
       <div className="flex gap-5 ">
         <PenLine onClick={() => onEdit(row)} className="cursor-pointer" />
-
-        <Trash2
-          onClick={() => onDelete(row)}
-          className="text-red-700 cursor-pointer"
-        />
+        {row.role !== "super_admin" && (
+          <Trash2
+            onClick={() => onDelete(row)}
+            className="text-red-700 cursor-pointer"
+          />
+        )}
       </div>
     ),
   },

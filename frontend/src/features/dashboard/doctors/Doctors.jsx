@@ -28,11 +28,9 @@ const Doctors = () => {
 
   const dispatch = useDispatch();
 
-  console.log(data, 'Doctors data...');
-  
+  console.log(data, "Doctors data...");
 
   const doctors = data?.doctors || [];
-
 
   useEffect(() => {
     setPage(1);
@@ -93,7 +91,13 @@ const Doctors = () => {
 
       <FilterOption status={status} setStatus={setStatus} />
 
-      <Table columns={columns} data={doctors} />
+      {doctors.length === 0 ? (
+        <div className="flex justify-center items-center bg-gray-100 mt-5 rounded min-h-20">
+          <p>{search ? "No results found" : "No doctors available"}</p>
+        </div>
+      ) : (
+        <Table columns={columns} data={doctors} />
+      )}
 
       {data.totalPages > 1 && (
         <Pagination

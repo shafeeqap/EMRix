@@ -9,7 +9,17 @@ export const findAppointmentById = async (id) => {
 };
 
 export const findAppointment = (filter) => {
-  return Appointment.find(filter);
+  return Appointment.find(filter)
+    .populate("doctorId", "firstName lastName")
+    .populate("patientId", "name")
+    .sort({ createdAt: -1 });
+};
+
+export const findAppointmentDetails = (patientId) => {
+  return Appointment.find({ patientId })
+    .populate("doctorId", "firstName lastName")
+    .populate("patientId", "name")
+    .sort({ createdAt: -1 });
 };
 
 export const findAppointmentByIdAndUpdate = (id, update, options) => {

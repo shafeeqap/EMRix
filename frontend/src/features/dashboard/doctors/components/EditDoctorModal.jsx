@@ -75,8 +75,6 @@ const EditDoctorModal = () => {
           : [],
     };
 
-    console.log("PAYLOAD:", payload);
-
     try {
       const res = await updateDoctor({ id: doctorId, ...payload }).unwrap();
       console.log(res, "Doctor updated successfully");

@@ -88,9 +88,7 @@ export const getAppointmentService = async (query) => {
   const appointments = await findAppointment({
     doctorId,
     date: { $gte: startTime, $lt: endTime },
-  })
-    .populate("doctorId", "name")
-    .populate("patientId", "name");
+  });
 
   return appointments;
 };
@@ -161,7 +159,7 @@ export const updateAppointmentService = async (params, data, user) => {
   const updatedAppointment = await findAppointmentByIdAndUpdate(
     id,
     updateData,
-    { returnDocument: 'after', runValidators: true }
+    { returnDocument: "after", runValidators: true }
   );
 
   await logAction({

@@ -4,6 +4,7 @@ import {
   createPatient,
   deletePatient,
   getPatientById,
+  getPatientFullDetails,
   getPatients,
   searchPatient,
   updatePatient,
@@ -24,8 +25,9 @@ router.get(
   protect,
   validate(searchPatientSchema, "query"),
   searchPatient
-);
+); // pending for remove
 router.get("/:id", protect, getPatientById);
+router.get("/:id/details", protect, getPatientFullDetails);
 router.put("/:id", protect, validate(updatePatientSchema), updatePatient);
 router.delete("/:id", protect, deletePatient);
 
