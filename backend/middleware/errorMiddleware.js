@@ -1,6 +1,8 @@
 import { ZodError } from "zod";
 
 export const errorHandler = (err, req, res, next) => {
+  console.error(err);
+
   let statusCode = err.statusCode || res.statusCode || 500;
 
   if (err instanceof ZodError) {
@@ -18,6 +20,7 @@ export const errorHandler = (err, req, res, next) => {
   res.status(statusCode).json({
     success: false,
     message: err.message || "Internal Server Error",
+    errors: err.errors || null,
     stack: process.env.NODE_ENV === "production" ? null : err.stack,
   });
 };

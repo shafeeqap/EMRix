@@ -1,9 +1,19 @@
-import React from 'react'
+import React from "react";
+import { AppointmentForm, PatientInfo, SlotGrid } from "./components";
 
 const Scheduler = () => {
   return (
-    <div>Scheduler</div>
-  )
-}
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <AppointmentForm />
 
-export default Scheduler
+        <PatientInfo />
+
+        {/* Available Slots */}
+        <SlotGrid />
+      </div>
+    </>
+  );
+};
+
+export default Scheduler;

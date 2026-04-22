@@ -163,22 +163,20 @@ export const updatePatientService = async (params, data, user) => {
 export const deletePatientService = async (params, user) => {
   const patientId = params.id;
 
-  const patient = await findPatientById(patientId);
-  if (!patient) {
+  const deletedPatient = await findPatientByIdAndDelete(patientId);
+
+  if (!deletedPatient) {
     throw new AppError("Patient not found", 404);
   }
-
-  await findPatientByIdAndDelete(patientId);
-
   await logAction({
     userId: user.id,
     role: user.role,
     action: "DELETE_PATIENT",
     entity: "patient",
-    entityId: patient._id,
+    entityId: deletedPatient._id,
     metadata: {
-      name: patient.name,
-      mobile: patient.mobile,
+      name: deletedPatient.name,
+      mobile: deletedPatient.mobile,
     },
   });
 };

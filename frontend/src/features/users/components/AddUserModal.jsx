@@ -9,9 +9,11 @@ import { closeModal } from "../../../components/modal/modalSlice.js";
 import { handleApiError } from "../../../utils/handleApiError.js";
 import { toast } from "react-toastify";
 
+
 const AddUserModal = () => {
   const [role, setRole] = useState("");
   const [createUser, { isLoading }] = useCreateUserMutation();
+
   const {
     register,
     handleSubmit,
@@ -36,9 +38,10 @@ const AddUserModal = () => {
     }
   };
 
+
   return (
     <div className="bg-white rounded-lg p-6 sm:w-96 md:w-[700px]">
-      <h2 className="text-xl font-semibold mb-4">Add Patient</h2>
+      <h2 className="text-xl font-semibold mb-4">Add User</h2>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1  md:grid-cols-2 gap-5">
