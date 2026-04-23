@@ -5,6 +5,7 @@ const counterSchema = new mongoose.Schema(
     year: {
       type: Number,
       required: true,
+      unique: true,
     },
 
     seq: {

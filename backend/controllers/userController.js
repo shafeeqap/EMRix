@@ -5,6 +5,7 @@ import {
   getUsersService,
   searchUsersService,
   updateUserService,
+  updateUserStatusService,
 } from "../services/userService.js";
 
 // =============> Create a new user <=============
@@ -60,6 +61,23 @@ export const updateUserById = async (req, res, next) => {
     res
       .status(200)
       .json({ message: "User updated successfully", user: updatedUser });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateUserStatus = async (req, res, next) => {
+  try {
+    const updatedData = await updateUserStatusService(
+      req.params,
+      req.body,
+      req.user
+    );
+
+    res.status(200).json({
+      message: "Status updated successfully",
+      updatedData,
+    });
   } catch (error) {
     next(error);
   }
