@@ -23,8 +23,10 @@ EMRix is a full-stack Electronic Medical Records (EMR) and appointment managemen
     - Optimized database queries and indexing
 
 ### 🧠 Key Concepts Implemented
-- Concurrency handling using atomic database operations
-- Token rotation strategy for improved authentication security
+- Prevented double booking using **MongoDB compound unique index** with partial filter (`status: "booked"`)
+- Handled race conditions by relying on **database-level constraints instead of only application checks**
+- Implemented **buffer time validation (15 minutes)** to prevent last-minute bookings
+- Used **JWT authentication with access & refresh tokens (token rotation)** for secure session handling
 - Role-based authorization using middleware
 - Scalable ID generation using database counters
 - Implemented secure password reset using OTP (Twilio SMS) with attempt limiting to prevent abuse.
@@ -44,7 +46,7 @@ EMRix is a full-stack Electronic Medical Records (EMR) and appointment managemen
 - Centralized error handling
 
 ### Purpose
-Built to demonstrate real-world full-stack development skills, including secure authentication, scalable architecture, and efficient data management in healthcare systems.
+Built to demonstrate real-world full-stack problem solving by designing an EMR appointment system that handles role-based access, prevents double booking through database-level constraints, and enforces practical scheduling rules like buffer time for reliable healthcare operations.
 
 ### Project Structure
 ```bash

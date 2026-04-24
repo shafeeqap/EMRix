@@ -38,8 +38,9 @@ const appointmentSchema = new mongoose.Schema(
 
 appointmentSchema.index(
   { doctorId: 1, date: 1, slotTime: 1 },
-  { unique: true }
+  { unique: true, partialFilterExpression: { status: "booked" } }
 );
+
 const Appointment = mongoose.model("Appointment", appointmentSchema);
 
 export default Appointment;

@@ -27,9 +27,10 @@ export const createAppointmentService = async (data, user) => {
     throw new AppError("Past slot not allowed", 405);
   }
 
+  // a minimum time gap before booking allowed for non-admin users to prevent last-minute bookings
   const BUFFER_MINUTES = 15;
 
-  if (user.role !== "admin") {
+  if (user.role !== "super_admin") {
     const bufferTime = new Date(now.getTime() + BUFFER_MINUTES * 60000);
 
     if (appointmentDateTime < bufferTime) {
