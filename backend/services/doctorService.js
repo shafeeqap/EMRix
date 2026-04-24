@@ -6,6 +6,7 @@ import {
   findDoctorByIdAndDelete,
   findDoctorByIdAndUpdate,
   findDoctors,
+  findDoctorsBySearchQuery,
 } from "../repositories/doctorRepository.js";
 import { findUserById } from "../repositories/userRepository.js";
 import { AppError } from "../utils/AppError.js";
@@ -59,6 +60,29 @@ export const createDoctorService = async (data, user) => {
   return doctor;
 };
 
+// =============> search doctors by search query service <=============
+export const searchDoctorService = async (query) => {
+  const { search } = query;
+console.log("search query:", search);
+
+  if (!search) {
+    throw new AppError("Search query is required", 400);
+  }
+
+  const searchQuery = search
+  ? {
+      $or: [
+        { firstName: { $regex: `^${search}`, $options: "i" } },
+        { lastName: { $regex: `^${search}`, $options: "i" } },
+      ],
+    }
+  : {};
+
+  const doctors = await findDoctorsBySearchQuery(searchQuery).limit(10);
+
+  return doctors;
+
+}
 // =============> get all doctors service <=============
 export const getDoctorsServices = async (query) => {
   const page = Number(query.page) || 1;

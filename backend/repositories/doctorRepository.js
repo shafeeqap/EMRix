@@ -12,6 +12,10 @@ export const findDoctors = async (filter, skip, limit) => {
     .populate("userId", "firstName lastName");
 };
 
+export const findDoctorsBySearchQuery = (query) => {
+  return Doctor.find(query);
+}
+
 export const findDoctorById = (id) => {
   return Doctor.findById(id);
 };

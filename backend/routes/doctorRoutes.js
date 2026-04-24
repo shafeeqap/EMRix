@@ -6,6 +6,7 @@ import {
   deleteDoctor,
   getDoctorById,
   getDoctors,
+  searchDoctors,
   updateDoctor,
   updateDoctorStatus,
 } from "../controllers/doctorController.js";
@@ -25,6 +26,7 @@ router.post(
   createDoctor
 );
 router.get("/", protect, getDoctors);
+router.get("/search", protect, searchDoctors);
 router.get("/:id", protect, getDoctorById);
 router.put(
   "/:id",
