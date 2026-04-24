@@ -1,3 +1,4 @@
+import { findDoctorOne } from "../repositories/doctorRepository.js";
 import {
   countUserDocuments,
   createUserRepo,
@@ -8,6 +9,7 @@ import {
   findUsers,
   findUsersBySearchQuery,
 } from "../repositories/userRepository.js";
+import { AppError } from "../utils/AppError.js";
 import { logAction } from "../utils/auditLogger.js";
 import { hashValue } from "../utils/hashUtils.js";
 
@@ -17,12 +19,13 @@ export const createUserService = async (data, user) => {
 
   // validate input
   if (!firstName || !lastName || !email || !mobile || !password || !role) {
-    throw new Error("All fields are required");
+    throw new AppError("All fields are required", 400);
   }
 
   const existingUser = await findUserOne({ email });
+
   if (existingUser) {
-    throw new Error("Email already in use");
+    throw new AppError("Email already in use", 409);
   }
 
   const hashedPassword = await hashValue(password);
@@ -133,7 +136,7 @@ export const getUserByIdService = async (params) => {
 
   const user = await findUserById(userId);
   if (!user) {
-    throw new Error("User not found");
+    throw new AppError("User not found", 404);
   }
 
   return user;
@@ -146,12 +149,12 @@ export const updateUserService = async (params, data, user) => {
   const { firstName, lastName, email, mobile, role } = data;
 
   if (!firstName || !lastName || !email || !mobile || !role) {
-    throw new Error("Missing required fields");
+    throw new AppError("Missing required fields", 400);
   }
 
   const userFound = await findUserById(userId);
   if (!userFound) {
-    throw new Error("User not found");
+    throw new AppError("User not found", 404);
   }
 
   const updatedUser = await findUserByIdAndUpdate(
@@ -221,23 +224,27 @@ export const updateUserStatusService = async (params, data, user) => {
 export const deleteUserService = async (params, user) => {
   const userId = params.id;
 
-  const userFound = await findUserById(userId);
-  if (!userFound) {
-    throw new Error("User not found");
+  const doctor = await findDoctorOne({ userId });
+
+  if (doctor) {
+    throw new AppError("User exist as a doctor, cannot delete", 409);
   }
 
-  await findUserByIdAndDelete(userId);
+  const deletedUser = await findUserByIdAndDelete(userId);
 
+  if (!deletedUser) {
+    throw new AppError("User not found", 404);
+  }
   await logAction({
     userId: user.id,
     role: user.role,
     action: "DELETE_USER",
     entity: "User",
-    entityId: userFound._id,
+    entityId: deletedUser._id,
     metadata: {
-      firstName: userFound.firstName,
-      lastName: userFound.lastName,
-      role: userFound.department,
+      firstName: deletedUser.firstName,
+      lastName: deletedUser.lastName,
+      role: deletedUser.department,
     },
   });
 };

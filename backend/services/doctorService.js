@@ -199,26 +199,25 @@ export const updateDoctorStatusService = async (params, data, user) => {
 export const deleteDoctorService = async (params, user) => {
   const doctorId = params.id;
 
-  const doctor = await findDoctorById(doctorId);
-  if (!doctor) {
+  const deletedDoctor = await findDoctorByIdAndDelete(doctorId);
+
+  if (!deletedDoctor) {
     throw new AppError("Doctor not found", 404);
   }
-
-  await findDoctorByIdAndDelete(doctorId);
 
   await logAction({
     userId: user.id,
     role: user.role,
     action: "DELETE_DOCTOR",
     entity: "Doctor",
-    entityId: doctor._id,
+    entityId: deletedDoctor._id,
     metadata: {
-      firstName: doctor.firstName,
-      lastName: doctor.lastName,
-      department: doctor.department,
-      workingHours: doctor.workingHours,
-      slotDuration: doctor.slotDuration,
-      breakTimes: doctor.breakTimes,
+      firstName: deletedDoctor.firstName,
+      lastName: deletedDoctor.lastName,
+      department: deletedDoctor.department,
+      workingHours: deletedDoctor.workingHours,
+      slotDuration: deletedDoctor.slotDuration,
+      breakTimes: deletedDoctor.breakTimes,
     },
   });
 };
