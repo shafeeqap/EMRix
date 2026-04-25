@@ -5,10 +5,8 @@ const Scheduler = () => {
   const [doctorId, setDoctorId] = useState("");
   const [date, setDate] = useState("");
   const [slots, setSlots] = useState([]);
+  const [selectedSlot, setSelectedSlot] = useState("");
 
-  console.log(slots, "Slots in Scheduler");
-  
-  
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -17,7 +15,11 @@ const Scheduler = () => {
         <PatientInfo />
 
         {/* Available Slots */}
-        <SlotGrid slots={slots} />
+        <SlotGrid
+          availableSlots={slots?.availableSlots || []}
+          bookedSlots={slots?.bookedSlots || []}
+          isLoading={!slots}
+        />
       </div>
     </>
   );

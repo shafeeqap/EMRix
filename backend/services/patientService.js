@@ -7,6 +7,7 @@ import {
   findPatientById,
   findPatientByIdAndDelete,
   findPatientByIdAndUpdate,
+  findPatientsBySearchQuery,
 } from "../repositories/patientRepository.js";
 import { AppError } from "../utils/AppError.js";
 import { logAction } from "../utils/auditLogger.js";
@@ -45,7 +46,36 @@ export const createPatientService = async (data, user) => {
   return patient;
 };
 
-// ===========> Search Patient Service <===========
+// =============> search patient by search query service <=============
+export const searchPatientService = async (query) => {
+  const { search } = query;
+  console.log("search query:", search);
+
+  if (!search) {
+    throw new AppError("Search query is required", 400);
+  }
+
+  const filter = {};
+
+  if (search) {
+    const isNumeric = /^\d+$/.test(search);
+
+    filter.$or = [
+      { name: { $regex: `^${search}`, $options: "i" } },
+      { patientId: { $regex: search, $options: "i" } },
+    ];
+
+    if (isNumeric) {
+      filter.$or.push({ mobile: { $regex: search } });
+    }
+  }
+
+  const patients = await findPatientsBySearchQuery(filter).limit(10);
+
+  return patients;
+};
+
+// ===========> Get all Patient Service <===========
 export const getPatientService = async (query) => {
   const page = Number(query.page) || 1;
   const limit = Number(query.limit) || 5;
@@ -73,19 +103,6 @@ export const getPatientService = async (query) => {
   const totalPages = Math.ceil(total / limit);
 
   return { patients, page, totalPages };
-};
-
-// ===========> Search Patient Service <=========== (Pending for remove)
-export const searchPatientService = async (query) => {
-  const { mobile } = query;
-  console.log(mobile);
-
-  const patient = await findOnePatient({ mobile });
-  if (!patient) {
-    throw new AppError("Patien not found", 404);
-  }
-
-  return patient;
 };
 
 // ===========> Get Patinet full details Service <===========

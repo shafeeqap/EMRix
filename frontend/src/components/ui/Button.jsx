@@ -20,6 +20,10 @@ const Button = ({
     primary: "bg-primary text-white hover:bg-primaryHover",
     secondary: "bg-gray-300 text-black hover:bg-gray-400",
     danger: "bg-red-500 text-white hover:bg-red-600",
+
+    slotAvailable: "bg-primary text-white hover:bg-primaryHover",
+    slotBooked: "bg-gray-300 cursor-not-allowed",
+    slotSelected: "bg-green-600 text-white",
   };
 
   const sizes = {

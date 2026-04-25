@@ -1,26 +1,28 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { AutocompleteInput, InputField } from "../../../components/ui";
+import { AutocompleteInput, InputField, Loader } from "../../../components/ui";
 import {
   useGetAvailableSlotsQuery,
-  useSearchDoctorQuery,
 } from "../appointmentApiSlice";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getFullName } from "../../../utils/userHelpers";
 import { appointmentSchema } from "../../../validator/appointmentValidator";
 import { formatTime } from "../../../utils/formatHours";
+import { useSearchDoctorQuery } from "../../dashboard/doctors/doctorsApiSlice";
 
 const AppointmentForm = ({ setSlots }) => {
   const [date, setDate] = useState("");
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [search, setSearch] = useState("");
 
-  const { data: doctors = [], isLoading } = useSearchDoctorQuery(search, {
+  const today = new Date().toISOString().split("T")[0];
+
+  const { data: doctors = [] } = useSearchDoctorQuery(search, {
     refetchOnMountOrArgChange: false,
     skip: search.length < 2,
   });
 
-  const { data: slots } = useGetAvailableSlotsQuery(
+  const { data, isLoading } = useGetAvailableSlotsQuery(
     {
       doctorId: selectedDoctor?._id,
       date,
@@ -30,17 +32,13 @@ const AppointmentForm = ({ setSlots }) => {
     }
   );
 
-  const formattedSlots = useMemo(() => {
-    if (!slots?.slots) return [];
-
-    return slots.slots.map((slot) => formatTime(slot));
-  }, [slots]);
-
-  console.log(formattedSlots, "Formatted Slots");
+  console.log(data, "Available slots data...");
 
   useEffect(() => {
-    setSlots(formattedSlots);
-  }, [formattedSlots, setSlots]);
+    if (data) {
+      setSlots(data);
+    }
+  }, [data, setSlots]);
 
   const {
     register,
@@ -61,6 +59,9 @@ const AppointmentForm = ({ setSlots }) => {
         <div className="flex flex-col sm:flex-row justify-between py-5">
           <InputField
             label="Department"
+            type="text"
+            {...register("department")}
+            error={errors.department}
             placeholder="Enter department"
             className="focus:ring focus:border-primary"
           />
@@ -107,10 +108,12 @@ const AppointmentForm = ({ setSlots }) => {
         <Controller
           name="date"
           control={control}
+          defaultValue=""
           render={({ field }) => (
             <InputField
               label="Appointment Date"
               type="date"
+              min={today}
               {...field}
               onChange={(e) => {
                 field.onChange(e);

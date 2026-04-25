@@ -5,8 +5,8 @@ import { fomattedDate } from "../utils/formatedDated.js";
 // =============> generate available slots <=============
 export const generateAvailableSlots = async (data) => {
   const { doctorId, date } = data;
-  console.log(data, 'Slot data...');
-  
+  console.log(data, "Slot data...");
+
   const { startTime, endTime } = fomattedDate(date);
 
   const doctor = await findDoctorOne({ _id: doctorId });
@@ -24,6 +24,7 @@ export const generateAvailableSlots = async (data) => {
   ).lean();
 
   const bookedSlots = new Set(appointments.map((a) => a.slotTime));
+  console.log(bookedSlots, "BookedSlots...");
 
   const allSlots = generateSlots(
     doctor.workingHours.start,
@@ -37,7 +38,7 @@ export const generateAvailableSlots = async (data) => {
     (slot) => !bookedSlots.has(slot)
   );
 
-  return availableSlots;
+  return { availableSlots, bookedSlots: Array.from(bookedSlots) };
 };
 
 // =============> Generate time slots <=============

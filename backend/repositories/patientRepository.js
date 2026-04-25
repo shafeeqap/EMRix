@@ -8,6 +8,10 @@ export const findPatient = async (filter, skip, limit) => {
   return Patient.find(filter).skip(skip).limit(limit).sort({ createdAt: -1 });
 };
 
+export const findPatientsBySearchQuery = (query) => {
+  return Patient.find(query);
+};
+
 export const findOnePatient = async (filter) => {
   return Patient.findOne(filter);
 };

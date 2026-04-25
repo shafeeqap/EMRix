@@ -1,6 +1,4 @@
 export const formatTime = (time) => {
-  console.log(time, "Time in formatTime");
-  
   const [hour, min] = time.split(":");
   const h = Number(hour);
   const ampm = h >= 12 ? "PM" : "AM";

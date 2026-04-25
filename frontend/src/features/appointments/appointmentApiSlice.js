@@ -9,17 +9,16 @@ const appointmentApiSlice = apiSlice.injectEndpoints({
       providesTags: ["Appointment"],
     }),
 
-    searchDoctor: builder.query({
-      query: (searchTerm) => ({
-        url: "/doctors/search",
-        params: { search: searchTerm },
-      }),
+    getAppointments: builder.query({
+      query: ({ doctorId, date }) =>
+        `appointments?doctorId=${doctorId}&date=${date}`,
 
-      transformResponse: (response) => response.doctors,
-
-      keepUnusedDataFor: 60,
+      providesTags: ["Appointment"],
     }),
   }),
 });
 
-export const { useGetAvailableSlotsQuery, useSearchDoctorQuery } = appointmentApiSlice;
+export const {
+  useGetAvailableSlotsQuery,
+  useGetAppointmentsQuery,
+} = appointmentApiSlice;
