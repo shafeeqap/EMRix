@@ -5,7 +5,6 @@ import { fomattedDate } from "../utils/formatedDated.js";
 // =============> generate available slots <=============
 export const generateAvailableSlots = async (data) => {
   const { doctorId, date } = data;
-  console.log(data, "Slot data...");
 
   const { startTime, endTime } = fomattedDate(date);
 
@@ -24,7 +23,6 @@ export const generateAvailableSlots = async (data) => {
   ).lean();
 
   const bookedSlots = new Set(appointments.map((a) => a.slotTime));
-  console.log(bookedSlots, "BookedSlots...");
 
   const allSlots = generateSlots(
     doctor.workingHours.start,

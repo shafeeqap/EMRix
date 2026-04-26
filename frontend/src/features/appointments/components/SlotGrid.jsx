@@ -3,8 +3,13 @@ import { Button, Loader } from "../../../components/ui";
 import { formatTime } from "../../../utils/formatHours";
 import StatusColors from "./StatusColors";
 
-
-const SlotGrid = ({ availableSlots = [], bookedSlots = [], isLoading }) => {
+const SlotGrid = ({
+  availableSlots = [],
+  bookedSlots = [],
+  isLoading,
+  selectedSlot,
+  setSelectedSlot,
+}) => {
   const allSlots = [...availableSlots, ...bookedSlots].sort((a, b) =>
     a.localeCompare(b)
   );
@@ -31,12 +36,22 @@ const SlotGrid = ({ availableSlots = [], bookedSlots = [], isLoading }) => {
           <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-4 py-5 px-5 bg-white border border-gray-300 rounded h-52 overflow-y-auto">
             {allSlots?.map((slot) => {
               const isBooked = bookedSlots.includes(slot);
+              const isSelected = selectedSlot === slot;
+
+              let variant = "slotAvailable";
+
+              if (isBooked) {
+                variant = "slotBooked";
+              } else if (isSelected) {
+                variant = "slotSelected";
+              }
 
               return (
                 <Button
                   key={slot}
+                  onClick={() => setSelectedSlot(slot)}
                   disabled={isBooked}
-                  variant={isBooked ? "slotBooked" : "slotAvailable"}
+                  variant={variant}
                   className="text-xs"
                 >
                   {formatTime(slot)}

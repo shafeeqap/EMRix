@@ -15,10 +15,20 @@ const appointmentApiSlice = apiSlice.injectEndpoints({
 
       providesTags: ["Appointment"],
     }),
+
+    createAppointment: builder.mutation({
+      query: (appointmentData) => ({
+        url: "/appointments",
+        method: "POST",
+        body: appointmentData,
+      }),
+      invalidatesTags: ["Appointment"],
+    }),
   }),
 });
 
 export const {
   useGetAvailableSlotsQuery,
   useGetAppointmentsQuery,
+  useCreateAppointmentMutation,
 } = appointmentApiSlice;

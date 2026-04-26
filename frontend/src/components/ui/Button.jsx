@@ -8,6 +8,7 @@ const Button = ({
   size = "md",
   isLoading = false,
   disabled = false,
+  onSelect,
   type = "button",
   onClick,
   className,
@@ -41,9 +42,11 @@ const Button = ({
           className,
           variants[variant],
           sizes[size],
-          (disabled || isLoading) && "flex justify-center items-center opacity-50 cursor-not-allowed"
+          (disabled || isLoading) &&
+            "flex justify-center items-center opacity-50 cursor-not-allowed"
         )}
         disabled={disabled || isLoading}
+        onSelect={onSelect}
         onClick={onClick}
         {...props}
       >
