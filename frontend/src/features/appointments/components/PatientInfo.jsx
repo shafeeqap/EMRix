@@ -5,12 +5,12 @@ import { openModal } from "../../../components/modal/modalSlice";
 import { Controller, useFormContext } from "react-hook-form";
 import { useSearchPatientQuery } from "../../patients/patientsApiSlice";
 
-const PatientInfo = () => {
+const PatientInfo = ({ existingPatient, handlePatient }) => {
   const {
     control,
     formState: { errors },
   } = useFormContext();
-  const [existingPatient, setExistingPatient] = useState(false);
+
   const [search, setSearch] = useState("");
 
   const dispatch = useDispatch();
@@ -23,10 +23,6 @@ const PatientInfo = () => {
   const handleAddModalOpen = (row) => {
     dispatch(openModal({ modalType: "ADD_PATIENT", modalProps: {} }));
     console.log("ADD PATIENT CLICKED", row);
-  };
-
-  const handlePatient = () => {
-    setExistingPatient(!existingPatient);
   };
 
   return (

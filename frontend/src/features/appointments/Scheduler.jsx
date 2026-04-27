@@ -31,6 +31,7 @@ const Scheduler = () => {
   const { watch, handleSubmit, setError, reset } = methods;
 
   const [selectedSlot, setSelectedSlot] = useState(null);
+  const [existingPatient, setExistingPatient] = useState(false);
 
   const doctor = watch("doctor");
   const date = watch("date");
@@ -51,6 +52,10 @@ const Scheduler = () => {
   // console.log(data, "AVAILABLE SLOTS DATA");
 
   const [createAppointment] = useCreateAppointmentMutation();
+
+  const handlePatient = () => {
+    setExistingPatient(!existingPatient);
+  };
 
   const onSubmit = async (formData) => {
     console.log(formData, "FORM DATA");
@@ -79,6 +84,7 @@ const Scheduler = () => {
       // Reset form and state
       reset();
       setSelectedSlot(null);
+      setExistingPatient(false);
       refetch();
     } catch (error) {
       handleApiError(error, setError);
@@ -86,14 +92,15 @@ const Scheduler = () => {
     }
   };
 
-
-
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <AppointmentForm />
-          <PatientInfo />
+          <PatientInfo
+            handlePatient={handlePatient}
+            existingPatient={existingPatient}
+          />
 
           {/* Available Slots */}
           {doctor && date && (
