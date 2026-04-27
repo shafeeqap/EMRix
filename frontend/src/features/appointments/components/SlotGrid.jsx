@@ -16,9 +16,9 @@ const SlotGrid = ({
 
   if (isLoading) {
     return (
-      <p className="text-center py-5">
+      <div className="text-center py-5">
         <Loader />
-      </p>
+      </div>
     );
   }
 

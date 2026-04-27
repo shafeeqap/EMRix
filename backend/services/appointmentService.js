@@ -9,14 +9,13 @@ import {
 import { findDoctorById } from "../repositories/doctorRepository.js";
 import { AppError } from "../utils/AppError.js";
 import { logAction } from "../utils/auditLogger.js";
-import { fomattedDate } from "../utils/formatedDated.js";
+import { formattedDate } from "../utils/formattedDate.js";
 import { generateAppointmentToken } from "../utils/generateAppointmentToken.js";
 import { generateAvailableSlots } from "./slotService.js";
 
 // =============> create appointments service <=============
 export const createAppointmentService = async (data, user) => {
   const { doctorId, patientId, date, slotTime, notes } = data;
-  console.log(data, "Received appointment data...");
 
   const appointmentDateTime = new Date(date);
   const [hours, minutes] = slotTime.split(":");
@@ -90,7 +89,7 @@ export const createAppointmentService = async (data, user) => {
 export const getAppointmentService = async (query) => {
   const { doctorId, date } = query;
 
-  const { startTime, endTime } = fomattedDate(date);
+  const { startTime, endTime } = formattedDate(date);
 
   const appointments = await findAppointment({
     doctorId,

@@ -49,7 +49,6 @@ export const createPatientService = async (data, user) => {
 // =============> search patient by search query service <=============
 export const searchPatientService = async (query) => {
   const { search } = query;
-  console.log("search query:", search);
 
   if (!search) {
     throw new AppError("Search query is required", 400);
@@ -108,7 +107,6 @@ export const getPatientService = async (query) => {
 // ===========> Get Patinet full details Service <===========
 export const getPatientFullDetailsService = async (params) => {
   const patientId = params.id;
-  console.log(patientId, "Patient id...");
 
   const patient = await findPatientById(patientId);
 
@@ -117,7 +115,6 @@ export const getPatientFullDetailsService = async (params) => {
   }
 
   const appointments = await findAppointmentDetails(patientId);
-  console.log(appointments, "Appointment...");
 
   return { patient, appointments };
 };
@@ -125,7 +122,6 @@ export const getPatientFullDetailsService = async (params) => {
 // ===========> Get Patient By ID Service <===========
 export const getPatientByIdService = async (params) => {
   const patientId = params.id;
-  console.log(patientId, "Patient ID");
 
   const patient = await findPatientById(patientId);
 

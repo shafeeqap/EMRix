@@ -63,7 +63,6 @@ export const createDoctorService = async (data, user) => {
 // =============> search doctors by search query service <=============
 export const searchDoctorService = async (query) => {
   const { search } = query;
-  console.log("search query:", search);
 
   if (!search) {
     throw new AppError("Search query is required", 400);
@@ -74,6 +73,7 @@ export const searchDoctorService = async (query) => {
         $or: [
           { firstName: { $regex: `^${search}`, $options: "i" } },
           { lastName: { $regex: `^${search}`, $options: "i" } },
+          { department: { $regex: `^${search}`, $options: "i" } },
         ],
       }
     : {};

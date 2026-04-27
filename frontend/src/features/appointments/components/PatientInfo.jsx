@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { AutocompleteInput, Button } from "../../../components/ui";
 import { useDispatch } from "react-redux";
 import { openModal } from "../../../components/modal/modalSlice";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useFormContext } from "react-hook-form";
 import { useSearchPatientQuery } from "../../patients/patientsApiSlice";
-import { patientInfoSchema } from "../../../validator/patientInfoValidator";
 
-const PatientInfo = ({ setselectedPatientId, notes, setNotes, onSubmit }) => {
+const PatientInfo = () => {
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext();
   const [existingPatient, setExistingPatient] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -27,15 +29,6 @@ const PatientInfo = ({ setselectedPatientId, notes, setNotes, onSubmit }) => {
     setExistingPatient(!existingPatient);
   };
 
-  const {
-    control,
-    setError,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(patientInfoSchema),
-    defaultValues: { name: "" },
-  });
-
   return (
     <div className="bg-white border border-gray-300 px-5 py-5 rounded w-full">
       <h1 className="font-semibold text-lg uppercase">Patient Information</h1>
@@ -50,22 +43,20 @@ const PatientInfo = ({ setselectedPatientId, notes, setNotes, onSubmit }) => {
       {existingPatient && (
         <>
           <Controller
-            name="name"
+            name="patient"
             control={control}
             render={({ field }) => (
               <AutocompleteInput
                 label="Patient Name"
-                value={field.value}
                 placeholder="Type patient name"
+                value={field.value ? field.value.name : search}
                 onChange={(val) => {
-                  field.onChange(val);
                   setSearch(val);
-                  setselectedPatientId(null);
+                  field.onChange(null);
                 }}
-                onSelect={(patients) => {
-                  field.onChange(patients.name);
-                  setSearch(patients.name);
-                  setselectedPatientId(patients);
+                onSelect={(patient) => {
+                  field.onChange(patient);
+                  setSearch("");
                 }}
                 fetchItems={async () => patients}
                 renderItem={(patients) => {
@@ -81,7 +72,7 @@ const PatientInfo = ({ setselectedPatientId, notes, setNotes, onSubmit }) => {
                     </div>
                   );
                 }}
-                error={errors?.name}
+                error={errors.patient}
               />
             )}
           />
@@ -89,27 +80,35 @@ const PatientInfo = ({ setselectedPatientId, notes, setNotes, onSubmit }) => {
             <label className="block text-gray-700 mb-2">
               Notes about disease:
             </label>
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows="3"
-              cols="50"
-              className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:border-primary"
+            <Controller
+              name="notes"
+              control={control}
+              render={({ field }) => (
+                <textarea
+                  {...field}
+                  rows="3"
+                  cols="50"
+                  className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:border-primary"
+                />
+              )}
             />
-            {errors?.note && (
-              <p className="text-red-500 text-sm mt-1">{errors.note.message}</p>
+            {errors?.notes && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.notes.message}
+              </p>
             )}
           </div>
         </>
       )}
 
-      <Button
-        onClick={onSubmit}
+      {/* <Button
+        disabled={!existingPatient || !selectedPatientId}
+        onClick={handleSubmit((data) => onSubmit(data, setError))}
         variant="danger"
         className="uppercase w-full mt-5"
       >
-        Book Appointment
-      </Button>
+        {isLoading ? <Loader /> : "Book Appointment"}
+      </Button> */}
     </div>
   );
 };

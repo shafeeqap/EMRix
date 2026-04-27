@@ -1,12 +1,12 @@
 import { findAppointment } from "../repositories/appointmentRepository.js";
 import { findDoctorOne } from "../repositories/doctorRepository.js";
-import { fomattedDate } from "../utils/formatedDated.js";
+import { formattedDate } from "../utils/formattedDate.js";
 
 // =============> generate available slots <=============
 export const generateAvailableSlots = async (data) => {
   const { doctorId, date } = data;
 
-  const { startTime, endTime } = fomattedDate(date);
+  const { startTime, endTime } = formattedDate(date);
 
   const doctor = await findDoctorOne({ _id: doctorId });
 
@@ -30,13 +30,26 @@ export const generateAvailableSlots = async (data) => {
     doctor.slotDuration
   );
 
+  const now = new Date();
+
   const slotsWithoutBreaks = removeBreakTimeSlots(allSlots, doctor.breakTimes);
 
   const availableSlots = slotsWithoutBreaks.filter(
     (slot) => !bookedSlots.has(slot)
   );
 
-  return { availableSlots, bookedSlots: Array.from(bookedSlots) };
+  const pastSlots = now.toTimeString().slice(0, 5);
+
+  const slotsAfterCurrentTime = availableSlots.filter(
+    (slot) => slot > pastSlots
+  );
+
+  const today = new Date().toISOString().split("T")[0];
+
+  return {
+    availableSlots: date === today ? slotsAfterCurrentTime : availableSlots,
+    bookedSlots: Array.from(bookedSlots),
+  };
 };
 
 // =============> Generate time slots <=============
