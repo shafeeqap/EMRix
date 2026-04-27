@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { AppointmentForm, PatientInfo, SlotGrid } from "./components";
 import { handleApiError } from "../../utils/handleApiError";
 import {
@@ -12,11 +12,11 @@ import { appointmentFormSchema } from "../../validator/appointmentFormValidator"
 import { Button, Loader } from "../../components/ui";
 
 const Scheduler = () => {
-  const [selectedDoctorId, setSelectedDoctorId] = useState(null);
-  const [selectedPatientId, setSelectedPatientId] = useState(null);
-  const [selectedDate, setSelectedDate] = useState("");
-  const [notes, setNotes] = useState("");
-  const [resetKey, setResetKey] = useState(0);
+  // const [selectedDoctorId, setSelectedDoctorId] = useState(null);
+  // const [selectedPatientId, setSelectedPatientId] = useState(null);
+  // const [selectedDate, setSelectedDate] = useState("");
+  // const [notes, setNotes] = useState("");
+  // const [resetKey, setResetKey] = useState(0);
 
   const methods = useForm({
     resolver: zodResolver(appointmentFormSchema),
@@ -38,7 +38,7 @@ const Scheduler = () => {
   // console.log(doctor, "DOCTOR");
   // console.log(date, "DATE");
 
-  const { data, isLoading } = useGetAvailableSlotsQuery(
+  const { data, isLoading, refetch } = useGetAvailableSlotsQuery(
     {
       doctorId: doctor?._id,
       date: date,
@@ -79,14 +79,14 @@ const Scheduler = () => {
       // Reset form and state
       reset();
       setSelectedSlot(null);
+      refetch();
     } catch (error) {
       handleApiError(error, setError);
       console.log(error, "ERROR CREATING APPOINTMENT");
     }
   };
 
-  const availableSlots = data?.availableSlots || [];
-  const bookedSlots = data?.bookedSlots || [];
+
 
   return (
     <FormProvider {...methods}>
@@ -96,13 +96,15 @@ const Scheduler = () => {
           <PatientInfo />
 
           {/* Available Slots */}
-          <SlotGrid
-            availableSlots={availableSlots}
-            bookedSlots={bookedSlots}
-            isLoading={isLoading}
-            setSelectedSlot={setSelectedSlot}
-            selectedSlot={selectedSlot}
-          />
+          {doctor && date && (
+            <SlotGrid
+              availableSlots={data?.availableSlots || []}
+              bookedSlots={data?.bookedSlots || []}
+              isLoading={isLoading}
+              setSelectedSlot={setSelectedSlot}
+              selectedSlot={selectedSlot}
+            />
+          )}
         </div>
 
         <Button

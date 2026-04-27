@@ -17,6 +17,8 @@ import { generateAvailableSlots } from "./slotService.js";
 export const createAppointmentService = async (data, user) => {
   const { doctorId, patientId, date, slotTime, notes } = data;
 
+  console.log(data, "Appointment data in service...");
+  
   const appointmentDateTime = new Date(date);
   const [hours, minutes] = slotTime.split(":");
 
