@@ -1,5 +1,5 @@
 import { Trash2, PenLine } from "lucide-react";
-import { formatWorkingHours } from "../../../utils/formatWorkingHours";
+import { formatWorkingHours } from "../../../utils/formatHours";
 import { getDuration } from "../../../utils/calculateDuration";
 
 export const getColumns = ({ onEdit, onDelete, onUpdateStatus }) => [

@@ -5,8 +5,19 @@ export const doctorApiSlice = apiSlice.injectEndpoints({
     getDoctors: builder.query({
       query: ({ page = 1, limit = 5, search, status }) =>
         `/doctors?page=${page}&limit=${limit}&search=${search}&status=${status}`,
-      
+
       providesTags: ["Doctor"],
+    }),
+
+    searchDoctor: builder.query({
+      query: (searchTerm) => ({
+        url: "/doctors/search",
+        params: { search: searchTerm },
+      }),
+
+      transformResponse: (response) => response.doctors,
+
+      keepUnusedDataFor: 60,
     }),
 
     createDoctor: builder.mutation({
@@ -54,6 +65,7 @@ export const doctorApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetDoctorsQuery,
   useCreateDoctorMutation,
+  useSearchDoctorQuery,
   useGetDoctorByIdQuery,
   useUpdateDoctorMutation,
   useUpdateDoctorStatusMutation,

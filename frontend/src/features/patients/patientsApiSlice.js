@@ -9,12 +9,23 @@ const patientApiSlice = apiSlice.injectEndpoints({
       providesTags: ["Patient"],
     }),
 
+    searchPatient: builder.query({
+      query: (searchTerm) => ({
+        url: "/patients/search",
+        params: { search: searchTerm },
+      }),
+
+      transformResponse: (response) => response.patients,
+
+      keepUnusedDataFor: 60,
+    }),
+
     getPatientDetails: builder.query({
       query: (id) => `/patients/${id}/details`,
 
       providesTags: ["Patient"],
     }),
-    
+
     createPatient: builder.mutation({
       query: (patientData) => ({
         url: "/patients",
@@ -50,6 +61,7 @@ const patientApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useGetPatientQuery,
+  useSearchPatientQuery,
   useGetPatientDetailsQuery,
   useCreatePatientMutation,
   useDeletePatientMutation,

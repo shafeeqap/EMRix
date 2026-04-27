@@ -10,7 +10,10 @@ import {
 // =============> Create a new appointment <=============
 export const createAppointment = async (req, res, next) => {
   try {
-    const appointment = await createAppointmentService(req.validatedData, req.user);
+    const appointment = await createAppointmentService(
+      req.validatedData,
+      req.user
+    );
     res
       .status(201)
       .json({ message: "Appointment created successfully", appointment });
@@ -40,9 +43,11 @@ export const getAppointments = async (req, res, next) => {
 // =============> Get available time slots for a doctor <=============
 export const getAvailableSlots = async (req, res, next) => {
   try {
-    const slots = await generateAvailableSlots(req.query);
+    const { availableSlots, bookedSlots } = await generateAvailableSlots(
+      req.query
+    );
 
-    res.status(200).json({ slots });
+    res.status(200).json({ availableSlots, bookedSlots });
   } catch (error) {
     next(error);
   }
