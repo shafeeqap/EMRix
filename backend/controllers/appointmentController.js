@@ -1,10 +1,11 @@
 import { generateAvailableSlots } from "../services/slotService.js";
 import {
   createAppointmentService,
-  getAppointmentService,
+  getAppointmentsService,
   updateAppointmentStatusService,
   updateAppointmentService,
   deleteAppointmentService,
+  getAppointmentByIdService,
 } from "../services/appointmentService.js";
 
 // =============> Create a new appointment <=============
@@ -29,10 +30,23 @@ export const createAppointment = async (req, res, next) => {
   }
 };
 
-// =============> Get all appointments <=============
+// =============> Get appointments By doctorId and date <=============
 export const getAppointments = async (req, res, next) => {
   try {
-    const appointments = await getAppointmentService(req.validatedData);
+    const { appointments, page, totalPages } = await getAppointmentsService(
+      req.query
+    );
+
+    res.status(200).json({ appointments, page, totalPages });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// =============> Get appointments By doctorId and date <=============
+export const getAppointmentById = async (req, res, next) => {
+  try {
+    const appointments = await getAppointmentByIdService(req.validatedData);
 
     res.status(200).json({ appointments });
   } catch (error) {

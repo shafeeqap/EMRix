@@ -1,18 +1,26 @@
 import {
+  CreateAppointmentModal,
+  DeleteAppointmentModal,
+  EditAppointmentModal,
+  AppointmentDetailsModal,
+} from "../../features/appointments/components";
+import {
   AddDoctorModal,
   DeleteDoctorModal,
   EditDoctorModal,
   UpdateDoctorStatusModal,
 } from "../../features/dashboard/doctors/components";
-import AddPatientModal from "../../features/patients/components/AddPatientModal";
-import DeletePatientModal from "../../features/patients/components/DeletePatientModal";
-import DetailsPatientModal from "../../features/patients/components/DetailsPatientModal";
-import EditPatientModal from "../../features/patients/components/EditPatientModal";
+import {
+  AddPatientModal,
+  DeletePatientModal,
+  DetailsPatientModal,
+  EditPatientModal,
+} from "../../features/patients/components";
 import {
   AddUserModal,
   DeleteUserModal,
   EditUserModal,
-  UpdateUserStatusModal
+  UpdateUserStatusModal,
 } from "../../features/users/components";
 
 export const MODAL_COMPONENTS = {
@@ -29,14 +37,10 @@ export const MODAL_COMPONENTS = {
   DETAILS_PATIENT: DetailsPatientModal,
 
   // Appointment Modals
-  ADD_APPOINTMENT: "ADD_APPOINTMENT",
-  EDIT_APPOINTMENT: "EDIT_APPOINTMENT",
-  DELETE_APPOINTMENT: "DELETE_APPOINTMENT",
-
-  // Prescription Modals
-  ADD_PRESCRIPTION: "ADD_PRESCRIPTION",
-  EDIT_PRESCRIPTION: "EDIT_PRESCRIPTION",
-  DELETE_PRESCRIPTION: "DELETE_PRESCRIPTION",
+  ADD_APPOINTMENT: CreateAppointmentModal,
+  EDIT_APPOINTMENT: EditAppointmentModal,
+  DELETE_APPOINTMENT: DeleteAppointmentModal,
+  DETAILS_APPOINTMENT: AppointmentDetailsModal,
 
   // User Modals
   ADD_USER: AddUserModal,

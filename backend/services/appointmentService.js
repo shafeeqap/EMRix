@@ -5,6 +5,8 @@ import {
   findAppointmentByIdAndDelete,
   findAppointmentByIdAndUpdate,
   findAppointmentOne,
+  countAppointmentDocuments,
+  getAppointment,
 } from "../repositories/appointmentRepository.js";
 import { findDoctorById } from "../repositories/doctorRepository.js";
 import { AppError } from "../utils/AppError.js";
@@ -18,7 +20,7 @@ export const createAppointmentService = async (data, user) => {
   const { doctorId, patientId, date, slotTime, notes } = data;
 
   console.log(data, "Appointment data in service...");
-  
+
   const appointmentDateTime = new Date(date);
   const [hours, minutes] = slotTime.split(":");
 
@@ -88,7 +90,38 @@ export const createAppointmentService = async (data, user) => {
 };
 
 // =============> Get appointments service <=============
-export const getAppointmentService = async (query) => {
+export const getAppointmentsService = async (query) => {
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 5;
+  const skip = (page - 1) * limit;
+  const search = query.search?.trim();
+  const status = query.status;
+
+  const filter = {};
+
+  if (status === "booked") {
+    filter.status = "booked";
+  } else if (status === "arrived") {
+    filter.status = "arrived";
+  } else if (status === "cancelled") {
+    filter.status = "cancelled";
+  }
+
+
+  const { appointments, total } = await getAppointment({
+    search,
+    status,
+    skip,
+    limit,
+  });
+
+  const totalPages = Math.ceil(total / limit);
+
+  return { appointments, page, totalPages };
+};
+
+// =============> Get appointments service <=============
+export const getAppointmentByIdService = async (query) => {
   const { doctorId, date } = query;
 
   const { startTime, endTime } = formattedDate(date);

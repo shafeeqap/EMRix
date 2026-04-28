@@ -12,12 +12,6 @@ import { appointmentFormSchema } from "../../validator/appointmentFormValidator"
 import { Button, Loader } from "../../components/ui";
 
 const Scheduler = () => {
-  // const [selectedDoctorId, setSelectedDoctorId] = useState(null);
-  // const [selectedPatientId, setSelectedPatientId] = useState(null);
-  // const [selectedDate, setSelectedDate] = useState("");
-  // const [notes, setNotes] = useState("");
-  // const [resetKey, setResetKey] = useState(0);
-
   const methods = useForm({
     resolver: zodResolver(appointmentFormSchema),
     defaultValues: {
@@ -33,11 +27,8 @@ const Scheduler = () => {
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [existingPatient, setExistingPatient] = useState(false);
 
-  const doctor = watch("doctor");
-  const date = watch("date");
-
-  // console.log(doctor, "DOCTOR");
-  // console.log(date, "DATE");
+  const [doctor, date] = watch(["doctor", "date"]);
+  // const date = watch("date");
 
   const { data, isLoading, refetch } = useGetAvailableSlotsQuery(
     {
@@ -48,8 +39,6 @@ const Scheduler = () => {
       skip: !doctor || !doctor._id || !date,
     }
   );
-
-  // console.log(data, "AVAILABLE SLOTS DATA");
 
   const [createAppointment] = useCreateAppointmentMutation();
 
