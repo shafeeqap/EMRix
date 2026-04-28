@@ -4,6 +4,7 @@ import {
   createAppointment,
   deleteAppointment,
   getAppointments,
+  getAppointmentById,
   getAvailableSlots,
   updateAppointments,
   updateAppointmentStatus,
@@ -17,13 +18,14 @@ import {
 
 const router = express.Router();
 
+router.get("/", protect, getAppointments);
 router.get("/slots", protect, getAvailableSlots);
 router.post("/", protect, validate(createAppointmentSchema), createAppointment);
 router.get(
   "/",
   protect,
   validate(getAppontmentSchema, "query"),
-  getAppointments
+  getAppointmentById
 );
 router.put(
   "/:id/reschedule",

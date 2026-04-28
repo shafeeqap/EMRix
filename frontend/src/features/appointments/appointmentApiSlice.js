@@ -10,6 +10,13 @@ const appointmentApiSlice = apiSlice.injectEndpoints({
     }),
 
     getAppointments: builder.query({
+      query: ({ page = 1, limit = 5, search, status }) =>
+        `/appointments?page=${page}&limit=${limit}&search=${search}&status=${status}`,
+
+      providesTags: ["Appointment"],
+    }),
+
+    getAppointmentById: builder.query({
       query: ({ doctorId, date }) =>
         `appointments?doctorId=${doctorId}&date=${date}`,
 
@@ -30,5 +37,6 @@ const appointmentApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetAvailableSlotsQuery,
   useGetAppointmentsQuery,
+  useGetAppointmentByIdQuery,
   useCreateAppointmentMutation,
 } = appointmentApiSlice;

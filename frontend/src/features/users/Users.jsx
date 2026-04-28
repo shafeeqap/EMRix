@@ -13,6 +13,7 @@ import {
 } from "../../components/ui";
 import { Plus } from "lucide-react";
 import ErrorMessage from "../../components/ErrorMessage";
+import { statusOptions } from "./statusOptions";
 
 const Users = () => {
   const [page, setPage] = useState(1);
@@ -80,6 +81,7 @@ const Users = () => {
 
   if (error) return <ErrorMessage />;
 
+
   return (
     <>
       <div className="flex justify-between">
@@ -90,7 +92,11 @@ const Users = () => {
         </Button>
       </div>
 
-      <FilterOption status={status} setStatus={setStatus} />
+      <FilterOption
+        status={status}
+        onChange={setStatus}
+        options={statusOptions}
+      />
 
       {users.length === 0 ? (
         <div className="flex justify-center items-center bg-gray-100 mt-5 rounded min-h-20">
