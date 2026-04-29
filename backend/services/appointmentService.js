@@ -5,8 +5,8 @@ import {
   findAppointmentByIdAndDelete,
   findAppointmentByIdAndUpdate,
   findAppointmentOne,
-  countAppointmentDocuments,
   getAppointment,
+  getAppointmentById,
 } from "../repositories/appointmentRepository.js";
 import { findDoctorById } from "../repositories/doctorRepository.js";
 import { AppError } from "../utils/AppError.js";
@@ -18,8 +18,6 @@ import { generateAvailableSlots } from "./slotService.js";
 // =============> create appointments service <=============
 export const createAppointmentService = async (data, user) => {
   const { doctorId, patientId, date, slotTime, notes } = data;
-
-  console.log(data, "Appointment data in service...");
 
   const appointmentDateTime = new Date(date);
   const [hours, minutes] = slotTime.split(":");
@@ -60,7 +58,6 @@ export const createAppointmentService = async (data, user) => {
   }
 
   const tokenNumber = await generateAppointmentToken(doctorId, date);
-  console.log(tokenNumber, "Generated token...");
 
   const appointment = await createAppointmentRepo({
     doctorId,
@@ -107,7 +104,6 @@ export const getAppointmentsService = async (query) => {
     filter.status = "cancelled";
   }
 
-
   const { appointments, total } = await getAppointment({
     search,
     status,
@@ -121,15 +117,28 @@ export const getAppointmentsService = async (query) => {
 };
 
 // =============> Get appointments service <=============
-export const getAppointmentByIdService = async (query) => {
-  const { doctorId, date } = query;
+// export const getAppointmentByIdAndDateService = async (query) => {
+//   const { doctorId, date } = query;
 
-  const { startTime, endTime } = formattedDate(date);
+//   const { startTime, endTime } = formattedDate(date);
 
-  const appointments = await findAppointment({
-    doctorId,
-    date: { $gte: startTime, $lt: endTime },
-  });
+//   const appointments = await findAppointment({
+//     doctorId,
+//     date: { $gte: startTime, $lt: endTime },
+//   });
+
+//   return appointments;
+// };
+
+// =============> Get appointments service <=============
+export const getAppointmentByIdService = async (params) => {
+  const appointmentId = params.id;
+
+  if (!appointmentId) {
+    throw new AppError("Appointment id is required", 400);
+  }
+
+  const appointments = await getAppointmentById(appointmentId);
 
   return appointments;
 };

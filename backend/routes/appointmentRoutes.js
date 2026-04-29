@@ -19,14 +19,15 @@ import {
 const router = express.Router();
 
 router.get("/", protect, getAppointments);
+router.get("/:id", protect, getAppointmentById);
 router.get("/slots", protect, getAvailableSlots);
 router.post("/", protect, validate(createAppointmentSchema), createAppointment);
-router.get(
-  "/",
-  protect,
-  validate(getAppontmentSchema, "query"),
-  getAppointmentById
-);
+// router.get(
+//   "/",
+//   protect,
+//   validate(getAppontmentSchema, "query"),
+//   getAppointmentByIdAndDate
+// );
 router.put(
   "/:id/reschedule",
   protect,

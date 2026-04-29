@@ -28,7 +28,7 @@ const Scheduler = () => {
   const [existingPatient, setExistingPatient] = useState(false);
 
   const [doctor, date] = watch(["doctor", "date"]);
-  // const date = watch("date");
+
 
   const { data, isLoading, refetch } = useGetAvailableSlotsQuery(
     {

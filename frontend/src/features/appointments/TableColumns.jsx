@@ -21,18 +21,18 @@ export const getColumns = ({ onEdit, onDelete, onUpdateStatus, onDetails }) => [
     header: "PatientID",
     render: (row) => row.patient.patientId,
   },
-  {
-    header: "Appointment Date",
-    render: (row) => new Date(row.date).toISOString().split("T")[0],
-  },
-  {
-    header: "Appointment Time",
-    accessor: "slotTime",
-  },
-  {
-    header: "Token Number",
-    accessor: "tokenNumber",
-  },
+  // {
+  //   header: "Appointment Date",
+  //   render: (row) => new Date(row.date).toISOString().split("T")[0],
+  // },
+  // {
+  //   header: "Appointment Time",
+  //   accessor: "slotTime",
+  // },
+  // {
+  //   header: "Token Number",
+  //   accessor: "tokenNumber",
+  // },
   {
     header: "Appointment Type",
     render: (row) => (

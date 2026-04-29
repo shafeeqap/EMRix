@@ -36,8 +36,8 @@ const Booking = () => {
   }, [search, filter]);
 
   // console.log(search, "Search in component...");
-  console.log(appointments, "Appointments in component...");
-  console.log(data, "Data in component...");
+  // console.log(appointments, "Appointments in component...");
+  // console.log(data, "Data in component...");
   
 
   const handleAddModalOpen = (row) => {
@@ -49,7 +49,7 @@ const Booking = () => {
     dispatch(
       openModal({
         modalType: "EDIT_APPOINTMENT",
-        modalProps: { patientId: row._id },
+        modalProps: { appointmentId: row._id },
       })
     );
     console.log("EDIT CLICKED", row);
@@ -74,10 +74,21 @@ const Booking = () => {
     console.log("DETAILS CLICKED", row);
   };
 
+  const handleStatusModalOpen = (row) => {
+    dispatch(
+      openModal({
+        modalType: "UPDATE_APPOINTMENT_STATUS",
+        modalProps: { userId: row._id },
+      })
+    );
+    console.log("UPDATE APPOINTMENT STATUS CLICKED", row);
+  };
+
   const columns = getColumns({
     onEdit: handleEditModalOpen,
     onDelete: handleDeleteModalOpen,
     onDetails: handleDetailsModalOpen,
+    onUpdateStatus: handleStatusModalOpen,
   });
 
   if (isLoading)

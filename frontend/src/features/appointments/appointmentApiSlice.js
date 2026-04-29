@@ -17,8 +17,7 @@ const appointmentApiSlice = apiSlice.injectEndpoints({
     }),
 
     getAppointmentById: builder.query({
-      query: ({ doctorId, date }) =>
-        `appointments?doctorId=${doctorId}&date=${date}`,
+      query: ({ id }) => `/appointments/${id}`,
 
       providesTags: ["Appointment"],
     }),

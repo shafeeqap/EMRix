@@ -97,14 +97,6 @@ const PatientInfo = ({ existingPatient, handlePatient }) => {
         </>
       )}
 
-      {/* <Button
-        disabled={!existingPatient || !selectedPatientId}
-        onClick={handleSubmit((data) => onSubmit(data, setError))}
-        variant="danger"
-        className="uppercase w-full mt-5"
-      >
-        {isLoading ? <Loader /> : "Book Appointment"}
-      </Button> */}
     </div>
   );
 };

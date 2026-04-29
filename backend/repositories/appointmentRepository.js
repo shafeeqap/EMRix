@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Appointment from "../models/Appointment.js";
 
 export const createAppointmentRepo = async (data) => {
@@ -5,7 +6,67 @@ export const createAppointmentRepo = async (data) => {
 };
 
 export const findAppointmentById = async (id) => {
-  return Appointment.findById(id);
+  return Appointment.findById(id)
+    .populate("doctorId", "firstName lastName")
+    .populate("patientId", "name age mobile")
+    .sort({ createdAt: -1 });
+};
+
+export const getAppointmentById = async (id) => {
+  
+  const pipeline = [
+    {
+      $match: { _id: new mongoose.Types.ObjectId(id) },
+    },
+
+    // Join Patient
+    {
+      $lookup: {
+        from: "patients",
+        localField: "patientId",
+        foreignField: "_id",
+        as: "patient",
+      },
+    },
+    { $unwind: "$patient" },
+
+    // Join Doctor
+    {
+      $lookup: {
+        from: "doctors",
+        localField: "doctorId",
+        foreignField: "_id",
+        as: "doctor",
+      },
+    },
+    { $unwind: "$doctor" },
+
+    {
+      $project: {
+        _id: 1,
+        status: 1,
+        date: 1,
+        slotTime: 1,
+        tokenNumber: 1,
+        notes: 1,
+        createdAt: 1,
+        "patient._id": 1,
+        "patient.name": 1,
+        "patient.mobile": 1,
+        "patient.age": 1,
+        "patient.patientId": 1,
+        "doctor._id": 1,
+        "doctor.firstName": 1,
+        "doctor.lastName": 1,
+        "doctor.department": 1,
+      },
+    },
+
+    { $sort: { createdAt: -1 } },
+  ];
+
+  const result = await Appointment.aggregate(pipeline);
+  return result[0] || null;
 };
 
 export const findAppointment = (filter) => {
