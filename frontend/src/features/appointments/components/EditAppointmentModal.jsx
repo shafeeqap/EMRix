@@ -1,6 +1,9 @@
 import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useGetAppointmentByIdQuery } from "../appointmentApiSlice";
+import {
+  useGetAppointmentByIdQuery,
+  useGetAvailableSlotsQuery,
+} from "../appointmentApiSlice";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { editAppointmentSchema } from "../../../validator/editAppointmentValidator";
 import { useForm } from "react-hook-form";
@@ -15,6 +18,27 @@ const EditAppointmentModal = () => {
   );
 
   const dispatch = useDispatch();
+
+  const form = useForm({
+    resolver: zodResolver(editAppointmentSchema),
+    defaultValues: {
+      patient: "",
+      doctorId: "",
+      slotTime: "",
+      date: "",
+      notes: "",
+    },
+  });
+
+  const [doctorId, date] = form.watch(["doctorId", "date"]);
+  // const date = form.watch("date");
+
+  const { data: slotData, isLoading: slotsLoading } = useGetAvailableSlotsQuery(
+    { doctorId, date },
+    { skip: !doctorId || !date }
+  );
+
+  console.log(slotData, "Available Slots in Edit Modal...");
 
   const {
     data: appointments,
@@ -31,16 +55,9 @@ const EditAppointmentModal = () => {
   const doctors = data?.doctors || [];
   // console.log(doctors, "Doctors in Edit Modal...");
 
-  const form = useForm({
-    resolver: zodResolver(editAppointmentSchema),
-    defaultValues: {
-      patient: "",
-      doctorId: "",
-      slotTime: "",
-      date: "",
-      notes: "",
-    },
-  });
+  useEffect(() => {
+    form.setValue("slotTime", "");
+  }, [doctorId, date, form]);
 
   useEffect(() => {
     if (!appointment) return;
@@ -62,11 +79,9 @@ const EditAppointmentModal = () => {
     console.log(values, "Updated Values");
   };
 
-  {
-    /* {isLoading && <p>Loading...</p>}
+  /* {isLoading && <p>Loading...</p>}
 
   {error && <p>Error loading appointment data.</p>} */
-  }
 
   return (
     <div className="bg-white rounded-lg p-6 sm:w-96 md:w-[700px]">
@@ -127,8 +142,32 @@ const EditAppointmentModal = () => {
               className="focus:ring focus:border-primary"
             />
           </div>
-          
-          <div>Slot Grid</div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-2">Select Slot</label>
+            <div className="grid grid-cols-3 gap-2">
+              {slotData?.availableSlots?.map((slot) => (
+                <button
+                  key={slot}
+                  type="button"
+                  onClick={() => form.setValue("slotTime", slot)}
+                  className={`px-3 py-2 border rounded ${
+                    form.watch("slotTime") === slot
+                      ? "bg-primary text-white"
+                      : "bg-gray-100"
+                  }`}
+                >
+                  {slot}
+                </button>
+              ))}
+            </div>
+
+            {form.formState.errors.slotTime && (
+              <p className="text-red-500 text-sm mt-1">
+                {form.formState.errors.slotTime.message}
+              </p>
+            )}
+          </div>
 
           <div className="flex justify-end">
             <Button
