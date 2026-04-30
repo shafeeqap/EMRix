@@ -37,7 +37,7 @@ const Booking = () => {
 
   // console.log(search, "Search in component...");
   // console.log(appointments, "Appointments in component...");
-  // console.log(data, "Data in component...");
+  console.log(data, "Data in component...");
   
 
   const handleAddModalOpen = (row) => {

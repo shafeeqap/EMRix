@@ -117,20 +117,6 @@ export const getAppointmentsService = async (query) => {
 };
 
 // =============> Get appointments service <=============
-// export const getAppointmentByIdAndDateService = async (query) => {
-//   const { doctorId, date } = query;
-
-//   const { startTime, endTime } = formattedDate(date);
-
-//   const appointments = await findAppointment({
-//     doctorId,
-//     date: { $gte: startTime, $lt: endTime },
-//   });
-
-//   return appointments;
-// };
-
-// =============> Get appointments service <=============
 export const getAppointmentByIdService = async (params) => {
   const appointmentId = params.id;
 
@@ -175,9 +161,15 @@ export const updateAppointmentStatusService = async (params, data, user) => {
 // =============> Update appointments service <=============
 export const updateAppointmentService = async (params, data, user) => {
   const id = params.id;
-  const { date, slotTime, notes } = data;
+  const { date, doctorId, slotTime, notes } = data;
+
+  console.log(id, "ID in update service...");
+  console.log(data, "Data in update service...");
+  
+  
 
   const appointment = await findAppointmentById(id);
+  
   if (!appointment) {
     throw new AppError("Appointment not found", 404);
   }
@@ -189,11 +181,13 @@ export const updateAppointmentService = async (params, data, user) => {
 
   if (isDateChanged || isSlotChanged) {
     const slots = await generateAvailableSlots({
-      doctorId: appointment.doctorId,
+      doctorId,
       date: date,
     });
 
-    const availableSlot = slots.includes(slotTime);
+    
+    
+    const availableSlot = slots.availableSlots.includes(slotTime);
 
     if (!availableSlot) {
       throw new AppError("Slot not available", 404);

@@ -18,6 +18,7 @@ export const createAppointmentSchema = z.object({
 // update appointment validation
 export const updateAppointmentSchema = z.object({
   date: z.string(),
+  doctorId: z.string().min(1, "Doctor is required"),
   slotTime: z
     .string()
     .regex(/^\d{2}:\d{2}$/, "Invalid time format (HH:MM)")

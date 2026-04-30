@@ -29,7 +29,6 @@ const Scheduler = () => {
 
   const [doctor, date] = watch(["doctor", "date"]);
 
-
   const { data, isLoading, refetch } = useGetAvailableSlotsQuery(
     {
       doctorId: doctor?._id,

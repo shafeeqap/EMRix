@@ -43,17 +43,6 @@ export const getAppointments = async (req, res, next) => {
   }
 };
 
-// =============> Get appointments By doctorId and date <=============(Filter by doctorId and date)
-// export const getAppointmentByIdAndDate = async (req, res, next) => {
-//   try {
-//     const appointments = await getAppointmentByIdAndDateService(req.validatedData);
-
-//     res.status(200).json({ appointments });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
 // =============> Get appointments By doctorId <=============
 export const getAppointmentById = async (req, res, next) => {
   try {

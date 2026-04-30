@@ -30,6 +30,15 @@ const appointmentApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Appointment"],
     }),
+
+    updateAppointment: builder.mutation({
+      query: ({ id, appointmentData }) => ({
+        url: `/appointments/${id}/reschedule`,
+        method: "PUT",
+        body: appointmentData,
+      }),
+      invalidatesTags: ["Appointment"],
+    }),
   }),
 });
 
@@ -38,4 +47,5 @@ export const {
   useGetAppointmentsQuery,
   useGetAppointmentByIdQuery,
   useCreateAppointmentMutation,
+  useUpdateAppointmentMutation,
 } = appointmentApiSlice;
