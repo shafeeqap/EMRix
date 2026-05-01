@@ -1,7 +1,7 @@
 import { TokenCounter } from "../models/tokenCounter.js";
 
 export const generateAppointmentToken = async (doctorId, date) => {
-  console.log(`Generating token for doctorId: ${doctorId}, date: ${date}...`);
+  // console.log(`Generating token for doctorId: ${doctorId}, date: ${date}...`);
   
   const appointmentToken = await TokenCounter.findOneAndUpdate(
     { doctorId, date },

@@ -42,7 +42,7 @@ const EditAppointmentModal = () => {
     handleSubmit,
     register,
     setValue,
-    formState: { errors },
+    formState: { errors, isDirty },
     setError,
     reset,
   } = methods;
@@ -53,8 +53,6 @@ const EditAppointmentModal = () => {
     { doctorId, date },
     { skip: !doctorId || !date }
   );
-
-  // console.log(slotData, "Available Slots Data in Edit Modal...");
 
   const {
     data: appointments,
@@ -94,6 +92,11 @@ const EditAppointmentModal = () => {
   }, [appointment, reset]);
 
   const onSubmit = async (values) => {
+    if (!isDirty) {
+      toast.warning("No changes detected");
+      return;
+    }
+
     const payload = {
       doctorId: values.doctorId,
       slotTime: values.slotTime,
@@ -128,7 +131,7 @@ const EditAppointmentModal = () => {
   if (error) return <ErrorMessage />;
 
   return (
-    <div className="max-w-min p-6 sm:w-96 md:w-[700px]">
+    <div className="bg-white w-64 p-6 sm:w-96 md:w-[700px]">
       <h2 className="text-xl font-semibold mb-4">Edit Appointment</h2>
 
       {appointments && (

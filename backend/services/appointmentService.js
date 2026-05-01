@@ -165,11 +165,9 @@ export const updateAppointmentService = async (params, data, user) => {
 
   console.log(id, "ID in update service...");
   console.log(data, "Data in update service...");
-  
-  
 
   const appointment = await findAppointmentById(id);
-  
+
   if (!appointment) {
     throw new AppError("Appointment not found", 404);
   }
@@ -185,8 +183,6 @@ export const updateAppointmentService = async (params, data, user) => {
       date: date,
     });
 
-    
-    
     const availableSlot = slots.availableSlots.includes(slotTime);
 
     if (!availableSlot) {

@@ -32,13 +32,11 @@ const Booking = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if(!search && !filter) return;
+
     setPage(1);
   }, [search, filter]);
 
-  // console.log(search, "Search in component...");
-  // console.log(appointments, "Appointments in component...");
-  // console.log(data, "Data in component...");
-  
 
   const handleAddModalOpen = (row) => {
     dispatch(openModal({ modalType: "ADD_APPOINTMENT", modalProps: {} }));
@@ -59,11 +57,12 @@ const Booking = () => {
     dispatch(
       openModal({
         modalType: "DELETE_APPOINTMENT",
-        modalProps: { appointmentId: row._id },
+        modalProps: { appointmentData: row },
       })
     );
     console.log("DELETE CLICKED", row);
   };
+
   const handleDetailsModalOpen = (row) => {
     dispatch(
       openModal({
@@ -78,7 +77,7 @@ const Booking = () => {
     dispatch(
       openModal({
         modalType: "UPDATE_APPOINTMENT_STATUS",
-        modalProps: { appointmentId: row._id },
+        modalProps: { appointment: row },
       })
     );
     console.log("UPDATE APPOINTMENT STATUS CLICKED", row);

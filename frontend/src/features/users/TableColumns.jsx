@@ -38,14 +38,14 @@ export const getColumns = ({ onEdit, onDelete, onUpdateStatus }) => [
     render: (row) => (
       <>
         {row.role !== "super_admin" && (
-          <span
+          <div
             onClick={() => onUpdateStatus(row)}
-            className={`px-2 py-1 text-xs font-medium cursor-pointer text-white ${
+            className={`max-w-16 px-2 py-1 text-xs font-medium cursor-pointer text-white ${
               row.isActive ? "bg-green-700" : "bg-red-700"
             }`}
           >
             {row.isActive ? "Active" : "Inactive"}
-          </span>
+          </div>
         )}
       </>
     ),
