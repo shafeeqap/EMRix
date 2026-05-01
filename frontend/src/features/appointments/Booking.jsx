@@ -37,7 +37,7 @@ const Booking = () => {
 
   // console.log(search, "Search in component...");
   // console.log(appointments, "Appointments in component...");
-  console.log(data, "Data in component...");
+  // console.log(data, "Data in component...");
   
 
   const handleAddModalOpen = (row) => {
@@ -59,7 +59,7 @@ const Booking = () => {
     dispatch(
       openModal({
         modalType: "DELETE_APPOINTMENT",
-        modalProps: { patientData: row },
+        modalProps: { appointmentId: row._id },
       })
     );
     console.log("DELETE CLICKED", row);
@@ -68,7 +68,7 @@ const Booking = () => {
     dispatch(
       openModal({
         modalType: "DETAILS_APPOINTMENT",
-        modalProps: { patientId: row._id },
+        modalProps: { appointmentId: row._id },
       })
     );
     console.log("DETAILS CLICKED", row);
@@ -78,7 +78,7 @@ const Booking = () => {
     dispatch(
       openModal({
         modalType: "UPDATE_APPOINTMENT_STATUS",
-        modalProps: { userId: row._id },
+        modalProps: { appointmentId: row._id },
       })
     );
     console.log("UPDATE APPOINTMENT STATUS CLICKED", row);

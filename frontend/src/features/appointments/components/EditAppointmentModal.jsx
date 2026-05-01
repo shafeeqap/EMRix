@@ -23,12 +23,15 @@ const EditAppointmentModal = () => {
 
   const dispatch = useDispatch();
 
+  const today = new Date().toISOString().split("T")[0];
+
   const methods = useForm({
     resolver: zodResolver(editAppointmentSchema),
     defaultValues: {
       patient: "",
       doctorId: "",
       slotTime: "",
+      tokenNumber: "",
       date: "",
       notes: "",
     },
@@ -50,6 +53,8 @@ const EditAppointmentModal = () => {
     { doctorId, date },
     { skip: !doctorId || !date }
   );
+
+  // console.log(slotData, "Available Slots Data in Edit Modal...");
 
   const {
     data: appointments,
@@ -80,6 +85,7 @@ const EditAppointmentModal = () => {
       patient: appointment.patient?.name || "",
       doctorId: doctor?._id,
       slotTime: appointment.slotTime,
+      tokenNumber: appointment.tokenNumber,
       date: appointment?.date
         ? new Date(appointment?.date).toISOString().split("T")[0]
         : "",
@@ -122,7 +128,7 @@ const EditAppointmentModal = () => {
   if (error) return <ErrorMessage />;
 
   return (
-    <div className="bg-white rounded-lg p-6 sm:w-96 md:w-[700px]">
+    <div className="max-w-min p-6 sm:w-96 md:w-[700px]">
       <h2 className="text-xl font-semibold mb-4">Edit Appointment</h2>
 
       {appointments && (
@@ -138,6 +144,27 @@ const EditAppointmentModal = () => {
           </div>
 
           <div className="mb-4">
+            <InputField
+              label="Slot Time"
+              type="text"
+              {...register("slotTime")}
+              className="focus:ring focus:border-primary"
+              disabled
+              // error={errors.slotTime}
+            />
+          </div>
+
+          <div className="mb-4">
+            <InputField
+              label="Token Number"
+              type="text"
+              {...register("tokenNumber")}
+              className="focus:ring focus:border-primary"
+              disabled
+            />
+          </div>
+
+          <div className="mb-4">
             <label className="block text-gray-700 mb-2">Doctor Name</label>
             <select
               {...register("doctorId")}
@@ -145,21 +172,15 @@ const EditAppointmentModal = () => {
             >
               {/* <option value="">Select Doctor</option> */}
               {doctors.map((doc) => (
-                <option key={doc._id} value={doc._id}>
+                <option
+                  key={doc._id}
+                  value={doc._id}
+                  className="text-xs max-w-min sm:text-sm sm:max-w-0"
+                >
                   {getFullName(doc)} - {doc.department}
                 </option>
               ))}
             </select>
-          </div>
-
-          <div className="mb-4">
-            <InputField
-              label="Slot Time"
-              type="text"
-              {...register("slotTime")}
-              className="focus:ring focus:border-primary"
-              error={errors.slotTime}
-            />
           </div>
 
           <div className="flex flex-col mb-4">
@@ -175,6 +196,7 @@ const EditAppointmentModal = () => {
             <InputField
               label="Date"
               type="date"
+              min={today}
               {...register("date")}
               error={errors.date}
               className="focus:ring focus:border-primary"
@@ -187,7 +209,7 @@ const EditAppointmentModal = () => {
             ) : (
               <>
                 <label className="block text-gray-700 mb-2">Select Slot</label>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
                   {slotData?.availableSlots?.map((slot) => (
                     <button
                       key={slot}

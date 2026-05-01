@@ -13,7 +13,10 @@ export const findAppointmentById = async (id) => {
 };
 
 export const getAppointmentById = async (id) => {
-  
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new Error("Invalid appointment ID");
+  }
+
   const pipeline = [
     {
       $match: { _id: new mongoose.Types.ObjectId(id) },
