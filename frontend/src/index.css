@@ -14,3 +14,34 @@ body{
     --color-surface-base: #ffffff;
     --color-surface-raised: #f9fafb;
   }
+
+  @keyframes scale-in {
+    0% {
+      transform: scale(0.5);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  .animate-scale-in {
+    animation: scale-in 0.3s ease-out;
+  }
+  
+  @keyframes draw {
+    0% {
+      stroke-dasharray: 24;
+      stroke-dashoffset: 24;
+    }
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+  
+  .animate-draw {
+    stroke-dasharray: 24;
+    stroke-dashoffset: 0;
+    animation: draw 0.4s ease forwards;
+  }

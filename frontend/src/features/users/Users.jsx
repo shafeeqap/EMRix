@@ -96,6 +96,7 @@ const Users = () => {
         status={status}
         onChange={setStatus}
         options={statusOptions}
+        className="w-52"
       />
 
       {users.length === 0 ? (

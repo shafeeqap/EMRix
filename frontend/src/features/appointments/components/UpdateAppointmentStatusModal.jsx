@@ -1,41 +1,60 @@
 import { OctagonAlert } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FilterOption } from "../../../components/ui";
+import { Button, FilterOption, SuccessFeedback } from "../../../components/ui";
 import { appointmentUpdateStatus } from "../appointmentOptions";
 import { closeModal } from "../../../components/modal/modalSlice";
 import { useUpdateAppointmentStatusMutation } from "../appointmentApiSlice";
 import { toast } from "react-toastify";
 import { handleApiError } from "../../../utils/handleApiError";
 
+const TRANSITIONS = {
+  booked: ["arrived", "cancelled", "no_show"],
+  arrived: ["completed"],
+  completed: [],
+  cancelled: [],
+  no_show: [],
+};
+
 const UpdateAppointmentStatusModal = () => {
   const { appointment } = useSelector((state) => state.modal.modalProps || {});
   const dispatch = useDispatch();
 
   const [status, setStatus] = useState(appointment?.status || "");
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const currentStatus = appointment?.status;
+  const allowedNext = TRANSITIONS[currentStatus] || [];
+  const filteredOptions = appointmentUpdateStatus.filter((option) =>
+    allowedNext.includes(option.value)
+  );
 
   const [updateAppointmentStatus, { isLoading }] =
     useUpdateAppointmentStatusMutation();
 
-    useEffect(() => {
-      if (appointment?.status) {
-        setStatus(appointment.status);
+  useEffect(() => {
+    if (appointment?.status) {
+      const allowed = TRANSITIONS[appointment.status] || [];
+
+      if (allowed.length > 0) {
+        setStatus(allowed[0]);
       }
-    }, [appointment]);
+    }
+  }, [appointment]);
 
   const handleUpdateStatus = async () => {
-    if (status === appointment.status) {
-      toast.info("No changes made");
+    if (!status || status === currentStatus) {
+      toast.info("No changes detected");
       return;
     }
 
-    const today = new Date().toISOString().split("T")[0];
-    const date = new Date(appointment.date).toISOString().split("T")[0];
+    // const today = new Date().toISOString().split("T")[0];
+    // const date = new Date(appointment.date).toISOString().split("T")[0];
 
-    if(date < today ){
-      toast.info("Cannot update status of past appointments");
-      return;
-    }
+    // if (date < today) {
+    //   toast.info("Cannot update status of past appointments");
+    //   return;
+    // }
 
     try {
       const res = await updateAppointmentStatus({
@@ -43,9 +62,13 @@ const UpdateAppointmentStatusModal = () => {
         status: status,
       }).unwrap();
 
-      toast.success(res.message || "Appointment status updated successfully");
+      setIsSuccess(true);
 
-      dispatch(closeModal());
+      setTimeout(() => {
+        dispatch(closeModal());
+      }, 1500);
+
+      // toast.success(res.message || "Appointment status updated successfully");
     } catch (error) {
       console.error(error);
       handleApiError(error);
@@ -54,42 +77,55 @@ const UpdateAppointmentStatusModal = () => {
 
   return (
     <div className="flex flex-col items-center px-5 py-5 space-y-3 w-64 sm:w-fit max-w-sm">
-      <OctagonAlert strokeWidth={1.25} size={72} className="text-red-600" />
-      <h1 className="text-2xl">Are you sure?</h1>
+      
+      {isSuccess ? (
+        <SuccessFeedback />
+      ) : (
+        <OctagonAlert strokeWidth={1.25} size={72} className="text-red-600" />
+      )}
+
+      <h1 className="text-2xl">{isSuccess ? "Updated!" : "Are you sure?"}</h1>
 
       <p className="text-textSecondary text-center">
-        Do you really want to update{" "}
-        <span className="text-red-600">{"fullName"}'s</span> status? It will be{" "}
-        {status === "booked" ? (
-          <span className="text-green-600">Booked</span>
-        ) : status === "arrived" ? (
-          <span className="text-blue-600">Arrived</span>
-        ) : status === "cancelled" ? (
-          <span className="text-red-600">Cancelled</span>
-        ) : null}{" "}
-        after the update.
+        {isSuccess ? (
+          "Appointment status has been updated successfully."
+        ) : (
+          <>
+            This action cannot be undone. Please confirm that you want to
+            proceed. Do you really want to update
+            <span className="text-red-600">{appointment?.patient?.name}'s</span>
+            appointment status?
+          </>
+        )}
       </p>
 
-      <FilterOption
-        status={status}
-        onChange={setStatus}
-        options={appointmentUpdateStatus}
-      />
+      {!isSuccess && (
+        <div className="mb-4 w-full">
+          <FilterOption
+            status={status}
+            onChange={setStatus}
+            options={filteredOptions}
+            disabled={filteredOptions.length === 0}
+            className={
+              "w-full" +
+              (filteredOptions.length === 0
+                ? " opacity-50 cursor-not-allowed"
+                : "")
+            }
+          />
+        </div>
+      )}
 
-      <div className="flex justify-between w-full gap-2 mt-5">
-        <button
-          onClick={() => dispatch(closeModal())}
-          className="bg-gray-300 px-3 py-1 rounded"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={handleUpdateStatus}
-          className="bg-red-500 text-white px-3 py-1 rounded"
-        >
-          {isLoading ? "Updating..." : "Update"}
-        </button>
-      </div>
+      {!isSuccess && (
+        <div className="flex justify-between w-full gap-2 mt-5">
+          <Button variant="secondary" onClick={() => dispatch(closeModal())}>
+            Cancel
+          </Button>
+          <Button onClick={handleUpdateStatus}>
+            {isLoading ? "Updating..." : "Update"}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

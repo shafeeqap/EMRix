@@ -32,11 +32,10 @@ const Booking = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if(!search && !filter) return;
+    if (!search && !filter) return;
 
     setPage(1);
   }, [search, filter]);
-
 
   const handleAddModalOpen = (row) => {
     dispatch(openModal({ modalType: "ADD_APPOINTMENT", modalProps: {} }));
@@ -113,6 +112,7 @@ const Booking = () => {
         status={filter}
         onChange={setFilter}
         options={appointmentOptions}
+        className="w-52"
       />
 
       {appointments.length === 0 ? (

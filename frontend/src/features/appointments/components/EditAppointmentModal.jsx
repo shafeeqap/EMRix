@@ -93,7 +93,7 @@ const EditAppointmentModal = () => {
 
   const onSubmit = async (values) => {
     if (!isDirty) {
-      toast.warning("No changes detected");
+      toast.info("No changes detected");
       return;
     }
 

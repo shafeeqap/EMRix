@@ -5,6 +5,7 @@ import { getFullName } from "../../../utils/userHelpers";
 import { closeModal } from "../../../components/modal/modalSlice";
 import { Button, Loader } from "../../../components/ui";
 import ErrorMessage from "../../../components/ErrorMessage";
+import { STATUS_UI } from "./StatusUI";
 
 const AppointmentDetailsModal = () => {
   const { appointmentId } = useSelector(
@@ -24,6 +25,8 @@ const AppointmentDetailsModal = () => {
   const appointment = appointments?.appointments;
   const patient = appointments?.appointments?.patient;
   const doctor = appointments?.appointments?.doctor;
+
+  const statusConfig = STATUS_UI[appointment?.status];
 
   if (isLoading) {
     return (
@@ -111,16 +114,10 @@ const AppointmentDetailsModal = () => {
               <strong>Status:</strong>
             </p>
             <span
-              className={`px-3 py-1 rounded text-xs font-medium uppercase
-    ${
-      appointment?.status === "booked"
-        ? "bg-green-100 text-green-600"
-        : appointment?.status === "arrived"
-        ? "bg-blue-100 text-blue-600"
-        : "bg-red-100 text-red-600"
-    }`}
+              className={`px-3 py-1 rounded text-xs text-white font-medium uppercase
+    ${statusConfig?.className || "bg-gray-500 text-white"}`}
             >
-              {appointment?.status}
+              {statusConfig?.label || appointment?.status}
             </span>
           </div>
         </fieldset>

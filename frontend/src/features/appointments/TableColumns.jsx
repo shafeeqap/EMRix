@@ -1,4 +1,6 @@
 import { Trash2, PenLine, Eye } from "lucide-react";
+import { STATUS_UI } from "./components";
+
 
 export const getColumns = ({ onEdit, onDelete, onUpdateStatus, onDetails }) => [
   {
@@ -7,19 +9,19 @@ export const getColumns = ({ onEdit, onDelete, onUpdateStatus, onDetails }) => [
   },
   {
     header: "Name",
-    render: (row) => row.patient.name,
+    render: (row) => row.patient?.name,
   },
   {
     header: "Age",
-    render: (row) => row.patient.age,
+    render: (row) => row.patient?.age,
   },
   {
     header: "Mobile",
-    render: (row) => row.patient.mobile,
+    render: (row) => row.patient?.mobile,
   },
   {
     header: "PatientID",
-    render: (row) => row.patient.patientId,
+    render: (row) => row.patient?.patientId,
   },
   {
     header: "Appointment Date",
@@ -45,27 +47,22 @@ export const getColumns = ({ onEdit, onDelete, onUpdateStatus, onDetails }) => [
   {
     header: "Appointment Type",
     render: (row) => {
-      // const today = new Date().toISOString().split("T")[0];
-      // const date = new Date(row.date).toISOString().split("T")[0];
+      const statusConfig = STATUS_UI[row.status];
+      const isFinalState = ["completed", "cancelled", "no_show"].includes(
+        row.status
+      );
 
       return (
-        <button 
+        <button
           onClick={() => onUpdateStatus(row)}
-          disabled={row.status === "cancelled"}
+          disabled={isFinalState}
+          className="disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {row.status === "booked" ? (
-            <span className="px-2 py-1 text-xs font-medium cursor-pointer text-white bg-green-700">
-              Booked
-            </span>
-          ) : row.status === "arrived" ? (
-            <span className="px-2 py-1 text-xs font-medium cursor-pointer text-white bg-blue-700">
-              Arrived
-            </span>
-          ) : (
-            <span className="px-2 py-1 text-xs font-medium cursor-pointer text-white bg-red-700">
-              Cancelled
-            </span>
-          )}
+          <span
+            className={`px-2 py-1 text-xs font-medium cursor-pointer text-white ${statusConfig?.className}`}
+          >
+            {statusConfig?.label}
+          </span>
         </button>
       );
     },

@@ -106,7 +106,11 @@ export const getAppointment = async ({ search, status, skip, limit }) => {
     { $unwind: "$doctor" },
 
     {
-      $match: { status: { $in: ["booked", "arrived", "cancelled"] } },
+      $match: {
+        status: {
+          $in: ["booked", "arrived", "completed", "cancelled", "no_show"],
+        },
+      },
     },
 
     {

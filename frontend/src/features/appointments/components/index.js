@@ -9,3 +9,4 @@ export { default as EditAppointmentModal } from "./EditAppointmentModal";
 export { default as DeleteAppointmentModal } from "./DeleteAppointmentModal";
 export { default as AppointmentDetailsModal } from "./AppointmentDetailsModal";
 export { default as UpdateAppointmentStatusModal } from "./UpdateAppointmentStatusModal";
+export { STATUS_UI } from "./StatusUI";
