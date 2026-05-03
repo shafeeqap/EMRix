@@ -115,10 +115,8 @@ export const searchUsersService = async (query) => {
       }
     : {};
 
-  const users = await findUsersBySearchQuery(searchQuery)
-    // .sort({ firstName: 1, lastName: 1 })
-    .limit(10);
-
+  const users = await findUsersBySearchQuery(searchQuery);
+  
   const data = users.map((user) => ({
     _id: user._id,
     firstName: user.firstName,

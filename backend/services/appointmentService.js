@@ -96,16 +96,16 @@ export const getAppointmentsService = async (query) => {
 
   const filter = {};
 
-  if (status === "booked") {
-    filter.status = "booked";
-  } else if (status === "arrived") {
-    filter.status = "arrived";
-  } else if (status === "cancelled") {
-    filter.status = "cancelled";
-  } else if (status === "completed") {
-    filter.status = "completed";
-  } else if (status === "no_show") {
-    filter.status = "no_show";
+  const allowedStatuses = [
+    "booked",
+    "arrived",
+    "cancelled",
+    "completed",
+    "no_show",
+  ];
+
+  if (allowedStatuses.includes(status)) {
+    filter.status = status;
   }
 
   const { appointments, total } = await getAppointment({
@@ -137,9 +137,6 @@ export const getAppointmentByIdService = async (params) => {
 export const updateAppointmentStatusService = async (params, data, user) => {
   const id = params.id;
   const { status } = data;
-
-  console.log(id, "ID in update status service...");
-  console.log(status, "Update status service...");
 
   const appointment = await findAppointmentById(id);
 

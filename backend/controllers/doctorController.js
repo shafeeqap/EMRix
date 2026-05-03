@@ -81,7 +81,7 @@ export const updateDoctorStatus = async (req, res, next) => {
     );
 
     res.status(200).json({
-      message: "Status updated successfully",
+      message: "Doctor status updated successfully",
       updatedData,
     });
   } catch (error) {

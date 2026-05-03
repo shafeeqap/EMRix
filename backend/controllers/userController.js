@@ -75,7 +75,7 @@ export const updateUserStatus = async (req, res, next) => {
     );
 
     res.status(200).json({
-      message: "Status updated successfully",
+      message: "User status updated successfully",
       updatedData,
     });
   } catch (error) {
