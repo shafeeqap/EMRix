@@ -79,7 +79,6 @@ export const searchDoctorService = async (query) => {
     : {};
 
   const doctors = await findDoctorsBySearchQuery(searchQuery);
-  console.log(doctors, "DOCTORS FROM SERVICE");
 
   return doctors;
 };

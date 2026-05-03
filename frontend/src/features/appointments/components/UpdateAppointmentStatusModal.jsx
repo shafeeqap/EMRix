@@ -24,6 +24,7 @@ const TRANSITIONS = {
 const UpdateAppointmentStatusModal = () => {
   const { appointment } = useSelector((state) => state.modal.modalProps || {});
   const { isSuccess, message } = useSelector((state) => state.successFeedback);
+  
   const dispatch = useDispatch();
 
   const [status, setStatus] = useState(appointment?.status || "");
@@ -92,7 +93,7 @@ const UpdateAppointmentStatusModal = () => {
         <OctagonAlert strokeWidth={1.25} size={72} className="text-red-600" />
       )}
 
-      <h1 className="text-2xl">{isSuccess ? "Updated!" : "Are you sure?"}</h1>
+      <h1 className="text-2xl">{isSuccess ? "Updated!" : "Update appointment"}</h1>
 
       <p className="text-textSecondary text-center">
         {isSuccess ? (

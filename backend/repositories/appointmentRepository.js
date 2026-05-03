@@ -12,6 +12,7 @@ export const findAppointmentById = async (id) => {
     .sort({ createdAt: -1 });
 };
 
+// =============> Get appointment by ID with patient and doctor details <=============
 export const getAppointmentById = async (id) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new Error("Invalid appointment ID");
@@ -72,6 +73,7 @@ export const getAppointmentById = async (id) => {
   return result[0] || null;
 };
 
+// =============> Find appointments with doctor and patient details <=============
 export const findAppointment = (filter) => {
   return Appointment.find(filter)
     .populate("doctorId", "firstName lastName")
@@ -79,10 +81,31 @@ export const findAppointment = (filter) => {
     .sort({ createdAt: -1 });
 };
 
-export const getAppointment = async ({ search, status, skip, limit }) => {
+// =============> Get appointments with search, filter, pagination, and doctor/patient details <=============
+export const getAppointment = async ({
+  doctorId,
+  search,
+  status,
+  skip,
+  limit,
+}) => {
   const isNumeric = /^\d+$/.test(search);
 
+  const baseMatch = {
+    status: {
+      $in: ["booked", "arrived", "completed", "cancelled", "no_show"],
+    },
+  };
+
+  if (doctorId) {
+    baseMatch.doctorId = new mongoose.Types.ObjectId(doctorId);
+  }
+
   const pipeline = [
+    {
+      $match: baseMatch,
+    },
+
     // Join Patient
     {
       $lookup: {
@@ -104,32 +127,6 @@ export const getAppointment = async ({ search, status, skip, limit }) => {
       },
     },
     { $unwind: "$doctor" },
-
-    {
-      $match: {
-        status: {
-          $in: ["booked", "arrived", "completed", "cancelled", "no_show"],
-        },
-      },
-    },
-
-    {
-      $project: {
-        _id: 1,
-        status: 1,
-        date: 1,
-        slotTime: 1,
-        tokenNumber: 1,
-        notes: 1,
-        createdAt: 1,
-        "patient.name": 1,
-        "patient.mobile": 1,
-        "patient.age": 1,
-        "patient.patientId": 1,
-        doctor: { firstName: 1, lastName: 1 },
-        "doctor.department": 1,
-      },
-    },
   ];
 
   const matchConditions = [];
@@ -138,6 +135,8 @@ export const getAppointment = async ({ search, status, skip, limit }) => {
     matchConditions.push({
       $or: [
         { "patient.name": { $regex: search, $options: "i" } },
+        { "doctor.firstName": { $regex: search, $options: "i" } },
+        { "doctor.lastName": { $regex: search, $options: "i" } },
         { "patient.patientId": { $regex: search, $options: "i" } },
         ...(isNumeric
           ? [
@@ -157,19 +156,39 @@ export const getAppointment = async ({ search, status, skip, limit }) => {
     pipeline.push({ $match: { $and: matchConditions } });
   }
 
-  pipeline.push(
-    { $sort: { createdAt: -1 } },
-    { $skip: skip },
-    { $limit: limit }
-  );
+  pipeline.push({
+    $facet: {
+      data: [
+        {
+          $project: {
+            _id: 1,
+            status: 1,
+            date: 1,
+            slotTime: 1,
+            tokenNumber: 1,
+            notes: 1,
+            createdAt: 1,
+            "patient.name": 1,
+            "patient.mobile": 1,
+            "patient.age": 1,
+            "patient.patientId": 1,
+            doctor: { firstName: 1, lastName: 1 },
+            "doctor.department": 1,
+          },
+        },
+        { $sort: { createdAt: -1 } },
+        { $skip: skip },
+        { $limit: limit },
+      ],
 
-  const appointments = await Appointment.aggregate(pipeline);
+      totalCount: [{ $count: "total" }],
+    },
+  });
 
-  const countPipeline = [...pipeline.filter((p) => !p.$skip && !p.$limit)];
-  countPipeline.push({ $count: "total" });
+  const result = await Appointment.aggregate(pipeline);
 
-  const countResult = await Appointment.aggregate(countPipeline);
-  const total = countResult[0]?.total || 0;
+  const appointments = result[0]?.data || [];
+  const total = result[0]?.totalCount[0]?.total || 0;
 
   return { appointments, total };
 };

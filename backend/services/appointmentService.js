@@ -1,6 +1,6 @@
+import { Doctor } from "../models/Doctor.js";
 import {
   createAppointmentRepo,
-  findAppointment,
   findAppointmentById,
   findAppointmentByIdAndDelete,
   findAppointmentByIdAndUpdate,
@@ -87,12 +87,24 @@ export const createAppointmentService = async (data, user) => {
 };
 
 // =============> Get appointments service <=============
-export const getAppointmentsService = async (query) => {
+export const getAppointmentsService = async (query, user) => {
   const page = Number(query.page) || 1;
   const limit = Number(query.limit) || 5;
   const skip = (page - 1) * limit;
   const search = query.search?.trim();
   const status = query.status;
+
+  let doctorId = null;
+
+  if (user.role === "doctor") {
+    const doctor = await Doctor.findOne({ userId: user.id });
+
+    if (!doctor) {
+      throw new AppError("Doctor profile not found for the user", 404);
+    }
+
+    doctorId = doctor._id;
+  }
 
   const filter = {};
 
@@ -108,7 +120,10 @@ export const getAppointmentsService = async (query) => {
     filter.status = status;
   }
 
+  // console.log(doctor._id, "Doctor ID in service...");
+
   const { appointments, total } = await getAppointment({
+    doctorId,
     search,
     status,
     skip,

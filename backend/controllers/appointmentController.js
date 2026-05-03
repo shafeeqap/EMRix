@@ -34,7 +34,8 @@ export const createAppointment = async (req, res, next) => {
 export const getAppointments = async (req, res, next) => {
   try {
     const { appointments, page, totalPages } = await getAppointmentsService(
-      req.query
+      req.query,
+      req.user
     );
 
     res.status(200).json({ appointments, page, totalPages });

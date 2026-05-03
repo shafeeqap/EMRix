@@ -28,6 +28,8 @@ const Booking = () => {
   });
 
   const appointments = data?.appointments || [];
+  console.log(appointments, 'Appointments...');
+  
 
   const dispatch = useDispatch();
 

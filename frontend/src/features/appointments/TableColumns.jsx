@@ -1,5 +1,6 @@
 import { Trash2, PenLine, Eye } from "lucide-react";
 import { STATUS_UI } from "./components";
+import { getFullName } from "../../utils/userHelpers";
 
 
 export const getColumns = ({ onEdit, onDelete, onUpdateStatus, onDetails }) => [
@@ -22,6 +23,10 @@ export const getColumns = ({ onEdit, onDelete, onUpdateStatus, onDetails }) => [
   {
     header: "PatientID",
     render: (row) => row.patient?.patientId,
+  },
+  {
+    header: "Dr Name",
+    render: (row) => getFullName(row.doctor) ,
   },
   {
     header: "Appointment Date",
