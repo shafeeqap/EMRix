@@ -8,11 +8,17 @@ import { useDispatch } from "react-redux";
 import { closeModal } from "../../../components/modal/modalSlice.js";
 import { handleApiError } from "../../../utils/handleApiError.js";
 import { toast } from "react-toastify";
-
+import { Eye, EyeOff } from "lucide-react";
 
 const AddUserModal = () => {
   const [role, setRole] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
   const [createUser, { isLoading }] = useCreateUserMutation();
+
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   const {
     register,
@@ -37,7 +43,6 @@ const AddUserModal = () => {
       handleApiError(error, setError);
     }
   };
-
 
   return (
     <div className="bg-white rounded-lg p-6 sm:w-96 md:w-[700px]">
@@ -85,14 +90,23 @@ const AddUserModal = () => {
               className="focus:ring focus:border-primary mb-4"
             />
 
-            <InputField
-              label="Password"
-              type="password"
-              {...register("password")}
-              error={errors.password}
-              placeholder="Enter email"
-              className="focus:ring focus:border-primary mb-4"
-            />
+            <div className="relative">
+              <InputField
+                label="Password"
+                type={showPassword ? "text" : "password"}
+                {...register("password")}
+                error={errors.password}
+                placeholder="Enter email"
+                className="focus:ring focus:border-primary mb-4"
+              />
+              <div
+                onClick={handleShowPassword}
+                className="absolute top-11 right-2 cursor-pointer"
+              >
+                {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+              </div>
+            </div>
+
             <div className="flex flex-col">
               <label htmlFor="" className="mb-2">
                 Select Role

@@ -1,16 +1,20 @@
 import { generateAvailableSlots } from "../services/slotService.js";
 import {
   createAppointmentService,
-  getAppointmentService,
+  getAppointmentsService,
   updateAppointmentStatusService,
   updateAppointmentService,
   deleteAppointmentService,
+  getAppointmentByIdService,
 } from "../services/appointmentService.js";
 
 // =============> Create a new appointment <=============
 export const createAppointment = async (req, res, next) => {
   try {
-    const appointment = await createAppointmentService(req.validatedData, req.user);
+    const appointment = await createAppointmentService(
+      req.validatedData,
+      req.user
+    );
     res
       .status(201)
       .json({ message: "Appointment created successfully", appointment });
@@ -26,10 +30,24 @@ export const createAppointment = async (req, res, next) => {
   }
 };
 
-// =============> Get all appointments <=============
+// =============> Get appointments By doctorId and date <=============
 export const getAppointments = async (req, res, next) => {
   try {
-    const appointments = await getAppointmentService(req.validatedData);
+    const { appointments, page, totalPages } = await getAppointmentsService(
+      req.query,
+      req.user
+    );
+
+    res.status(200).json({ appointments, page, totalPages });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// =============> Get appointments By doctorId <=============
+export const getAppointmentById = async (req, res, next) => {
+  try {
+    const appointments = await getAppointmentByIdService(req.params);
 
     res.status(200).json({ appointments });
   } catch (error) {
@@ -40,9 +58,11 @@ export const getAppointments = async (req, res, next) => {
 // =============> Get available time slots for a doctor <=============
 export const getAvailableSlots = async (req, res, next) => {
   try {
-    const slots = await generateAvailableSlots(req.query);
+    const { availableSlots, bookedSlots } = await generateAvailableSlots(
+      req.query
+    );
 
-    res.status(200).json({ slots });
+    res.status(200).json({ availableSlots, bookedSlots });
   } catch (error) {
     next(error);
   }
@@ -58,7 +78,7 @@ export const updateAppointmentStatus = async (req, res, next) => {
     );
 
     res.status(200).json({
-      message: "Status updated successfully",
+      message: "Appointment status updated successfully",
       appointment,
     });
   } catch (error) {

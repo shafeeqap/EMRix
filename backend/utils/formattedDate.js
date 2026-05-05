@@ -1,4 +1,4 @@
-export const fomattedDate = (dateInput) => {
+export const formattedDate = (dateInput) => {
   const date = new Date(dateInput);
 
   if (isNaN(date)) {

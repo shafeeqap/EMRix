@@ -3,6 +3,7 @@ import {
   deleteDoctorService,
   getDoctorByIdServices,
   getDoctorsServices,
+  searchDoctorService,
   updateDoctorService,
   updateDoctorStatusService,
 } from "../services/doctorService.js";
@@ -24,6 +25,17 @@ export const getDoctors = async (req, res, next) => {
     const { doctors, page, totalPages } = await getDoctorsServices(req.query);
     
     res.status(200).json({ doctors, page, totalPages });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// =============> Search doctors by search query <=============
+export const searchDoctors = async (req, res, next) => {
+  try {
+    const data = await searchDoctorService(req.query);
+
+    res.status(200).json({ doctors: data });
   } catch (error) {
     next(error);
   }
@@ -69,7 +81,7 @@ export const updateDoctorStatus = async (req, res, next) => {
     );
 
     res.status(200).json({
-      message: "Status updated successfully",
+      message: "Doctor status updated successfully",
       updatedData,
     });
   } catch (error) {

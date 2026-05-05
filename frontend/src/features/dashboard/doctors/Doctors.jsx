@@ -79,17 +79,28 @@ const Doctors = () => {
 
   if (error) return <ErrorMessage />;
 
+  const statusOptions = [
+    { label: "All", value: "" },
+    { label: "Active", value: "active" },
+    { label: "Inactive", value: "inactive" },
+  ];
+
   return (
     <>
       <div className="flex justify-between">
-        <FilterSearch value={search} onChange={setSearch} />
+        <FilterSearch value={search} onChange={setSearch}  />
 
         <Button onClick={handleAddModalOpen}>
           <Plus size={20} />
         </Button>
       </div>
 
-      <FilterOption status={status} setStatus={setStatus} />
+      <FilterOption
+        status={status}
+        onChange={setStatus}
+        options={statusOptions}
+        className="w-52"
+      />
 
       {doctors.length === 0 ? (
         <div className="flex justify-center items-center bg-gray-100 mt-5 rounded min-h-20">

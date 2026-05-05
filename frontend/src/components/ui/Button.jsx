@@ -8,6 +8,7 @@ const Button = ({
   size = "md",
   isLoading = false,
   disabled = false,
+  onSelect,
   type = "button",
   onClick,
   className,
@@ -20,6 +21,10 @@ const Button = ({
     primary: "bg-primary text-white hover:bg-primaryHover",
     secondary: "bg-gray-300 text-black hover:bg-gray-400",
     danger: "bg-red-500 text-white hover:bg-red-600",
+
+    slotAvailable: "bg-primary text-white hover:bg-primaryHover",
+    slotBooked: "bg-gray-300 cursor-not-allowed",
+    slotSelected: "bg-green-600 text-white",
   };
 
   const sizes = {
@@ -37,9 +42,11 @@ const Button = ({
           className,
           variants[variant],
           sizes[size],
-          (disabled || isLoading) && "flex justify-center items-center opacity-50 cursor-not-allowed"
+          (disabled || isLoading) &&
+            "flex justify-center items-center opacity-50 cursor-not-allowed"
         )}
         disabled={disabled || isLoading}
+        onSelect={onSelect}
         onClick={onClick}
         {...props}
       >

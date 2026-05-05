@@ -1,5 +1,5 @@
 import { Trash2, PenLine } from "lucide-react";
-import { formatWorkingHours } from "../../../utils/formatWorkingHours";
+import { formatWorkingHours } from "../../../utils/formatHours";
 import { getDuration } from "../../../utils/calculateDuration";
 
 export const getColumns = ({ onEdit, onDelete, onUpdateStatus }) => [
@@ -61,7 +61,7 @@ export const getColumns = ({ onEdit, onDelete, onUpdateStatus }) => [
     header: "Status",
     render: (row) => (
       <span onClick={() => onUpdateStatus(row)}
-        className={`px-2 py-1 text-xs font-medium cursor-pointer text-white ${
+        className={`max-w-16 px-2 py-1 text-xs font-medium cursor-pointer text-center rounded uppercase text-white ${
           row.isActive ? "bg-green-700" : "bg-red-700"
         }`}
       >
@@ -72,14 +72,14 @@ export const getColumns = ({ onEdit, onDelete, onUpdateStatus }) => [
   {
     header: "Actions",
     render: (row) => (
-      <div className="flex gap-5 ">
+      <span className="flex gap-5 ">
         <PenLine onClick={() => onEdit(row)} className="cursor-pointer" />
 
         <Trash2
           onClick={() => onDelete(row)}
           className="text-red-700 cursor-pointer"
         />
-      </div>
+      </span>
     ),
   },
 ];

@@ -22,10 +22,10 @@ export const createPatient = async (req, res, next) => {
   }
 };
 
-// ===========> Get patient <===========
+// ===========> Get all patient <===========
 export const getPatients = async (req, res, next) => {
   try {
-    const { patients, page, totalPages } = await getPatientService(req.query);
+    const { patients, page, totalPages } = await getPatientService(req.query, req.user);
 
     res.status(200).json({ patients, page, totalPages });
   } catch (error) {
@@ -33,16 +33,17 @@ export const getPatients = async (req, res, next) => {
   }
 };
 
-// ===========> Search Patinet information by mobile <=========== Pending for remove
-export const searchPatient = async (req, res, next) => {
+// =============> Search patients by search query <=============
+export const searchPatients = async (req, res, next) => {
   try {
-    const patient = await searchPatientService(req.validatedData);
+    const data = await searchPatientService(req.query);
 
-    res.status(200).json({ patient });
+    res.status(200).json({ patients: data });
   } catch (error) {
     next(error);
   }
 };
+
 
 // ===========> Get Patinet full details <===========
 export const getPatientFullDetails = async (req, res, next) => {

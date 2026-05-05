@@ -6,13 +6,12 @@ import {
   getPatientById,
   getPatientFullDetails,
   getPatients,
-  searchPatient,
+  searchPatients,
   updatePatient,
 } from "../controllers/patientController.js";
 import { validate } from "../middleware/validationMiddleware.js";
 import {
   createPatientSchema,
-  searchPatientSchema,
   updatePatientSchema,
 } from "../validators/patientValidator.js";
 
@@ -20,12 +19,7 @@ const router = express.Router();
 
 router.get("/", protect, getPatients);
 router.post("/", protect, validate(createPatientSchema), createPatient);
-router.get(
-  "/search",
-  protect,
-  validate(searchPatientSchema, "query"),
-  searchPatient
-); // pending for remove
+router.get("/search", protect, searchPatients);
 router.get("/:id", protect, getPatientById);
 router.get("/:id/details", protect, getPatientFullDetails);
 router.put("/:id", protect, validate(updatePatientSchema), updatePatient);

@@ -56,7 +56,7 @@ const EditDoctorModal = () => {
 
   const onSubmit = async (data) => {
     if (!form.formState.isDirty) {
-      toast.warning("No changes detected");
+      toast.info("No changes detected");
       return;
     }
 

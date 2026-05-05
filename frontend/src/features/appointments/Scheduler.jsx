@@ -1,18 +1,117 @@
-import React from "react";
+import React, { useState } from "react";
 import { AppointmentForm, PatientInfo, SlotGrid } from "./components";
+import { handleApiError } from "../../utils/handleApiError";
+import {
+  useCreateAppointmentMutation,
+  useGetAvailableSlotsQuery,
+} from "./appointmentApiSlice";
+import { toast } from "react-toastify";
+import { FormProvider, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { appointmentFormSchema } from "../../validator/appointmentFormValidator";
+import { Button, Loader } from "../../components/ui";
 
 const Scheduler = () => {
+  const methods = useForm({
+    resolver: zodResolver(appointmentFormSchema),
+    defaultValues: {
+      doctor: null,
+      date: "",
+      patient: null,
+      notes: "",
+    },
+  });
+
+  const { watch, handleSubmit, setError, reset } = methods;
+
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [existingPatient, setExistingPatient] = useState(false);
+
+  const [doctor, date] = watch(["doctor", "date"]);
+
+  const { data, isLoading, refetch } = useGetAvailableSlotsQuery(
+    {
+      doctorId: doctor?._id,
+      date: date,
+    },
+    {
+      skip: !doctor || !doctor._id || !date,
+    }
+  );
+
+  const [createAppointment] = useCreateAppointmentMutation();
+
+  const handlePatient = () => {
+    setExistingPatient(!existingPatient);
+  };
+
+  const onSubmit = async (formData) => {
+    // console.log(formData, "FORM DATA");
+
+    if (!selectedSlot) {
+      setError("slot", {
+        type: "manual",
+        message: "Please select a time slot",
+      });
+      return;
+    }
+
+    const payload = {
+      doctorId: formData.doctor?._id,
+      patientId: formData.patient?._id,
+      date: formData.date,
+      slotTime: selectedSlot,
+      notes: formData.notes,
+    };
+
+    try {
+      const res = await createAppointment(payload).unwrap();
+      console.log(res, "APPOINTMENT CREATED");
+      toast.success(res.message || "Appointment created successfully");
+
+      // Reset form and state
+      reset();
+      setSelectedSlot(null);
+      setExistingPatient(false);
+      refetch();
+    } catch (error) {
+      handleApiError(error, setError);
+      console.log(error, "ERROR CREATING APPOINTMENT");
+    }
+  };
+
   return (
-    <>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <AppointmentForm />
+    <FormProvider {...methods}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <AppointmentForm />
 
-        <PatientInfo />
+          <PatientInfo
+            handlePatient={handlePatient}
+            existingPatient={existingPatient}
+          />
 
-        {/* Available Slots */}
-        <SlotGrid />
-      </div>
-    </>
+          {/* Available Slots */}
+          {doctor && date && (
+            <SlotGrid
+              availableSlots={data?.availableSlots || []}
+              bookedSlots={data?.bookedSlots || []}
+              isLoading={isLoading}
+              setSelectedSlot={setSelectedSlot}
+              selectedSlot={selectedSlot}
+            />
+          )}
+        </div>
+
+        <Button
+          type="submit"
+          variant="danger"
+          className="uppercase w-full mt-5"
+        >
+          {isLoading ? <Loader /> : "Book Appointment"}
+        </Button>
+      </form>
+    </FormProvider>
   );
 };
 
