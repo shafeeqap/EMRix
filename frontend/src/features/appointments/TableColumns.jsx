@@ -2,7 +2,6 @@ import { Trash2, PenLine, Eye } from "lucide-react";
 import { STATUS_UI } from "./components";
 import { getFullName } from "../../utils/userHelpers";
 
-
 export const getColumns = ({ onEdit, onDelete, onUpdateStatus, onDetails }) => [
   {
     header: "SL",
@@ -26,7 +25,7 @@ export const getColumns = ({ onEdit, onDelete, onUpdateStatus, onDetails }) => [
   },
   {
     header: "Dr Name",
-    render: (row) => getFullName(row.doctor) ,
+    render: (row) => getFullName(row.doctor),
   },
   {
     header: "Appointment Date",
@@ -81,14 +80,19 @@ export const getColumns = ({ onEdit, onDelete, onUpdateStatus, onDetails }) => [
       return (
         <>
           <span className="flex gap-5">
-            {date >= today && (
-              <PenLine onClick={() => onEdit(row)} className="cursor-pointer" />
+            {date >= today &&
+              !["completed", "cancelled", "no_show"].includes(row.status) && (
+                <PenLine
+                  onClick={() => onEdit(row)}
+                  className="cursor-pointer"
+                />
+              )}
+            {row.status !== "completed" && (
+              <Trash2
+                onClick={() => onDelete(row)}
+                className="text-red-700 cursor-pointer"
+              />
             )}
-
-            <Trash2
-              onClick={() => onDelete(row)}
-              className="text-red-700 cursor-pointer"
-            />
           </span>
         </>
       );

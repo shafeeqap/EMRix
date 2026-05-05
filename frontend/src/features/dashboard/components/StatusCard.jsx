@@ -2,9 +2,11 @@ import React from "react";
 import clsx from "clsx";
 
 
-const StatusCard = ({statusCardItems}) => {
+const StatusCard = ({statusCardItems, role}) => {
+  console.log(role, 'Role in status card...');
+  
   return (
-    <div className="bg-white min-w-md min-h-28 grid grid-cols-1 sm:grid-cols-3 gap-3 shadow px-4 py-2 border">
+    <div className={clsx("bg-white  min-h-28 grid grid-cols-1", role==="super_admin" ? "sm:grid-cols-4" : "sm:grid-cols-3", "px-4 py-2 border shadow")}>
       {statusCardItems.map((item, index) => {
         const Icon = item.icon;
 
