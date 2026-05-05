@@ -10,15 +10,14 @@ const appointmentApiSlice = apiSlice.injectEndpoints({
     }),
 
     getAppointments: builder.query({
-      query: ({ page = 1, limit = 5, search, status }) =>
-        `/appointments?page=${page}&limit=${limit}&search=${search}&status=${status}`,
+      query: ({ page = 1, limit = 5, search, date, status }) =>
+        `/appointments?page=${page}&limit=${limit}&search=${search}&date=${date}&status=${status}`,
 
       providesTags: ["Appointment"],
     }),
 
     getAppointmentById: builder.query({
-      query: ({ doctorId, date }) =>
-        `appointments?doctorId=${doctorId}&date=${date}`,
+      query: ({ id }) => `/appointments/${id}`,
 
       providesTags: ["Appointment"],
     }),
@@ -31,6 +30,32 @@ const appointmentApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Appointment"],
     }),
+
+    updateAppointment: builder.mutation({
+      query: ({ id, appointmentData }) => ({
+        url: `/appointments/${id}/reschedule`,
+        method: "PUT",
+        body: appointmentData,
+      }),
+      invalidatesTags: ["Appointment"],
+    }),
+
+    deleteAppointment: builder.mutation({
+      query: (id) => ({
+        url: `/appointments/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Appointment"],
+    }),
+
+    updateAppointmentStatus: builder.mutation({
+      query: ({ id, status }) => ({
+        url: `/appointments/${id}/status`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: ["Appointment"],
+    }),
   }),
 });
 
@@ -39,4 +64,7 @@ export const {
   useGetAppointmentsQuery,
   useGetAppointmentByIdQuery,
   useCreateAppointmentMutation,
+  useUpdateAppointmentMutation,
+  useDeleteAppointmentMutation,
+  useUpdateAppointmentStatusMutation,
 } = appointmentApiSlice;

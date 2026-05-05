@@ -78,7 +78,7 @@ export const searchDoctorService = async (query) => {
       }
     : {};
 
-  const doctors = await findDoctorsBySearchQuery(searchQuery).limit(10);
+  const doctors = await findDoctorsBySearchQuery(searchQuery);
 
   return doctors;
 };

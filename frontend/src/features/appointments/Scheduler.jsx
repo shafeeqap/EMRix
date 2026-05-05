@@ -28,7 +28,6 @@ const Scheduler = () => {
   const [existingPatient, setExistingPatient] = useState(false);
 
   const [doctor, date] = watch(["doctor", "date"]);
-  // const date = watch("date");
 
   const { data, isLoading, refetch } = useGetAvailableSlotsQuery(
     {
@@ -47,7 +46,7 @@ const Scheduler = () => {
   };
 
   const onSubmit = async (formData) => {
-    console.log(formData, "FORM DATA");
+    // console.log(formData, "FORM DATA");
 
     if (!selectedSlot) {
       setError("slot", {
@@ -86,6 +85,7 @@ const Scheduler = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <AppointmentForm />
+
           <PatientInfo
             handlePatient={handlePatient}
             existingPatient={existingPatient}

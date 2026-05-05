@@ -1,4 +1,6 @@
 import { Trash2, PenLine, Eye } from "lucide-react";
+import { STATUS_UI } from "./components";
+import { getFullName } from "../../utils/userHelpers";
 
 export const getColumns = ({ onEdit, onDelete, onUpdateStatus, onDetails }) => [
   {
@@ -7,71 +9,101 @@ export const getColumns = ({ onEdit, onDelete, onUpdateStatus, onDetails }) => [
   },
   {
     header: "Name",
-    render: (row) => row.patient.name,
+    render: (row) => row.patient?.name,
   },
   {
     header: "Age",
-    render: (row) => row.patient.age,
+    render: (row) => row.patient?.age,
   },
   {
     header: "Mobile",
-    render: (row) => row.patient.mobile,
+    render: (row) => row.patient?.mobile,
   },
   {
     header: "PatientID",
-    render: (row) => row.patient.patientId,
+    render: (row) => row.patient?.patientId,
+  },
+  {
+    header: "Dr Name",
+    render: (row) => getFullName(row.doctor),
   },
   {
     header: "Appointment Date",
-    render: (row) => new Date(row.date).toISOString().split("T")[0],
+    render: (row) => {
+      const today = new Date().toISOString().split("T")[0];
+      const date = new Date(row.date).toISOString().split("T")[0];
+
+      return (
+        <span className={`${date >= today ? "text-black font-semibold" : ""}`}>
+          {new Date(row.date).toISOString().split("T")[0]}
+        </span>
+      );
+    },
   },
-  {
-    header: "Appointment Time",
-    accessor: "slotTime",
-  },
-  {
-    header: "Token Number",
-    accessor: "tokenNumber",
-  },
+  // {
+  //   header: "Appointment Time",
+  //   accessor: "slotTime",
+  // },
+  // {
+  //   header: "Token Number",
+  //   accessor: "tokenNumber",
+  // },
   {
     header: "Appointment Type",
-    render: (row) => (
-      <div onClick={() => onUpdateStatus(row)}>
-        {row.status === "booked" ? (
-          <span className="px-2 py-1 text-xs font-medium cursor-pointer text-white bg-green-700">
-            Booked
+    render: (row) => {
+      const statusConfig = STATUS_UI[row.status];
+      const isFinalState = ["completed", "cancelled", "no_show"].includes(
+        row.status
+      );
+
+      return (
+        <button
+          onClick={() => onUpdateStatus(row)}
+          disabled={isFinalState}
+          className=" disabled:cursor-not-allowed"
+        >
+          <span
+            className={`max-w-16 px-2 py-1 text-xs font-medium text-center rounded cursor-pointer uppercase ${statusConfig?.className}`}
+          >
+            {statusConfig?.label}
           </span>
-        ) : row.status === "arrived" ? (
-          <span className="px-2 py-1 text-xs font-medium cursor-pointer text-white bg-blue-700">
-            Arrived
-          </span>
-        ) : (
-          <span className="px-2 py-1 text-xs font-medium cursor-pointer text-white bg-red-700">
-            Cancelled
-          </span>
-        )}
-      </div>
-    ),
+        </button>
+      );
+    },
   },
   {
     header: "Actions",
-    render: (row) => (
-      <div className="flex gap-5">
-        <PenLine onClick={() => onEdit(row)} className="cursor-pointer" />
+    render: (row) => {
+      const today = new Date().toISOString().split("T")[0];
+      const date = new Date(row.date).toISOString().split("T")[0];
 
-        <Trash2
-          onClick={() => onDelete(row)}
-          className="text-red-700 cursor-pointer"
-        />
-      </div>
-    ),
+      return (
+        <>
+          <span className="flex gap-5">
+            {date >= today &&
+              !["completed", "cancelled", "no_show"].includes(row.status) && (
+                <PenLine
+                  onClick={() => onEdit(row)}
+                  className="cursor-pointer"
+                />
+              )}
+            {row.status !== "completed" && (
+              <Trash2
+                onClick={() => onDelete(row)}
+                className="text-red-700 cursor-pointer"
+              />
+            )}
+          </span>
+        </>
+      );
+    },
   },
   {
     header: "Details",
     render: (row) => (
-      <div className="flex gap-5">
+      <span className="flex gap-5">
         <Eye onClick={() => onDetails(row)} className="cursor-pointer" />
-      </div>
+      </span>
     ),
   },
 ];

@@ -54,7 +54,7 @@ const EditUserModal = () => {
     });
 
     if (!isChanged) {
-      toast.warning("No changes detected");
+      toast.info("No changes detected");
       return;
     }
 

@@ -1,12 +1,12 @@
+import { Doctor } from "../models/Doctor.js";
 import {
   createAppointmentRepo,
-  findAppointment,
   findAppointmentById,
   findAppointmentByIdAndDelete,
   findAppointmentByIdAndUpdate,
   findAppointmentOne,
-  countAppointmentDocuments,
   getAppointment,
+  getAppointmentById,
 } from "../repositories/appointmentRepository.js";
 import { findDoctorById } from "../repositories/doctorRepository.js";
 import { AppError } from "../utils/AppError.js";
@@ -18,8 +18,6 @@ import { generateAvailableSlots } from "./slotService.js";
 // =============> create appointments service <=============
 export const createAppointmentService = async (data, user) => {
   const { doctorId, patientId, date, slotTime, notes } = data;
-
-  console.log(data, "Appointment data in service...");
 
   const appointmentDateTime = new Date(date);
   const [hours, minutes] = slotTime.split(":");
@@ -60,7 +58,6 @@ export const createAppointmentService = async (data, user) => {
   }
 
   const tokenNumber = await generateAppointmentToken(doctorId, date);
-  console.log(tokenNumber, "Generated token...");
 
   const appointment = await createAppointmentRepo({
     doctorId,
@@ -90,27 +87,49 @@ export const createAppointmentService = async (data, user) => {
 };
 
 // =============> Get appointments service <=============
-export const getAppointmentsService = async (query) => {
+export const getAppointmentsService = async (query, user) => {
   const page = Number(query.page) || 1;
   const limit = Number(query.limit) || 5;
   const skip = (page - 1) * limit;
   const search = query.search?.trim();
   const status = query.status;
+  const date = query.date;
+  
+  console.log(date, 'Date...');
+
+  let doctorId = null;
+
+  if (user.role === "doctor") {
+    const doctor = await Doctor.findOne({ userId: user.id });
+
+    if (!doctor) {
+      throw new AppError("Doctor profile not found for the user", 404);
+    }
+
+    doctorId = doctor._id;
+  }
 
   const filter = {};
 
-  if (status === "booked") {
-    filter.status = "booked";
-  } else if (status === "arrived") {
-    filter.status = "arrived";
-  } else if (status === "cancelled") {
-    filter.status = "cancelled";
+  const allowedStatuses = [
+    "booked",
+    "arrived",
+    "cancelled",
+    "completed",
+    "no_show",
+  ];
+
+  if (allowedStatuses.includes(status)) {
+    filter.status = status;
   }
 
+  // console.log(doctor._id, "Doctor ID in service...");
 
   const { appointments, total } = await getAppointment({
+    doctorId,
     search,
     status,
+    date,
     skip,
     limit,
   });
@@ -121,15 +140,14 @@ export const getAppointmentsService = async (query) => {
 };
 
 // =============> Get appointments service <=============
-export const getAppointmentByIdService = async (query) => {
-  const { doctorId, date } = query;
+export const getAppointmentByIdService = async (params) => {
+  const appointmentId = params.id;
 
-  const { startTime, endTime } = formattedDate(date);
+  if (!appointmentId) {
+    throw new AppError("Appointment id is required", 400);
+  }
 
-  const appointments = await findAppointment({
-    doctorId,
-    date: { $gte: startTime, $lt: endTime },
-  });
+  const appointments = await getAppointmentById(appointmentId);
 
   return appointments;
 };
@@ -166,9 +184,13 @@ export const updateAppointmentStatusService = async (params, data, user) => {
 // =============> Update appointments service <=============
 export const updateAppointmentService = async (params, data, user) => {
   const id = params.id;
-  const { date, slotTime, notes } = data;
+  const { date, doctorId, slotTime, notes } = data;
+
+  console.log(id, "ID in update service...");
+  console.log(data, "Data in update service...");
 
   const appointment = await findAppointmentById(id);
+
   if (!appointment) {
     throw new AppError("Appointment not found", 404);
   }
@@ -180,11 +202,11 @@ export const updateAppointmentService = async (params, data, user) => {
 
   if (isDateChanged || isSlotChanged) {
     const slots = await generateAvailableSlots({
-      doctorId: appointment.doctorId,
+      doctorId,
       date: date,
     });
 
-    const availableSlot = slots.includes(slotTime);
+    const availableSlot = slots.availableSlots.includes(slotTime);
 
     if (!availableSlot) {
       throw new AppError("Slot not available", 404);

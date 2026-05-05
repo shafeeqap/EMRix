@@ -25,15 +25,15 @@ const SlotGrid = ({
   return (
     <>
       {allSlots?.length > 0 ? (
-        <div className="flex flex-col">
-          <h2 className="font-semibold text-lg mb-3 uppercase">
+        <div className="flex flex-col px-5 py-5 border border-gray-300 rounded">
+          <h2 className="font-semibold text-lg py-3 uppercase">
             Available Time Slots
           </h2>
 
           {/* Status Colors */}
           <StatusColors />
 
-          <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-4 py-5 px-5 bg-white border border-gray-300 rounded h-52 overflow-y-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 py-5 px-5 bg-white border border-gray-300 rounded h-52 overflow-y-auto">
             {allSlots?.map((slot) => {
               const isBooked = bookedSlots.includes(slot);
               const isSelected = selectedSlot === slot;

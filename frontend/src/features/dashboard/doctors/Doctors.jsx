@@ -88,7 +88,7 @@ const Doctors = () => {
   return (
     <>
       <div className="flex justify-between">
-        <FilterSearch value={search} onChange={setSearch} />
+        <FilterSearch value={search} onChange={setSearch}  />
 
         <Button onClick={handleAddModalOpen}>
           <Plus size={20} />
@@ -99,6 +99,7 @@ const Doctors = () => {
         status={status}
         onChange={setStatus}
         options={statusOptions}
+        className="w-52"
       />
 
       {doctors.length === 0 ? (

@@ -20,10 +20,10 @@ const AppointmentForm = () => {
   });
 
   return (
-    <div className="bg-white px-5 py-5 rounded w-full">
+    <div className="bg-white border border-gray-300 px-5 py-5 rounded w-full">
       <h1 className="font-semibold text-lg uppercase">Select Doctor & Time</h1>
 
-      <div className="flex flex-col sm:flex-row justify-between py-5">
+      <div className="flex flex-col gap-3 sm:flex-row justify-between py-5">
         {/* Department */}
         <InputField
           label="Department"

@@ -20,13 +20,14 @@ const router = express.Router();
 
 router.get("/", protect, getAppointments);
 router.get("/slots", protect, getAvailableSlots);
+router.get("/:id", protect, getAppointmentById);
 router.post("/", protect, validate(createAppointmentSchema), createAppointment);
-router.get(
-  "/",
-  protect,
-  validate(getAppontmentSchema, "query"),
-  getAppointmentById
-);
+// router.get(
+//   "/",
+//   protect,
+//   validate(getAppontmentSchema, "query"),
+//   getAppointmentByIdAndDate
+// );
 router.put(
   "/:id/reschedule",
   protect,

@@ -3,6 +3,7 @@ import {
   DeleteAppointmentModal,
   EditAppointmentModal,
   AppointmentDetailsModal,
+  UpdateAppointmentStatusModal,
 } from "../../features/appointments/components";
 import {
   AddDoctorModal,
@@ -41,6 +42,7 @@ export const MODAL_COMPONENTS = {
   EDIT_APPOINTMENT: EditAppointmentModal,
   DELETE_APPOINTMENT: DeleteAppointmentModal,
   DETAILS_APPOINTMENT: AppointmentDetailsModal,
+  UPDATE_APPOINTMENT_STATUS: UpdateAppointmentStatusModal,
 
   // User Modals
   ADD_USER: AddUserModal,

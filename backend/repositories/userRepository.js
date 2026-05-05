@@ -17,7 +17,7 @@ export const findUsers = async (filter, skip, limit) => {
 };
 
 export const findUsersBySearchQuery = (query) => {
-  return User.find(query);
+  return User.find({ ...query, isActive: true }).limit(10);
 };
 
 export const findUserByIdAndUpdate = async (id, updates, option) => {
@@ -28,6 +28,6 @@ export const findUserByIdAndDelete = async (id) => {
   return User.findByIdAndDelete(id);
 };
 
-export const countUserDocuments = async(filter) => {
+export const countUserDocuments = async (filter) => {
   return User.countDocuments(filter);
 };

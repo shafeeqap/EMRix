@@ -13,13 +13,12 @@ export const findDoctors = async (filter, skip, limit) => {
 };
 
 export const findDoctorsBySearchQuery = (query) => {
-  return Doctor.find(query);
-}
+  return Doctor.find({ ...query, isActive: true }).limit(10);
+};
 
 export const findDoctorById = (id) => {
   return Doctor.findById(id);
 };
-
 export const findDoctorOne = async (id) => {
   return Doctor.findOne(id);
 };

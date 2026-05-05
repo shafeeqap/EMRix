@@ -1,3 +1,4 @@
+import { Doctor } from "../models/Doctor.js";
 import { findAppointmentDetails } from "../repositories/appointmentRepository.js";
 import {
   countPatientDocuments,
@@ -75,7 +76,7 @@ export const searchPatientService = async (query) => {
 };
 
 // ===========> Get all Patient Service <===========
-export const getPatientService = async (query) => {
+export const getPatientService = async (query, user) => {
   const page = Number(query.page) || 1;
   const limit = Number(query.limit) || 5;
   const skip = (page - 1) * limit;
