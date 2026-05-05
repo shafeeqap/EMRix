@@ -104,7 +104,7 @@ const Booking = () => {
 
   return (
     <>
-      <div className="flex flex-col sm:flex-row justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between ">
         <div className="flex flex-col md:flex-row items-center gap-4">
           <FilterSearch
             value={search}
@@ -125,7 +125,7 @@ const Booking = () => {
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="w-[252px]"
+            className="w-[15.5rem] sm:w-[260px]"
           />
           <div>
             <Button onClick={handleAddModalOpen}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { getFullName } from "../../../utils/userHelpers";
 import { data, statusCardItems } from "./config/doctor.config";
@@ -7,37 +7,24 @@ import DailyAppointmentsTimelineChart from "./charts/DailyAppointmentsTimelineCh
 import PatientStatus from "./charts/PatientStatus";
 
 const DoctorDashboard = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const { user } = useSelector((state) => state.auth);
   const fullName = getFullName(user);
 
-  // useEffect(() => {
-  //   // Simulate data fetching
-  //   setIsLoading(true);
-  //   const timer = setTimeout(() => {
-  //     setIsLoading(false);
-  //   }, 2000); // Simulate a 2-second loading time
-
-  //   return () => clearTimeout(timer); // Cleanup the timer on unmount
-  // }, []);
+  console.log(user);
 
   return (
     <div className="grid gap-3 grid-cols-1 md:grid-cols-2">
       <ProfileCard fullName={fullName} />
-      <StatusCard statusCardItems={statusCardItems} />
+      <StatusCard statusCardItems={statusCardItems} role={user.role} />
 
       <div className="text-center mt-5 w-full">
-        <ChartWrapper
-          title="Daily Appointments Timeline"
-          data={data}
-          isLoading={isLoading}
-        >
+        <ChartWrapper title="Daily Appointments Timeline" data={data}>
           <DailyAppointmentsTimelineChart data={data} />
         </ChartWrapper>
       </div>
 
       <div className="text-center mt-5 w-full">
-        <ChartWrapper title="Patient Status" data={"3"} isLoading={isLoading}>
+        <ChartWrapper title="Patient Status" data={"3"}>
           <PatientStatus />
         </ChartWrapper>
       </div>

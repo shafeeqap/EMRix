@@ -115,7 +115,7 @@ const CreateAppointmentModal = () => {
 
       {!isSuccess && (
         <>
-          <h1 className="text-2xl py-3">Create appointment</h1>
+          <h1 className="mb-4 text-xl py-3 font-semibold">Create appointment</h1>
 
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)}>
