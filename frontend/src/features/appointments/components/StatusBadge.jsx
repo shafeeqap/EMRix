@@ -1,22 +1,22 @@
 export const STATUS_UI = {
   booked: {
     label: "Booked",
-    className: "bg-green-700",
+    className: "bg-yellow-500 text-black",
   },
   arrived: {
     label: "Arrived",
-    className: "bg-blue-700",
+    className: "bg-blue-700 text-white",
   },
   completed: {
     label: "Completed",
-    className: "bg-teal-700",
+    className: "bg-[#088F4C] text-white",
   },
   no_show: {
     label: "No Show",
-    className: "bg-yellow-700",
+    className: "bg-[#9CA3AF] text-white",
   },
   cancelled: {
     label: "Cancelled",
-    className: "bg-red-700",
+    className: "bg-red-700 text-white",
   },
 };

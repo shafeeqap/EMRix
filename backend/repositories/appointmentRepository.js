@@ -86,6 +86,7 @@ export const getAppointment = async ({
   doctorId,
   search,
   status,
+  date,
   skip,
   limit,
 }) => {
@@ -99,6 +100,19 @@ export const getAppointment = async ({
 
   if (doctorId) {
     baseMatch.doctorId = new mongoose.Types.ObjectId(doctorId);
+  }
+
+  if (date) {
+    const start = new Date(date);
+    start.setHours(0, 0, 0, 0);
+
+    const end = new Date(date);
+    end.setHours(23, 59, 59, 999);
+
+    baseMatch.date = {
+      $gte: start,
+      $lte: end,
+    };
   }
 
   const pipeline = [

@@ -8,6 +8,7 @@ import {
   Button,
   FilterOption,
   FilterSearch,
+  InputField,
   Loader,
   Pagination,
 } from "../../components/ui";
@@ -19,17 +20,18 @@ const Booking = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("");
+  const [date, setDate] = useState("");
 
   const { data, isLoading, error } = useGetAppointmentsQuery({
     page,
     limit: 5,
     search,
+    date,
     status: filter,
   });
 
   const appointments = data?.appointments || [];
-  console.log(appointments, 'Appointments...');
-  
+  console.log(appointments, "Appointments...");
 
   const dispatch = useDispatch();
 
@@ -102,24 +104,40 @@ const Booking = () => {
 
   return (
     <>
-      <div className="flex justify-between">
-        <FilterSearch value={search} onChange={setSearch} />
+      <div className="flex flex-col sm:flex-row justify-between items-center">
+        <div className="flex flex-col md:flex-row items-center gap-4">
+          <FilterSearch
+            value={search}
+            onChange={setSearch}
+            className="w-[250px] sm:w-52"
+          />
 
-        <Button onClick={handleAddModalOpen}>
-          <Plus size={20} />
-        </Button>
+          <FilterOption
+            status={filter}
+            onChange={setFilter}
+            options={appointmentOptions}
+            className="w-[250px] sm:w-52"
+          />
+        </div>
+
+        <div className="flex flex-col items-end md:flex-row md:items-center gap-4">
+          <InputField
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className="w-[252px]"
+          />
+          <div>
+            <Button onClick={handleAddModalOpen}>
+              <Plus size={20} />
+            </Button>
+          </div>
+        </div>
       </div>
-
-      <FilterOption
-        status={filter}
-        onChange={setFilter}
-        options={appointmentOptions}
-        className="w-52"
-      />
 
       {appointments.length === 0 ? (
         <div className="flex justify-center items-center bg-gray-100 mt-5 rounded min-h-20">
-          <p>{search ? "No results found" : "No doctors available"}</p>
+          <p>{search ? "No results found" : "No appointments available"}</p>
         </div>
       ) : (
         <Table columns={columns} data={appointments} />

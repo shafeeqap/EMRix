@@ -2,10 +2,11 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useGetAppointmentByIdQuery } from "../appointmentApiSlice";
 import { getFullName } from "../../../utils/userHelpers";
-import { closeModal } from "../../../components/modal/modalSlice";
+import { closeModal, openModal } from "../../../components/modal/modalSlice";
 import { Button, Loader } from "../../../components/ui";
 import ErrorMessage from "../../../components/ErrorMessage";
-import { STATUS_UI } from "./StatusUI";
+import { STATUS_UI } from "./StatusBadge";
+import { formatTime } from "../../../utils/formatHours";
 
 const AppointmentDetailsModal = () => {
   const { appointmentId } = useSelector(
@@ -21,12 +22,22 @@ const AppointmentDetailsModal = () => {
   } = useGetAppointmentByIdQuery({
     id: appointmentId,
   });
-
+  
   const appointment = appointments?.appointments;
   const patient = appointments?.appointments?.patient;
   const doctor = appointments?.appointments?.doctor;
 
   const statusConfig = STATUS_UI[appointment?.status];
+
+  const handleStatusModalOpen = (row) => {
+    dispatch(
+      openModal({
+        modalType: "UPDATE_APPOINTMENT_STATUS",
+        modalProps: { appointment: row },
+      })
+    );
+    console.log("UPDATE APPOINTMENT STATUS CLICKED", row);
+  };
 
   if (isLoading) {
     return (
@@ -75,7 +86,7 @@ const AppointmentDetailsModal = () => {
               <strong>Date:</strong> {appointment?.date.split("T")[0]}
             </p>
             <p>
-              <strong>Slot:</strong> {appointment?.slotTime}
+              <strong>Slot:</strong> {formatTime(appointment?.slotTime)}
             </p>
             <p>
               <strong>Token:</strong> {appointment?.tokenNumber}
@@ -113,8 +124,8 @@ const AppointmentDetailsModal = () => {
             <p>
               <strong>Status:</strong>
             </p>
-            <span
-              className={`px-3 py-1 rounded text-xs text-white font-medium uppercase
+            <span onClick={()=> handleStatusModalOpen(appointment)}
+              className={`px-3 py-1 rounded text-xs font-medium uppercase cursor-pointer
     ${statusConfig?.className || "bg-gray-500 text-white"}`}
             >
               {statusConfig?.label || appointment?.status}

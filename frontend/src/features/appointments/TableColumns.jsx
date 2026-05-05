@@ -61,10 +61,10 @@ export const getColumns = ({ onEdit, onDelete, onUpdateStatus, onDetails }) => [
         <button
           onClick={() => onUpdateStatus(row)}
           disabled={isFinalState}
-          className="disabled:opacity-50 disabled:cursor-not-allowed"
+          className=" disabled:cursor-not-allowed"
         >
           <span
-            className={`px-2 py-1 text-xs font-medium cursor-pointer text-white ${statusConfig?.className}`}
+            className={`max-w-16 px-2 py-1 text-xs font-medium text-center rounded cursor-pointer uppercase ${statusConfig?.className}`}
           >
             {statusConfig?.label}
           </span>
@@ -80,7 +80,7 @@ export const getColumns = ({ onEdit, onDelete, onUpdateStatus, onDetails }) => [
 
       return (
         <>
-          <div className="flex gap-5">
+          <span className="flex gap-5">
             {date >= today && (
               <PenLine onClick={() => onEdit(row)} className="cursor-pointer" />
             )}
@@ -89,7 +89,7 @@ export const getColumns = ({ onEdit, onDelete, onUpdateStatus, onDetails }) => [
               onClick={() => onDelete(row)}
               className="text-red-700 cursor-pointer"
             />
-          </div>
+          </span>
         </>
       );
     },
@@ -97,9 +97,9 @@ export const getColumns = ({ onEdit, onDelete, onUpdateStatus, onDetails }) => [
   {
     header: "Details",
     render: (row) => (
-      <div className="flex gap-5">
+      <span className="flex gap-5">
         <Eye onClick={() => onDetails(row)} className="cursor-pointer" />
-      </div>
+      </span>
     ),
   },
 ];

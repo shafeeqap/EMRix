@@ -93,6 +93,9 @@ export const getAppointmentsService = async (query, user) => {
   const skip = (page - 1) * limit;
   const search = query.search?.trim();
   const status = query.status;
+  const date = query.date;
+  
+  console.log(date, 'Date...');
 
   let doctorId = null;
 
@@ -126,6 +129,7 @@ export const getAppointmentsService = async (query, user) => {
     doctorId,
     search,
     status,
+    date,
     skip,
     limit,
   });
