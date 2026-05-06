@@ -11,7 +11,6 @@ import {
 import { findDoctorById } from "../repositories/doctorRepository.js";
 import { AppError } from "../utils/AppError.js";
 import { logAction } from "../utils/auditLogger.js";
-import { formattedDate } from "../utils/formattedDate.js";
 import { generateAppointmentToken } from "../utils/generateAppointmentToken.js";
 import { generateAvailableSlots } from "./slotService.js";
 
@@ -94,8 +93,6 @@ export const getAppointmentsService = async (query, user) => {
   const search = query.search?.trim();
   const status = query.status;
   const date = query.date;
-  
-  console.log(date, 'Date...');
 
   let doctorId = null;
 
@@ -122,8 +119,6 @@ export const getAppointmentsService = async (query, user) => {
   if (allowedStatuses.includes(status)) {
     filter.status = status;
   }
-
-  // console.log(doctor._id, "Doctor ID in service...");
 
   const { appointments, total } = await getAppointment({
     doctorId,
@@ -185,9 +180,6 @@ export const updateAppointmentStatusService = async (params, data, user) => {
 export const updateAppointmentService = async (params, data, user) => {
   const id = params.id;
   const { date, doctorId, slotTime, notes } = data;
-
-  console.log(id, "ID in update service...");
-  console.log(data, "Data in update service...");
 
   const appointment = await findAppointmentById(id);
 

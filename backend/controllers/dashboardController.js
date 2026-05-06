@@ -1,0 +1,11 @@
+import { getDashboardDataService } from "../services/dashboardService.js";
+
+export const getDashboardData = async (req, res, next) => {
+  try {
+    const dashboardData = await getDashboardDataService();
+
+    res.status(200).json({ data: dashboardData });
+  } catch (error) {
+    next(error);
+  }
+};

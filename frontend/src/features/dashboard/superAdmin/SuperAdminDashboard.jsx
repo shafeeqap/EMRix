@@ -7,6 +7,7 @@ import ChartWrapper from "../components/ChartWrapper";
 import AppointmentTrends from "./charts/AppointmentTrends";
 import RevenueOverview from "./charts/RevenueOverview";
 
+
 const SuperAdminDashboard = () => {
   const { user } = useSelector((state) => state.auth);
 

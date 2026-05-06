@@ -1,18 +1,22 @@
 import React from "react";
 import { PieChart } from "../../../../components/charts";
-
-// #region Sample data
-const data = [
-  { name: "Appointments", value: 400 },
-  { name: "Reposts", value: 300 },
-  { name: "Canceled", value: 100 },
-];
-// #endregion
+import { useGetDashboardDataQuery } from "../../../dashboard/adminDashboardApiSlice.js";
 
 const PatientStatus = () => {
+  const { data } = useGetDashboardDataQuery();
+  console.log(data, 'Dashboard data...');
+  
+  const totalStatus = data?.data?.totalStatus || [];
+
+  const statusData = totalStatus?.map((item) => ({
+    name:
+      item._id.charAt(0).toUpperCase() + item._id.slice(1).replace("_", " "),
+    value: item.total,
+  }));
+
   return (
     <div className="w-full h-full">
-      <PieChart data={data} />
+      <PieChart data={statusData} />
     </div>
   );
 };
